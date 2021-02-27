@@ -67,6 +67,7 @@ class Button:
         else:
             return False
 
+
 # GAME OBJECTS
 play_button = Button((120, 120, 125, 255), 300, 200, 200, 70, image=FONT.render('PLAY', False, (0, 0, 0)))
 exit_button = Button((120, 120, 125, 255), 300, 400, 200, 70, image=FONT.render('EXIT', False, (0, 0, 0)))
@@ -76,7 +77,10 @@ levels_buttons = [
 ]
 
 # SONG
-laundry = pygame.mixer.Sound("assets/songs/the_haunted_mansion_the_laundry_room.mp3")
+song = pygame.mixer.Sound("assets/songs/the_haunted_mansion_the_laundry_room.mp3")
+song_array = pygame.song.sndarray()
+
+
 
 # GAME LOOP
 state = 'start'
