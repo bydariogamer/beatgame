@@ -76,7 +76,7 @@ levels_buttons = [
 ]
 
 # SONG
-pygame.mixer.Sound("assets/")
+laundry = pygame.mixer.Sound("assets/songs/the_haunted_mansion_the_laundry_room.mp3")
 
 # GAME LOOP
 state = 'start'
