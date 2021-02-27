@@ -62,6 +62,7 @@ class Button:
 state = 'menu'
 while state != 'close':
     if state == 'menu':
-        game.fill((0, 0, 0))
+        while state == 'menu':
+            game.fill((0, 0, 0))
 
 
