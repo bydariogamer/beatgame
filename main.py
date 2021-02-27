@@ -25,8 +25,18 @@ LIFE = pygame.image.load("assets/images/heart.png")
 LIFE.set_colorkey(WHITE)
 LIFE.convert()
 
+# GENERAL ASSETS
+
 
 # CLASSES
+class Player:
+    def __init__(self):
+        self.image = pygame.image.load("assets/images/player.png")
+        self.rect = self.image.get_rect()
+        self.vel_y = 0
+        self.vel_y = 20
+        self.
+
 class Button:
     def __init__(self, color, x, y, width, height, outcolor=None, image=None):
         """a button with given color, position, width, heigh, a secondary color if it has mouse over and an image"""
