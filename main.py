@@ -25,17 +25,15 @@ LIFE = pygame.image.load("assets/images/heart.png")
 LIFE.set_colorkey(WHITE)
 LIFE.convert()
 
-# GENERAL ASSETS
-
-
 # CLASSES
 class Player:
     def __init__(self):
         self.image = pygame.image.load("assets/images/player.png")
         self.rect = self.image.get_rect()
+        self.vel_x = 20
         self.vel_y = 0
-        self.vel_y = 20
-        self.
+        self.grav = 10
+
 
 class Button:
     def __init__(self, color, x, y, width, height, outcolor=None, image=None):
@@ -44,6 +42,8 @@ class Button:
         self.rect = pygame.Rect(x, y, width, height)
         if image is not None:
             self.image = image
+        else:
+            self.image = None
         if outcolor is None:
             self.outcolor = self.color + pygame.Color((15, 15, 15))
         else:
@@ -54,8 +54,7 @@ class Button:
         pygame.draw.rect(window, self.color, self.rect)
         if self.mouseover():
             pygame.draw.rect(window, self.outcolor, self.rect)
-        if self.image is not None:
-            window.blit(self.image, (self.rect.x, self.rect.y))
+        if self.image:
             window.blit(self.image, (self.rect.x + (self.rect.w/2 - self.image.get_width()/2), self.rect.y + (self.rect.h/2 - self.image.get_height()/2)))
 
     def mouseover(self):
@@ -69,10 +68,19 @@ class Button:
             return False
 
 
+# GAME OBJECTS
+play_button = Button((120, 120, 125, 255), 100, 400, 100, 40, image=FONT.render('PLAY', False, (0, 0, 0)))
+exit_button = Button((120, 120, 125, 255), 300, 400, 100, 40, image=FONT.render('EXIT', False, (0, 0, 0)))
+
 state = 'menu'
 while state != 'close':
     if state == 'menu':
         while state == 'menu':
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    state = 'close'
             game.fill((0, 0, 0))
-
-
+            play_button.draw(game)
+            exit_button.draw(game)
+            pygame.display.update()
+            clock.tick(60)
