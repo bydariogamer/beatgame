@@ -20,7 +20,7 @@ game = pygame.display.set_mode((DISP_WID, DISP_HEI))
 # CONSTANTS
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-FONT = pygame.font.Font("assets/fonts/8bitOperatorPlus-Bold.ttf", 32)
+FONT = pygame.font.Font("assets/fonts/8bitOperatorPlus-Bold.ttf", 64)
 LIFE = pygame.image.load("assets/images/heart.png")
 LIFE.set_colorkey(WHITE)
 LIFE.convert()
@@ -67,20 +67,64 @@ class Button:
         else:
             return False
 
-
 # GAME OBJECTS
-play_button = Button((120, 120, 125, 255), 100, 400, 100, 40, image=FONT.render('PLAY', False, (0, 0, 0)))
-exit_button = Button((120, 120, 125, 255), 300, 400, 100, 40, image=FONT.render('EXIT', False, (0, 0, 0)))
+play_button = Button((120, 120, 125, 255), 300, 200, 200, 70, image=FONT.render('PLAY', False, (0, 0, 0)))
+exit_button = Button((120, 120, 125, 255), 300, 400, 200, 70, image=FONT.render('EXIT', False, (0, 0, 0)))
+levels_buttons = [
+    Button((120, 120, 125, 255), 150, 100, 520, 100, image=FONT.render('FIRST LEVEL', False, (0, 0, 0))),
+    Button((120, 120, 125, 255), 150, 300, 520, 100, image=FONT.render('SECOND LEVEL', False, (0, 0, 0)))
+]
 
-state = 'menu'
+# SONG
+pygame.mixer.Sound("assets/")
+
+# GAME LOOP
+state = 'start'
 while state != 'close':
-    if state == 'menu':
-        while state == 'menu':
+
+    # EMERGENCY EXIT
+    """for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            state = 'close'"""
+
+    # START MENU
+    if state == 'start':
+        # LOOP
+        while state == 'start':
+            # EVENTS
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     state = 'close'
+            # TIME
+            clock.tick(60)
+            # LOGIC
+            if play_button.mouseclic():
+                state = 'choose'
+            if exit_button.mouseclic():
+                state = 'close'
+            # RENDER
             game.fill((0, 0, 0))
             play_button.draw(game)
             exit_button.draw(game)
+
+            # FLIP
             pygame.display.update()
+
+    # LEVEL SELECTOR
+    if state == 'choose':
+        while state == 'choose':
+            # EVENTS
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    state = 'close'
+
+            # TIME
             clock.tick(60)
+
+            # RENDER
+            game.fill((0, 0, 0))
+            for button in levels_buttons:
+                button.draw(game)
+
+            # FLIP
+            pygame.display.update()
