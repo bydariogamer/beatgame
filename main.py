@@ -105,6 +105,7 @@ while state != 'close':
         for song in SONGS:
             title = FONT.render(song[0].upper(), False, (0, 0, 0))
             levels.append([Button(random.choice(list(colors.neon.values())), 300, 150, 200, 70, title), song[1]])
+            # TODO: line above not working
 
         while state == 'choose':
             # EVENTS
