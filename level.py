@@ -1,5 +1,6 @@
 import pygame
 
+
 pygame.init()
 pygame.mixer.init()
 
@@ -9,4 +10,4 @@ class Level:
         self.array = pygame.sndarray(song)
 
     def gen(self):
-        
+        pass

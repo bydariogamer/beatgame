@@ -1,6 +1,9 @@
 import pygame
 import os
 import sys
+from button import Button
+from player import Player
+import colors
 
 
 # TEST MODE
@@ -29,60 +32,16 @@ WHITE = (255, 255, 255)
 FONT = pygame.font.Font("assets/fonts/8bitOperatorPlus-Bold.ttf", 40)
 LIFE = pygame.image.load("assets/images/heart.png")
 LIFE.set_colorkey(WHITE)
-LIFE.convert()
+LIFE = LIFE.convert()
 
+SONGS = []
+for file in os.listdir(os.path.join(PATH, 'assets', 'songs')):
+    if os.path.isfile(os.path.join(PATH, 'assets', 'songs', file)):
+        new_song = file.split('.')[0]
+        SONGS.append([new_song.replace('_', ' '), os.path.join(PATH, 'assets', 'songs', file)])
 
-# CLASSES
-class Player:
-    def __init__(self):
-        self.image = pygame.image.load("assets/images/player.png")
-        self.rect = self.image.get_rect()
-        self.vel_x = 20
-        self.vel_y = 0
-        self.grav = 10
-
-
-class Button:
-    def __init__(self, color, x, y, width, height, outcolor=None, image=None):
-        """a button with given color, position, width, heigh, a secondary color if it has mouse over and an image"""
-        self.color = pygame.Color(color)
-        self.rect = pygame.Rect(x, y, width, height)
-        if image is not None:
-            self.image = image
-        else:
-            self.image = None
-        if outcolor is None:
-            self.outcolor = self.color + pygame.Color((15, 15, 15))
-        else:
-            self.outcolor = outcolor
-
-    def draw(self, window):
-        # draw the button on the window
-        pygame.draw.rect(window, self.color, self.rect)
-        if self.mouseover():
-            pygame.draw.rect(window, self.outcolor, self.rect)
-        if self.image:
-            window.blit(self.image, (self.rect.x + (self.rect.w - self.image.get_width())/2, self.rect.y + (self.rect.h - self.image.get_height())/2))
-
-    def mouseover(self):
-        if self.rect.collidepoint(pygame.mouse.get_pos()):
-            return True
-
-    def mouseclic(self):
-        if self.rect.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed(num_buttons=3)[0]:
-            return True
-        else:
-            return False
-
-
-levels_buttons = [
-    Button((120, 120, 125, 255), 150, 100, 520, 100, image=FONT.render('FIRST LEVEL', False, (0, 0, 0))),
-    Button((120, 120, 125, 255), 150, 300, 520, 100, image=FONT.render('SECOND LEVEL', False, (0, 0, 0)))
-]
-
-# SONG
-song = pygame.mixer.Sound("assets/songs/laundry_room.mp3")
-song_array = pygame.sndarray.array(song)
+        if TEST:
+            print(SONGS)
 
 
 # GAME LOOP
@@ -98,7 +57,8 @@ while state != 'close':
     if state == 'start':
         play_button = Button((120, 120, 125, 255), 300, 200, 200, 70, image=FONT.render('PLAY', False, (0, 0, 0)))
         exit_button = Button((120, 120, 125, 255), 300, 400, 200, 70, image=FONT.render('EXIT', False, (0, 0, 0)))
-        
+        background = pygame.image.load('assets/images/title_background.png')
+
         # LOOP
         while state == 'start':
             # EVENTS
@@ -114,6 +74,7 @@ while state != 'close':
                 state = 'close'
             # RENDER
             game.fill((0, 0, 0))
+            game.blit(background, (0, 0))
             play_button.draw(game)
             exit_button.draw(game)
 
@@ -122,16 +83,6 @@ while state != 'close':
 
     # LEVEL SELECTOR
     if state == 'choose':
-        # GET SONG NAMES
-        SONGS = []
-        for file in os.listdir(os.path.join(PATH, 'assets', 'songs')):
-            if os.path.isfile(os.path.join(PATH, 'assets', 'songs', file)):
-                new_song = file.split('.')[0]
-                SONGS.append(new_song.replace('_', ' '))
-
-                if TEST:
-                    print(SONGS)
-
         while state == 'choose':
             # EVENTS
             for event in pygame.event.get():
