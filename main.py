@@ -1,6 +1,7 @@
 import pygame
 import os
 import sys
+import random
 from button import Button
 from player import Player
 import colors
@@ -99,10 +100,11 @@ while state != 'close':
 
     # LEVEL SELECTOR
     if state == 'choose':
-        levels_buttons = []
+        levels = []
         background = pygame.image.load('assets/images/title_background.png').convert()
         for song in SONGS:
-
+            title = FONT.render(song[0].upper(), False, (0, 0, 0))
+            levels.append([Button(random.choice(list(colors.neon.values())), 300, 150, 200, 70, title), song[1]])
 
         while state == 'choose':
             # EVENTS
@@ -119,8 +121,8 @@ while state != 'close':
             # RENDER
             game.fill((0, 0, 0))
 
-            for button in levels_buttons:
-                button.draw(game)
+            for level in levels:
+                level[0].draw(game)
 
             # FLIP
             pygame.display.update()
