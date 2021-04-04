@@ -29,7 +29,9 @@ game = pygame.display.set_mode((DISP_WID, DISP_HEI))
 # CONSTANTS
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-FONT = pygame.font.Font("assets/fonts/8bitOperatorPlus-Bold.ttf", 40)
+FONT = pygame.font.Font("assets/fonts/8bitOperatorPlus-Bold.ttf", 48)
+FONT_BIG = pygame.font.Font("assets/fonts/8bitOperatorPlus-Bold.ttf", 64)
+FONT_SMALL = pygame.font.Font("assets/fonts/8bitOperatorPlus-Bold.ttf", 32)
 LIFE = pygame.image.load("assets/images/heart.png")
 LIFE.set_colorkey(WHITE)
 LIFE = LIFE.convert()
@@ -55,10 +57,12 @@ while state != 'close':
 
     # START MENU
     if state == 'start':
-        play_button = Button(colors.neon['fucsia'], 300, 100, 200, 70, image=FONT.render('PLAY', False, (0, 0, 0)))
-        help_button = Button(colors.neon['fucsia'], 300, 100, 200, 70, image=FONT.render('HELP', False, (0, 0, 0)))
-        exit_button = Button(colors.neon['fucsia'], 300, 300, 200, 70, image=FONT.render('EXIT', False, (0, 0, 0)))
-        background = pygame.image.load('assets/images/title_background.png')
+        title = FONT_BIG.render('> B E A T G A M E <', False, colors.neon['blue'])
+        author = FONT_SMALL.render('bydariogamer', False, colors.neon['red'])
+        play_button = Button(colors.neon['fucsia'], 300, 150, 200, 70, image=FONT.render('PLAY', False, (0, 0, 0)))
+        help_button = Button(colors.neon['fucsia'], 300, 250, 200, 70, image=FONT.render('HELP', False, (0, 0, 0)))
+        exit_button = Button(colors.neon['fucsia'], 300, 350, 200, 70, image=FONT.render('EXIT', False, (0, 0, 0)))
+        background = pygame.image.load('assets/images/title_background.png').convert()
 
         # LOOP
         while state == 'start':
@@ -68,6 +72,7 @@ while state != 'close':
                     state = 'close'
             # TIME
             clock.tick(60)
+
             # LOGIC
             if play_button.mouseclic():
                 state = 'choose'
@@ -79,6 +84,8 @@ while state != 'close':
             # RENDER
             game.fill((0, 0, 0))
             game.blit(background, (0, 0))
+            game.blit(title, (80, 10))
+            game.blit(author, (90, 90))
             play_button.draw(game)
             help_button.draw(game)
             exit_button.draw(game)
@@ -92,6 +99,9 @@ while state != 'close':
 
     # LEVEL SELECTOR
     if state == 'choose':
+        levels_buttons = []
+        background = pygame.image.load('assets/images/title_background.png').convert()
+
         while state == 'choose':
             # EVENTS
             for event in pygame.event.get():
@@ -101,8 +111,12 @@ while state != 'close':
             # TIME
             clock.tick(60)
 
+            # LOGIC
+            # TODO: implement menu logic
+
             # RENDER
             game.fill((0, 0, 0))
+
             for button in levels_buttons:
                 button.draw(game)
 
