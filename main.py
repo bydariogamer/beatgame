@@ -1,5 +1,10 @@
 import pygame
+import os
+import sys
 
+
+# TEST MODE
+TEST = True
 
 # INITIALIZE PYGAME
 pygame.init()
@@ -10,6 +15,7 @@ DISP_WID = 800
 DISP_HEI = 500
 DISP_TIT = 'BEATGAME'
 DISP_ICO = pygame.image.load('assets/images/heart.png')  # change this
+PATH = os.path.abspath(os.path.dirname(sys.argv[0]))
 clock = pygame.time.Clock()
 
 # CREATE WINDOW
@@ -20,10 +26,11 @@ game = pygame.display.set_mode((DISP_WID, DISP_HEI))
 # CONSTANTS
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-FONT = pygame.font.Font("assets/fonts/8bitOperatorPlus-Bold.ttf", 64)
+FONT = pygame.font.Font("assets/fonts/8bitOperatorPlus-Bold.ttf", 40)
 LIFE = pygame.image.load("assets/images/heart.png")
 LIFE.set_colorkey(WHITE)
 LIFE.convert()
+
 
 # CLASSES
 class Player:
@@ -55,7 +62,7 @@ class Button:
         if self.mouseover():
             pygame.draw.rect(window, self.outcolor, self.rect)
         if self.image:
-            window.blit(self.image, (self.rect.x + (self.rect.w/2 - self.image.get_width()/2), self.rect.y + (self.rect.h/2 - self.image.get_height()/2)))
+            window.blit(self.image, (self.rect.x + (self.rect.w - self.image.get_width())/2, self.rect.y + (self.rect.h - self.image.get_height())/2))
 
     def mouseover(self):
         if self.rect.collidepoint(pygame.mouse.get_pos()):
@@ -68,18 +75,14 @@ class Button:
             return False
 
 
-# GAME OBJECTS
-play_button = Button((120, 120, 125, 255), 300, 200, 200, 70, image=FONT.render('PLAY', False, (0, 0, 0)))
-exit_button = Button((120, 120, 125, 255), 300, 400, 200, 70, image=FONT.render('EXIT', False, (0, 0, 0)))
 levels_buttons = [
     Button((120, 120, 125, 255), 150, 100, 520, 100, image=FONT.render('FIRST LEVEL', False, (0, 0, 0))),
     Button((120, 120, 125, 255), 150, 300, 520, 100, image=FONT.render('SECOND LEVEL', False, (0, 0, 0)))
 ]
 
 # SONG
-song = pygame.mixer.Sound("assets/songs/the_haunted_mansion_the_laundry_room.mp3")
-song_array = pygame.song.sndarray()
-
+song = pygame.mixer.Sound("assets/songs/laundry_room.mp3")
+song_array = pygame.sndarray.array(song)
 
 
 # GAME LOOP
@@ -93,6 +96,9 @@ while state != 'close':
 
     # START MENU
     if state == 'start':
+        play_button = Button((120, 120, 125, 255), 300, 200, 200, 70, image=FONT.render('PLAY', False, (0, 0, 0)))
+        exit_button = Button((120, 120, 125, 255), 300, 400, 200, 70, image=FONT.render('EXIT', False, (0, 0, 0)))
+        
         # LOOP
         while state == 'start':
             # EVENTS
@@ -116,6 +122,16 @@ while state != 'close':
 
     # LEVEL SELECTOR
     if state == 'choose':
+        # GET SONG NAMES
+        SONGS = []
+        for file in os.listdir(os.path.join(PATH, 'assets', 'songs')):
+            if os.path.isfile(os.path.join(PATH, 'assets', 'songs', file)):
+                new_song = file.split('.')[0]
+                SONGS.append(new_song.replace('_', ' '))
+
+                if TEST:
+                    print(SONGS)
+
         while state == 'choose':
             # EVENTS
             for event in pygame.event.get():
@@ -132,3 +148,13 @@ while state != 'close':
 
             # FLIP
             pygame.display.update()
+
+    # LEVEL ITSELF
+    if state == 'level':
+        while state == 'level':
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    state = 'close'
+
+pygame.quit()
+sys.exit()
