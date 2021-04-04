@@ -55,8 +55,8 @@ while state != 'close':
 
     # START MENU
     if state == 'start':
-        play_button = Button((120, 120, 125, 255), 300, 200, 200, 70, image=FONT.render('PLAY', False, (0, 0, 0)))
-        exit_button = Button((120, 120, 125, 255), 300, 400, 200, 70, image=FONT.render('EXIT', False, (0, 0, 0)))
+        play_button = Button(colors.neon['fucsia'], 300, 100, 200, 70, image=FONT.render('PLAY', False, (0, 0, 0)))
+        exit_button = Button(colors.neon['fucsia'], 300, 300, 200, 70, image=FONT.render('EXIT', False, (0, 0, 0)))
         background = pygame.image.load('assets/images/title_background.png')
 
         # LOOP
