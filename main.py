@@ -49,9 +49,9 @@ state = 'start'
 while state != 'close':
 
     # EMERGENCY EXIT
-    """for event in pygame.event.get():
+    for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            state = 'close'"""
+            state = 'close'
 
     # START MENU
     if state == 'start':
