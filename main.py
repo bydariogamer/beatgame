@@ -101,6 +101,8 @@ while state != 'close':
     if state == 'choose':
         levels_buttons = []
         background = pygame.image.load('assets/images/title_background.png').convert()
+        for song in SONGS:
+
 
         while state == 'choose':
             # EVENTS
