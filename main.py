@@ -56,6 +56,7 @@ while state != 'close':
     # START MENU
     if state == 'start':
         play_button = Button(colors.neon['fucsia'], 300, 100, 200, 70, image=FONT.render('PLAY', False, (0, 0, 0)))
+        help_button = Button(colors.neon['fucsia'], 300, 100, 200, 70, image=FONT.render('HELP', False, (0, 0, 0)))
         exit_button = Button(colors.neon['fucsia'], 300, 300, 200, 70, image=FONT.render('EXIT', False, (0, 0, 0)))
         background = pygame.image.load('assets/images/title_background.png')
 
@@ -70,16 +71,24 @@ while state != 'close':
             # LOGIC
             if play_button.mouseclic():
                 state = 'choose'
+            if help_button.mouseclic():
+                state = 'help'
             if exit_button.mouseclic():
                 state = 'close'
+
             # RENDER
             game.fill((0, 0, 0))
             game.blit(background, (0, 0))
             play_button.draw(game)
+            help_button.draw(game)
             exit_button.draw(game)
 
             # FLIP
             pygame.display.update()
+
+    if state == 'help':
+        # TODO: help page
+        pass
 
     # LEVEL SELECTOR
     if state == 'choose':
