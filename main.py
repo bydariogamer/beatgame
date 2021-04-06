@@ -20,6 +20,7 @@ DISP_WID = 800
 DISP_HEI = 500
 DISP_TIT = 'BEATGAME'
 DISP_ICO = pygame.image.load('assets/images/heart.png')  # change this
+BASE_FPS = 60
 PATH = os.path.abspath(os.path.dirname(sys.argv[0]))
 clock = pygame.time.Clock()
 
@@ -73,7 +74,7 @@ while state != 'close':
                 if event.type == pygame.QUIT:
                     state = 'close'
             # TIME
-            clock.tick(60)
+            clock.tick(BASE_FPS)
 
             # LOGIC
             if play_button.mouseclic():
@@ -103,15 +104,18 @@ while state != 'close':
                 if event.type == pygame.QUIT:
                     state = 'close'
             # TIME
-            clock.tick(60)
+            clock.tick(BASE_FPS)
 
     # LEVEL SELECTOR
     if state == 'choose':
         levels = []
         background = pygame.image.load('assets/images/title_background.png').convert()
+        back_page = Button(pygame.color.Color('gray'), 10, DISP_HEI-80, DISP_WID/2-40, 70, image= FONT.render('<', False, (0,0,0)))
+        forward_page = Button(pygame.color.Color('gray'), 10 + DISP_WID/2, DISP_HEI-80, DISP_WID/2-40, 70)
         for song in SONGS:
             title = FONT.render(song[0].upper(), False, (0, 0, 0))
-            levels.append([Button(random.choice(list(colors.neon.values())), 300, 150, 200, 70, title), song[1]])
+            color = random.choice(list(colors.neon.values()))
+            levels.append([Button(color, 10, 10 + 80*(len(levels) % 6), DISP_WID-20, 70, image=title), song[1]])
             # TODO: line above not working
 
         while state == 'choose':
@@ -121,16 +125,18 @@ while state != 'close':
                     state = 'close'
 
             # TIME
-            clock.tick(60)
+            clock.tick(BASE_FPS)
 
             # LOGIC
-            # TODO: implement menu logic
+
 
             # RENDER
             game.fill((0, 0, 0))
-
-            for level in levels:
-                level[0].draw(game)
+            game.blit(background, (0, 0))
+            back_page.draw(game)
+            forward_page.draw(game)
+            for level in enumerate(levels):
+                level[1][0].draw(game)
 
             # FLIP
             pygame.display.update()

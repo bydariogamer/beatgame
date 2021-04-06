@@ -8,10 +8,12 @@ class Button:
         self.rect = pygame.Rect(x, y, width, height)
         if image is not None:
             self.image = image
+            self.image_w = self.image.get_width()
+            self.image_h = self.image.get_height()
         else:
             self.image = None
         if outcolor is None:
-            self.outcolor = self.color + pygame.Color((15, 15, 15))
+            self.outcolor = self.color + pygame.Color((15, 15, 15, 15))
         else:
             self.outcolor = outcolor
 
@@ -21,7 +23,10 @@ class Button:
         if self.mouseover():
             pygame.draw.rect(window, self.outcolor, self.rect)
         if self.image:
-            window.blit(self.image, (self.rect.x + (self.rect.w - self.image.get_width())/2, self.rect.y + (self.rect.h - self.image.get_height())/2))
+            if self.image_w < self.rect.w:
+                window.blit(self.image, (self.rect.x + (self.rect.w - self.image_w)/2, self.rect.y + (self.rect.h - self.image_h)/2))
+            else:
+                window.blit(self.image, self.rect.x + 1, self.rect.y + (self.rect.h - self.image_h) / 2)
 
     def mouseover(self):
         if self.rect.collidepoint(pygame.mouse.get_pos()):
