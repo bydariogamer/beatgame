@@ -110,13 +110,13 @@ while state != 'close':
     if state == 'choose':
         levels = []
         background = pygame.image.load('assets/images/title_background.png').convert()
-        back_page = Button(pygame.color.Color('gray'), 10, DISP_HEI-80, DISP_WID/2-40, 70, image= FONT.render('<', False, (0,0,0)))
-        forward_page = Button(pygame.color.Color('gray'), 10 + DISP_WID/2, DISP_HEI-80, DISP_WID/2-40, 70)
+        page_back = Button(pygame.color.Color('gray'), 10, DISP_HEI-80, DISP_WID/2-40, 70, image=FONT.render('<', False, (0,0,0)))
+        page_forward = Button(pygame.color.Color('gray'), 10 + DISP_WID/2, DISP_HEI-80, DISP_WID/2-40, 70, image=FONT.render('>', False, (0,0,0)))
+        page = 0
         for song in SONGS:
             title = FONT.render(song[0].upper(), False, (0, 0, 0))
             color = random.choice(list(colors.neon.values()))
             levels.append([Button(color, 10, 10 + 80*(len(levels) % 6), DISP_WID-20, 70, image=title), song[1]])
-            # TODO: line above not working
 
         while state == 'choose':
             # EVENTS
@@ -128,15 +128,26 @@ while state != 'close':
             clock.tick(BASE_FPS)
 
             # LOGIC
-
+            for level in levels[page * 5:page * 5 - 1 + len(levels) % 6]:
+                if level[0].mouseclic():
+                    print('level', level[1])
+            if page_back.mouseclic():
+                page -= 1
+                if page < 0:
+                    page = 0
+            if page_forward.mouseclic():
+                page += 1
+                if page > len(levels) // 5:
+                    page -= 1
 
             # RENDER
             game.fill((0, 0, 0))
             game.blit(background, (0, 0))
-            back_page.draw(game)
-            forward_page.draw(game)
-            for level in enumerate(levels):
-                level[1][0].draw(game)
+            page_back.draw(game)
+            page_forward.draw(game)
+            for level in levels[page*5:(-1 if (page+1)*5 < len(levels) else page*5 + len(levels) % 6)]:
+
+                level[0].draw(game)
 
             # FLIP
             pygame.display.update()
