@@ -87,8 +87,8 @@ while state != 'close':
             # RENDER
             game.fill((0, 0, 0))
             game.blit(background, (0, 0))
-            game.blit(title, (80, 10))
-            game.blit(author, (90, 90))
+            game.blit(title, (90, 10))
+            game.blit(author, (100, 90))
             play_button.draw(game)
             help_button.draw(game)
             exit_button.draw(game)
@@ -113,6 +113,11 @@ while state != 'close':
         page_back = Button(pygame.color.Color('gray'), 10, DISP_HEI-80, DISP_WID/2-40, 70, image=FONT.render('<', False, (0,0,0)))
         page_forward = Button(pygame.color.Color('gray'), 10 + DISP_WID/2, DISP_HEI-80, DISP_WID/2-40, 70, image=FONT.render('>', False, (0,0,0)))
         page = 0
+        pager = []
+        imagelist = [i for i in range(11)]
+        for i in range(0, len(imagelist), 5):
+            pager.append(imagelist[i:i + 5])
+
         for song in SONGS:
             title = FONT.render(song[0].upper(), False, (0, 0, 0))
             color = random.choice(list(colors.neon.values()))
@@ -145,7 +150,7 @@ while state != 'close':
             game.blit(background, (0, 0))
             page_back.draw(game)
             page_forward.draw(game)
-            for level in levels[page*5:(-1 if (page+1)*5 < len(levels) else page*5 + len(levels) % 6)]:
+            for level in levels[pager[page]]:
 
                 level[0].draw(game)
 
