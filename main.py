@@ -4,6 +4,7 @@ import sys
 import random
 from button import Button
 from player import Player
+from level import Level
 import colors
 
 
@@ -96,7 +97,13 @@ while state != 'close':
 
     if state == 'help':
         # TODO: help page
-        pass
+        while state == 'start':
+            # EVENTS
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    state = 'close'
+            # TIME
+            clock.tick(60)
 
     # LEVEL SELECTOR
     if state == 'choose':
