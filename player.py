@@ -8,3 +8,5 @@ class Player:
         self.vel_x = 20
         self.vel_y = 0
         self.grav = 10
+        self.life = 100.0
+        self.jump = 0
