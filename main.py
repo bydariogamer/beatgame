@@ -131,7 +131,9 @@ while state != 'close':
             pygame.display.update()
 
     if state == 'help':
-        help_page = pygame.image.load('/assets/images/help.png')
+        help_page = pygame.image.load('assets/images/help.png')
+        help_page.set_colorkey((255, 255, 255))
+        seen = False
         while state == 'help':
             # EVENTS
             for event in pygame.event.get():
@@ -142,6 +144,18 @@ while state != 'close':
                     resize = (display_rect.w / DISP_WID, display_rect.h / DISP_HEI)
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                     state = 'start'
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    seen = True
+                if event.type == pygame.MOUSEBUTTONUP and seen:
+                    state = 'start'
+
+            # RENDER
+            game.fill((240, 250, 240))
+            game.blit(help_page, (0, 0))
+
+            # FLIP
+            render()
+            pygame.display.update()
 
             # TIME
             clock.tick(BASE_FPS)
@@ -149,7 +163,6 @@ while state != 'close':
     # LEVEL SELECTOR
     if state == 'choose':
         levels = []
-        background = pygame.image.load('assets/images/title_background.png').convert()
         page_back = Button(pygame.color.Color('gray'), 10, DISP_HEI-80, DISP_WID/2-30, 70, image=FONT.render('<', False, (0, 0, 0)))
         page_forward = Button(pygame.color.Color('gray'), 20 + DISP_WID/2, DISP_HEI-80, DISP_WID/2-30, 70, image=FONT.render('>', False, (0, 0, 0)))
         page = 0
