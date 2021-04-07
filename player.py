@@ -57,4 +57,23 @@ class Player:
 
         for obstacle in self.level.obstacles:
             if self.rect.colliderect(obstacle):
+                self.rect.y += self.vel_y
+                self.vel_y = 0
+                self.state = 'run'
+
+        for obstacle in self.level.obstacles:
+            obstacle.x -= self.vel_x
+            if self.rect.colliderect(obstacle):
                 self.life -= self.damage
+
+    def draw(self, game):
+        game.fill(self.level.color)
+        pygame.draw.rect(game, self.level.color + pygame.color.Color(30,30,35))
+        for obstacle in enumerate(self.level.obstacles):
+
+        if len(self.images[self.state]):
+            self.anim += 1
+            if self.anim >= len(self.images[self.state]):
+                self.anim = 0
+        game.blit(self.images[self.state][self.anim], (self.rect.x, self.rect.y))
+

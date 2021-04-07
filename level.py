@@ -33,10 +33,12 @@ class Level:
         self.blocks = new_blocks
         self.obstacles = []
         self.color = random.choice(list(neon.values()))
+        self.colors = []
         for index, block in enumerate(self.blocks):
             if block:
                 self.obstacles.append([pygame.Rect((800 + index*30, 400-30*block, 10, 20*block))])
-
+                color =
+                self.colors.append(pygame.color.Color(1,1,1)*int(random.uniform(-50, 50)) + self.color)
 
 if __name__ == '__main__':
     level = Level(pygame.mixer.Sound('assets/songs/laundry_room.mp3'))
