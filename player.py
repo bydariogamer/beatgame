@@ -20,10 +20,6 @@ class Player:
             'dead': [pygame.image.load('assets/images/dead.png').convert()]
         }
 
-        for key in self.images:
-            for image in self.images[key]:
-                image.set_colorkey((0, 0, 0))
-
         self.rect = self.images['run'][0].get_rect()
 
         self.rect.x = 30
@@ -37,8 +33,6 @@ class Player:
         self.jump = 0
         self.collide = False
         self.anim = 0
-
-        self.item_chance = 0.04
 
         self.run = False
         self.ended = False
