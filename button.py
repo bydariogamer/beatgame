@@ -1,5 +1,6 @@
 import pygame
 
+
 class Button:
     def __init__(self, color, x, y, width, height, outcolor=None, image=None):
         """a button with given color, position, width, heigh, a secondary color if it has mouse over and an image"""

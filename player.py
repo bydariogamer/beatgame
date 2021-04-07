@@ -11,12 +11,13 @@ class Player:
         # set images
         self.images = {
             'run': [
-                pygame.image.load('assets/images/player/sticky/run1.png').convert(),
-                pygame.image.load('assets/images/player/sticky/run2.png').convert(),
+                pygame.image.load('assets/images/run1.png').convert(),
+                pygame.image.load('assets/images/run2.png').convert(),
                 pygame.image.load('assets/images/player/sticky/run3.png').convert()
             ],
             'stand': [pygame.image.load('assets/images/player/sticky/stand.png').convert()],
             'jump': [pygame.image.load('assets/images/player/sticky/jump.png').convert()],
+            'hurt':[pygame.image.load('assets/images/hurt.png').convert()],
             'dead': [pygame.image.load('assets/images/player/sticky/dead.png').convert()]
         }
 
@@ -35,6 +36,7 @@ class Player:
         self.score = 0
         self.runed = 0
         self.life = 100.0
+        self.damage = 0.5
         self.pause = False
 
         self.anim = 0

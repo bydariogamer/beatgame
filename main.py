@@ -19,7 +19,7 @@ pygame.mixer.init()
 DISP_WID = 800
 DISP_HEI = 500
 DISP_TIT = 'BEATGAME'
-DISP_ICO = pygame.image.load('assets/images/heart.png')  # change this
+DISP_ICO = pygame.image.load('assets/images/run1.png')
 BASE_FPS = 60
 PATH = os.path.abspath(os.path.dirname(sys.argv[0]))
 clock = pygame.time.Clock()
