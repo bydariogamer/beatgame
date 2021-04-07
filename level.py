@@ -25,20 +25,23 @@ class Level:
             block -= minimum
             new_blocks.append(int(block))
         self.blocks = new_blocks
-        maximum = max(self.blocks)
+        maximum = int(max(self.blocks))
         new_blocks = []
         for block in self.blocks:
-            block //= (maximum/7+1)
-            new_blocks.append(int(block))
+            new_blocks.append(int(block) // (maximum/12 + 1))
         self.blocks = new_blocks
         self.obstacles = []
         self.color = random.choice(list(neon.values()))
         self.colors = []
         for index, block in enumerate(self.blocks):
             if block:
-                self.obstacles.append([pygame.Rect((800 + index*30, 400-30*block, 10, 20*block))])
-                color =
-                self.colors.append(pygame.color.Color(1,1,1)*int(random.uniform(-50, 50)) + self.color)
+                self.obstacles.append([pygame.Rect((800 + index*30, 400-15*block, 10, 20*block))])
+                color = int(random.uniform(0, 50))
+                if random.random() < 0.5:
+                    self.colors.append(pygame.Color(self.color) + pygame.color.Color(color, color, color))
+                else:
+                    self.colors.append(pygame.Color(self.color) - pygame.color.Color(color, color, color))
+
 
 if __name__ == '__main__':
     level = Level(pygame.mixer.Sound('assets/songs/laundry_room.mp3'))
@@ -47,3 +50,4 @@ if __name__ == '__main__':
         print(obstacle)
     print(len(level.blocks))
     print(len(level.obstacles))
+    print(len(level.colors))

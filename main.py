@@ -27,7 +27,7 @@ clock = pygame.time.Clock()
 # CREATE WINDOW
 pygame.display.set_caption(DISP_TIT)
 pygame.display.set_icon(DISP_ICO)
-display = pygame.display.set_mode((DISP_WID, DISP_HEI),pygame.RESIZABLE)
+display = pygame.display.set_mode((DISP_WID, DISP_HEI), pygame.RESIZABLE)
 display_rect = display.get_rect()
 game = pygame.Surface((DISP_WID, DISP_HEI))
 resize = None
@@ -148,8 +148,8 @@ while state != 'close':
     if state == 'choose':
         levels = []
         background = pygame.image.load('assets/images/title_background.png').convert()
-        page_back = Button(pygame.color.Color('gray'), 10, DISP_HEI-80, DISP_WID/2-30, 70, image=FONT.render('<', False, (0,0,0)))
-        page_forward = Button(pygame.color.Color('gray'), 20 + DISP_WID/2, DISP_HEI-80, DISP_WID/2-30, 70, image=FONT.render('>', False, (0,0,0)))
+        page_back = Button(pygame.color.Color('gray'), 10, DISP_HEI-80, DISP_WID/2-30, 70, image=FONT.render('<', False, (0, 0, 0)))
+        page_forward = Button(pygame.color.Color('gray'), 20 + DISP_WID/2, DISP_HEI-80, DISP_WID/2-30, 70, image=FONT.render('>', False, (0, 0, 0)))
         page = 0
         pages = pager(len(SONGS), 5)
 
@@ -160,8 +160,8 @@ while state != 'close':
 
         mouse_rel = False
         while state == 'choose':
-            # EVENTS
 
+            # EVENTS
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     state = 'close'

@@ -12,13 +12,12 @@ class Player:
         self.images = {
             'run': [
                 pygame.image.load('assets/images/run1.png').convert(),
-                pygame.image.load('assets/images/run2.png').convert(),
-                pygame.image.load('assets/images/player/sticky/run3.png').convert()
+                pygame.image.load('assets/images/run2.png').convert()
             ],
-            'stand': [pygame.image.load('assets/images/player/sticky/stand.png').convert()],
-            'jump': [pygame.image.load('assets/images/player/sticky/jump.png').convert()],
-            'hurt':[pygame.image.load('assets/images/hurt.png').convert()],
-            'dead': [pygame.image.load('assets/images/player/sticky/dead.png').convert()]
+            'stand': [pygame.image.load('assets/images/stand.png').convert()],
+            'jump': [pygame.image.load('assets/images/jump.png').convert()],
+            'hurt': [pygame.image.load('assets/images/hurt.png').convert()],
+            'dead': [pygame.image.load('assets/images/dead.png').convert()]
         }
 
         for key in self.images:
@@ -37,7 +36,7 @@ class Player:
         self.runed = 0
         self.life = 100.0
         self.damage = 0.5
-        self.pause = False
+        self.jump = 0
 
         self.anim = 0
 
@@ -45,11 +44,12 @@ class Player:
 
         self.state = 'stand'
         self.former = 'stand'
+        self.ended = False
 
     def update(self):
         if self.state == 'jump':
-            self.rect.y = self.rect.y - self.vel_y
-            self.vel_y = self.vel_y - self.grav
+            self.rect.y -= self.vel_y
+            self.vel_y -= self.grav
             if self.vel_y < 0 and self.rect.y >= 336:
                 self.vel_y = 0
                 self.rect.y = 336
@@ -57,6 +57,7 @@ class Player:
 
         for obstacle in self.level.obstacles:
             if self.rect.colliderect(obstacle):
+                self.vel_y += self.grav
                 self.rect.y += self.vel_y
                 self.vel_y = 0
                 self.state = 'run'
@@ -67,13 +68,26 @@ class Player:
                 self.life -= self.damage
 
     def draw(self, game):
-        game.fill(self.level.color)
-        pygame.draw.rect(game, self.level.color + pygame.color.Color(30,30,35))
-        for obstacle in enumerate(self.level.obstacles):
-
+        color = pygame.color.Color(256,256,256) - self.level.color
+        game.fill(color)
+        pygame.draw.rect(game, color + pygame.color.Color(30, 30, 35), (0, 400, 800, 100))
+        for index in range(len(self.level.obstacles)):
+            if self.level.obstacles[index].x < 800:
+                pygame.draw.rect(game, self.level.obstacles[index], self.level.colors[index])
         if len(self.images[self.state]):
             self.anim += 1
             if self.anim >= len(self.images[self.state]):
                 self.anim = 0
         game.blit(self.images[self.state][self.anim], (self.rect.x, self.rect.y))
 
+    def spacebar(self):
+        if self.state == 'stand':
+            self.state = 'run'
+            self.vel_x = 7
+
+        elif self.state == 'run' and self.jump < 2:
+            self.jump += 1
+            self.vel_y -= 20
+
+        elif self.state == 'dead':
+            self.ended = True
