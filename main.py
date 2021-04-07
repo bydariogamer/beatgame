@@ -9,7 +9,7 @@ import colors
 
 
 # TEST MODE
-TEST = True
+TEST = False
 
 # INITIALIZE PYGAME
 pygame.init()
@@ -131,7 +131,7 @@ while state != 'close':
             pygame.display.update()
 
     if state == 'help':
-        # TODO: help page
+        help_page = pygame.image.load('/assets/images/help.png')
         while state == 'help':
             # EVENTS
             for event in pygame.event.get():
