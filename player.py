@@ -19,6 +19,9 @@ class Player:
             'hurt': [pygame.image.load('assets/images/hurt.png').convert()],
             'dead': [pygame.image.load('assets/images/dead.png').convert()]
         }
+        for key in self.images:
+            for image in self.images[key]:
+                image.set_colorkey((0, 0, 0))
 
         self.rect = self.images['run'][0].get_rect()
 
@@ -26,7 +29,7 @@ class Player:
         self.rect.y = 368
         self.vel_x = 0
         self.vel_y = 0
-        self.grav = 8
+        self.grav = 4
         self.floor = 368
         self.life = 100.0
         self.damage = 0.5
@@ -39,17 +42,12 @@ class Player:
 
     def update(self):
         self.collide = False
-        if self.life < 0:
-            self.life = 0
-        if self.life == 0:
-            self.
-        if self.life and self.run:
-            self.vel_y -= self.grav
-            self.rect.y -= self.vel_y
-            if self.vel_y < 0 and self.rect.y >= 368:
-                self.vel_y = 0
-                self.rect.y = 368
-                self.jump = 0
+        self.rect.y -= self.vel_y
+        self.vel_y -= self.grav
+        if self.rect.y >= self.floor:
+            self.rect.y = self.floor
+            self.vel_y = 0
+            self.jump = 0
 
             for obstacle in self.level.obstacles:
                 if self.rect.colliderect(obstacle):
@@ -63,6 +61,10 @@ class Player:
                 if self.rect.colliderect(obstacle):
                     self.life -= self.damage
                     self.collide = True
+        if self.life < 0:
+            self.life = 0
+        if self.life == 0:
+            self.level.song.stop()
 
     def draw(self, game):
         color = pygame.color.Color(255, 255, 255) - self.level.color
@@ -92,9 +94,9 @@ class Player:
             self.vel_x = 4
             self.level.song.play()
 
-        elif self.jump < 2:
+        if self.jump < 2:
             self.jump += 1
             self.vel_y -= 20
 
-        elif not self.life:
+        if not self.life:
             self.ended = True

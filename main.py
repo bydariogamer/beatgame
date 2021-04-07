@@ -241,6 +241,7 @@ while state != 'close':
                     resize = (display_rect.w / DISP_WID, display_rect.h / DISP_HEI)
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                     state = 'start'
+                    player.level.song.stop()
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                     player.spacebar()
             if player.ended:
