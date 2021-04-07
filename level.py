@@ -8,6 +8,7 @@ pygame.mixer.init()
 
 TEST = True
 
+
 class Level:
     def __init__(self, song: pygame.mixer.Sound):
         self.song = song
@@ -29,23 +30,29 @@ class Level:
             new_blocks.append(int(block) // (maximum/12 + 1))
         self.blocks = new_blocks
         self.obstacles = []
-        self.color = random.choice(list(neon.values()))
+        self.color = pygame.color.Color(random.choice(list(neon.values())))
         self.colors = []
         for index, block in enumerate(self.blocks):
             if block:
-                self.obstacles.append([pygame.Rect((800 + index*30, 400-15*block, 10, 20*block))])
+                self.obstacles.append(pygame.Rect((800 + index*30, 400-15*block, 10, 20*block)))
                 color = int(random.uniform(0, 50))
                 if random.random() < 0.5:
                     self.colors.append(pygame.Color(self.color) + pygame.color.Color(color, color, color))
                 else:
                     self.colors.append(pygame.Color(self.color) - pygame.color.Color(color, color, color))
 
+        for color in self.colors:
+            if color.a < 255:
+                color.a = 255
+
+
 
 if __name__ == '__main__':
     level = Level(pygame.mixer.Sound('assets/songs/laundry_room.mp3'))
-    level.gen()
     for obstacle in level.obstacles:
         print(obstacle)
     print(len(level.blocks))
     print(len(level.obstacles))
     print(len(level.colors))
+    for color in level.colors:
+        print(color)
