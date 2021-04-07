@@ -46,7 +46,6 @@ class Level:
                 color.a = 255
 
 
-
 if __name__ == '__main__':
     level = Level(pygame.mixer.Sound('assets/songs/laundry_room.mp3'))
     for obstacle in level.obstacles:

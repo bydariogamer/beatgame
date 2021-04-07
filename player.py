@@ -50,17 +50,19 @@ class Player:
             self.jump = 0
 
             for obstacle in self.level.obstacles:
-                if self.rect.colliderect(obstacle):
-                    self.vel_y += self.grav
-                    self.rect.y -= self.vel_y
-                    self.vel_y = 0
-                    self.jump = 0
+                if 0 < self.rect.x < 100:
+                    if self.rect.colliderect(obstacle):
+                        self.vel_y += self.grav
+                        self.rect.y -= self.vel_y
+                        self.vel_y = 0
+                        self.jump = 0
 
             for obstacle in self.level.obstacles:
                 obstacle.x -= self.vel_x
                 if self.rect.colliderect(obstacle):
                     self.life -= self.damage
                     self.collide = True
+
         if self.life < 0:
             self.life = 0
         if self.life == 0:
@@ -76,9 +78,6 @@ class Player:
         if not self.life:
             self.anim = 0
             game.blit(self.images['dead'][self.anim], (self.rect.x, self.rect.y))
-        elif not self.run:
-            self.anim = 0
-            game.blit(self.images['stand'][self.anim], (self.rect.x, self.rect.y))
         elif self.collide:
             self.anim = 0
             game.blit(self.images['hurt'][self.anim], (self.rect.x, self.rect.y))
@@ -87,6 +86,9 @@ class Player:
         elif self.run:
             self.anim = not self.anim
             game.blit(self.images['run'][self.anim], (self.rect.x, self.rect.y))
+        else:
+            self.anim = 0
+            game.blit(self.images['stand'][self.anim], (self.rect.x, self.rect.y))
 
     def spacebar(self):
         if not self.run:
