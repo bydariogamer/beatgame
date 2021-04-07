@@ -52,8 +52,8 @@ class Player:
             self.rect.y = self.floor
             self.vel_y = 0
             self.jump = 0
-        if self._TEST:
-            print(3, self.rect.x, self.rect.y)
+            if self._TEST:
+                print(3, self.rect.x, self.rect.y)
 
             for obstacle in self.level.obstacles:
                 if 0 < self.rect.x < 100:
