@@ -6,8 +6,6 @@ import random
 pygame.init()
 pygame.mixer.init()
 
-TEST = True
-
 
 class Level:
     def __init__(self, song: pygame.mixer.Sound):

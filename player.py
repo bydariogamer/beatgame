@@ -7,7 +7,7 @@ class Player:
     def __init__(self, level: Level):
 
         self.level = level
-
+        self._TEST = False
         # set images
         self.images = {
             'run': [
@@ -41,18 +41,24 @@ class Player:
         self.ended = False
 
     def update(self):
+        if self._TEST:
+            print(1, self.rect.x, self.rect.y)
         self.collide = False
         self.rect.y -= self.vel_y
         self.vel_y -= self.grav
+        if self._TEST:
+            print(2, self.rect.x, self.rect.y)
         if self.rect.y >= self.floor:
             self.rect.y = self.floor
             self.vel_y = 0
             self.jump = 0
+        if self._TEST:
+            print(3, self.rect.x, self.rect.y)
 
             for obstacle in self.level.obstacles:
                 if 0 < self.rect.x < 100:
                     if self.rect.colliderect(obstacle):
-                        self.vel_y += self.grav 
+                        self.vel_y += self.grav
                         self.rect.y -= self.vel_y
                         self.vel_y = 0
                         self.jump = 0
@@ -82,6 +88,7 @@ class Player:
             self.anim = 0
             game.blit(self.images['hurt'][self.anim], (self.rect.x, self.rect.y))
         elif self.jump:
+            self.anim = 0
             game.blit(self.images['jump'][self.anim], (self.rect.x, self.rect.y))
         elif self.run:
             self.anim = not self.anim
@@ -93,12 +100,13 @@ class Player:
     def spacebar(self):
         if not self.run:
             self.run = True
-            self.vel_x = 4
+            self.vel_x = 7
             self.level.song.play()
 
         if self.jump < 2:
             self.jump += 1
-            self.vel_y -= 20
-
+            self.vel_y += 20
+            if self._TEST:
+                print('jump')
         if not self.life:
             self.ended = True
