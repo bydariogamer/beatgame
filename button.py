@@ -1,6 +1,5 @@
 import pygame
 
-
 class Button:
     def __init__(self, color, x, y, width, height, outcolor=None, image=None):
         """a button with given color, position, width, heigh, a secondary color if it has mouse over and an image"""
@@ -28,12 +27,15 @@ class Button:
             else:
                 window.blit(self.image, (self.rect.x + 1, self.rect.y + (self.rect.h - self.image_h) / 2))
 
-    def mouseover(self):
-        if self.rect.collidepoint(pygame.mouse.get_pos()):
+    def mouseover(self, resize=None):
+        if resize:
+            if self.rect.collidepoint(pygame.mouse.get_pos()[0]*resize[0], pygame.mouse.get_pos()[1]*resize[1]):
+                return True
+        elif self.rect.collidepoint(pygame.mouse.get_pos()):
             return True
 
-    def mouseclic(self):
-        if self.rect.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed(num_buttons=3)[0]:
+    def mouseclic(self, resize):
+        if self.mouseover(resize=resize) and pygame.mouse.get_pressed(num_buttons=3)[0]:
             return True
         else:
             return False

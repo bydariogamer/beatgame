@@ -27,7 +27,18 @@ clock = pygame.time.Clock()
 # CREATE WINDOW
 pygame.display.set_caption(DISP_TIT)
 pygame.display.set_icon(DISP_ICO)
-game = pygame.display.set_mode((DISP_WID, DISP_HEI))
+display = pygame.display.set_mode((DISP_WID, DISP_HEI),pygame.RESIZABLE)
+display_rect = display.get_rect()
+game = pygame.Surface((DISP_WID, DISP_HEI))
+resize = None
+
+
+def render():
+    if display_rect.h != DISP_HEI or display_rect.w != DISP_WID:
+        pygame.transform.scale(game, (display_rect.w, display_rect.h), display)
+    else:
+        display.blit(game, (0, 0))
+
 
 # CONSTANTS
 BLACK = (0, 0, 0)
@@ -49,6 +60,17 @@ for file in os.listdir(os.path.join(PATH, 'assets', 'songs')):
             print(SONGS)
 
 
+def pager(length, cut):
+    solution = []
+    done = 0
+    for _ in range(int(length/cut)):
+        solution.append(slice(done, done+cut))
+        done += cut
+    if length % cut:
+        solution.append(slice(done, done + (length % cut)))
+    return solution
+
+
 # GAME LOOP
 state = 'start'
 while state != 'close':
@@ -57,6 +79,9 @@ while state != 'close':
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             state = 'close'
+        if event.type == pygame.VIDEORESIZE:
+            display_rect = display.get_rect()
+            resize = (display_rect.w / DISP_WID, display_rect.h / DISP_HEI)
 
     # START MENU
     if state == 'start':
@@ -73,15 +98,21 @@ while state != 'close':
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     state = 'close'
+                if event.type == pygame.VIDEORESIZE:
+                    display_rect = display.get_rect()
+                    resize = (float(display_rect.w) / float(DISP_WID), float(display_rect.h) / float(DISP_HEI))
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                    state = 'close'
+
             # TIME
             clock.tick(BASE_FPS)
 
             # LOGIC
-            if play_button.mouseclic():
+            if play_button.mouseclic(resize=resize):
                 state = 'choose'
-            if help_button.mouseclic():
+            if help_button.mouseclic(resize=resize):
                 state = 'help'
-            if exit_button.mouseclic():
+            if exit_button.mouseclic(resize=resize):
                 state = 'close'
 
             # RENDER
@@ -94,15 +125,22 @@ while state != 'close':
             exit_button.draw(game)
 
             # FLIP
+            render()
             pygame.display.update()
 
     if state == 'help':
         # TODO: help page
-        while state == 'start':
+        while state == 'help':
             # EVENTS
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     state = 'close'
+                if event.type == pygame.VIDEORESIZE:
+                    display_rect = display.get_rect()
+                    resize = (display_rect.w / DISP_WID, display_rect.h / DISP_HEI)
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                    state = 'start'
+
             # TIME
             clock.tick(BASE_FPS)
 
@@ -110,37 +148,71 @@ while state != 'close':
     if state == 'choose':
         levels = []
         background = pygame.image.load('assets/images/title_background.png').convert()
-        page_back = Button(pygame.color.Color('gray'), 10, DISP_HEI-80, DISP_WID/2-40, 70, image=FONT.render('<', False, (0,0,0)))
-        page_forward = Button(pygame.color.Color('gray'), 10 + DISP_WID/2, DISP_HEI-80, DISP_WID/2-40, 70, image=FONT.render('>', False, (0,0,0)))
+        page_back = Button(pygame.color.Color('gray'), 10, DISP_HEI-80, DISP_WID/2-30, 70, image=FONT.render('<', False, (0,0,0)))
+        page_forward = Button(pygame.color.Color('gray'), 20 + DISP_WID/2, DISP_HEI-80, DISP_WID/2-30, 70, image=FONT.render('>', False, (0,0,0)))
         page = 0
-        pager = []
-        imagelist = [i for i in range(11)]
-        for i in range(0, len(imagelist), 5):
-            pager.append(imagelist[i:i + 5])
+        pages = pager(len(SONGS), 5)
 
         for song in SONGS:
             title = FONT.render(song[0].upper(), False, (0, 0, 0))
             color = random.choice(list(colors.neon.values()))
-            levels.append([Button(color, 10, 10 + 80*(len(levels) % 6), DISP_WID-20, 70, image=title), song[1]])
+            levels.append([Button(color, 10, 10 + 80*(len(levels) % 5), DISP_WID-20, 70, image=title), song[1]])
 
+        mouse_rel = False
         while state == 'choose':
             # EVENTS
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     state = 'close'
+                if event.type == pygame.VIDEORESIZE:
+                    display_rect = display.get_rect()
+                    resize = (display_rect.w / DISP_WID, display_rect.h / DISP_HEI)
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                    state = 'start'
+                if event.type == pygame.MOUSEBUTTONUP:
+                    mouse_rel = True
 
             # TIME
             clock.tick(BASE_FPS)
 
             # LOGIC
             for level in levels[page * 5:page * 5 - 1 + len(levels) % 6]:
-                if level[0].mouseclic():
-                    print('level', level[1])
-            if page_back.mouseclic():
+                if level[0].mouseclic(resize=resize):
+                    if TEST:
+                        print('level', level[1])
+                    try:
+                        if mouse_rel:
+                            player = Player(Level(pygame.mixer.Sound(level[1])))
+                            if TEST:
+                                print(player)
+
+                    except pygame.error:
+                        clic = False
+                        while not clic:
+                            for event in pygame.event.get():
+                                if event.type == pygame.QUIT:
+                                    clic = True
+                                    state = 'close'
+                                if event.type == pygame.VIDEORESIZE:
+                                    display_rect = display.get_rect()
+                                    resize = (display_rect.w / DISP_WID, display_rect.h / DISP_HEI)
+                                if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                                    clic = True
+                                if event.type == pygame.MOUSEBUTTONDOWN:
+                                    clic = True
+
+                            clock.tick(BASE_FPS)
+                            pygame.draw.rect(game, (255, 255, 255), (20, 100, DISP_WID-40, 70))
+                            game.blit(FONT_SMALL.render('ERROR LOADING SONG, CHECK FILE FORMAT', False, (255, 0, 0)), (30, 100))
+                            render()
+                            pygame.display.update()
+
+            if page_back.mouseclic(resize=resize):
                 page -= 1
                 if page < 0:
                     page = 0
-            if page_forward.mouseclic():
+            if page_forward.mouseclic(resize=resize):
                 page += 1
                 if page > len(levels) // 5:
                     page -= 1
@@ -150,11 +222,11 @@ while state != 'close':
             game.blit(background, (0, 0))
             page_back.draw(game)
             page_forward.draw(game)
-            for level in levels[pager[page]]:
-
+            for level in levels[pages[page]]:
                 level[0].draw(game)
 
             # FLIP
+            render()
             pygame.display.update()
 
     # LEVEL ITSELF
@@ -163,6 +235,14 @@ while state != 'close':
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     state = 'close'
+                if event.type == pygame.VIDEORESIZE:
+                    display_rect = display.get_rect()
+                    resize = (display_rect.w / DISP_WID, display_rect.h / DISP_HEI)
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                    state = 'start'
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                    player.spacebar()
+
 
 pygame.quit()
 sys.exit()
