@@ -186,6 +186,7 @@ while state != 'close':
                             player = Player(Level(pygame.mixer.Sound(level[1])))
                             if TEST:
                                 print(player)
+                            state = 'level'
 
                     except pygame.error:
                         clic = False
