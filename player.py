@@ -29,7 +29,7 @@ class Player:
         self.rect.y = 368
         self.vel_x = 0
         self.vel_y = 0
-        self.grav = 4
+        self.grav = 3
         self.floor = 368
         self.life = 100.0
         self.damage = 0.5
@@ -41,33 +41,39 @@ class Player:
         self.ended = False
 
     def update(self):
-        if self._TEST:
-            print(1, self.rect.x, self.rect.y)
-        self.collide = False
-        self.rect.y -= self.vel_y
-        self.vel_y -= self.grav
-        if self._TEST:
-            print(2, self.rect.x, self.rect.y)
-        if self.rect.y >= self.floor:
-            self.rect.y = self.floor
-            self.vel_y = 0
-            self.jump = 0
+        if self.life:
             if self._TEST:
-                print(3, self.rect.x, self.rect.y)
-
-            for obstacle in self.level.obstacles:
-                if 0 < self.rect.x < 100:
-                    if self.rect.colliderect(obstacle):
-                        self.vel_y += self.grav
-                        self.rect.y -= self.vel_y
-                        self.vel_y = 0
-                        self.jump = 0
+                print(1, self.rect.x, self.rect.y)
+            self.collide = False
+            self.rect.y -= self.vel_y
+            self.vel_y -= self.grav
+            if self._TEST:
+                print(2, self.rect.x, self.rect.y)
+            if self.rect.y >= self.floor:
+                self.rect.y = self.floor
+                self.vel_y = 0
+                self.jump = 0
+                if self._TEST:
+                    print(3, self.rect.x, self.rect.y)
 
             for obstacle in self.level.obstacles:
                 obstacle.x -= self.vel_x
                 if self.rect.colliderect(obstacle):
                     self.life -= self.damage
                     self.collide = True
+
+            if not self.collide:
+                for obstacle in self.level.obstacles:
+                    if self.rect.colliderect(obstacle):
+                        self.rect.y = 0
+                        self.vel_y = 0
+                        self.jump = 0
+            else:
+                for obstacle in self.level.obstacles:
+                    if self.rect.colliderect(obstacle):
+                        self.rect.y += self.grav
+                        self.vel_y += self.grav
+                        self.jump = 0
 
         if self.life < 0:
             self.life = 0
