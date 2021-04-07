@@ -52,7 +52,7 @@ class Player:
             for obstacle in self.level.obstacles:
                 if 0 < self.rect.x < 100:
                     if self.rect.colliderect(obstacle):
-                        self.vel_y += self.grav
+                        self.vel_y += self.grav 
                         self.rect.y -= self.vel_y
                         self.vel_y = 0
                         self.jump = 0

@@ -34,7 +34,7 @@ class Level:
         self.colors = []
         for index, block in enumerate(self.blocks):
             if block:
-                self.obstacles.append(pygame.Rect((800 + index*30, 400-15*block, 10, 20*block)))
+                self.obstacles.append(pygame.Rect((800 + index*30, 400-15*block, 30, 15*block)))
                 color = int(random.uniform(0, 50))
                 if random.random() < 0.5:
                     self.colors.append(pygame.Color(self.color) + pygame.color.Color(color, color, color))
