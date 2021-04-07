@@ -41,6 +41,8 @@ class Player:
         self.collide = False
         if self.life < 0:
             self.life = 0
+        if self.life == 0:
+            self.
         if self.life and self.run:
             self.vel_y -= self.grav
             self.rect.y -= self.vel_y
@@ -88,6 +90,7 @@ class Player:
         if not self.run:
             self.run = True
             self.vel_x = 4
+            self.level.song.play()
 
         elif self.jump < 2:
             self.jump += 1
