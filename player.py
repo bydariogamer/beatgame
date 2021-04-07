@@ -28,8 +28,8 @@ class Player:
 
         self.rect.x = 30
         self.rect.y = 368
-        self.vel_x = 15.0
-        self.vel_y = 0.0
+        self.vel_x = 0
+        self.vel_y = 0
         self.grav = 8
         self.floor = 368
         self.life = 100.0
@@ -40,7 +40,7 @@ class Player:
 
         self.item_chance = 0.04
 
-        self.run = True
+        self.run = False
         self.ended = False
 
     def update(self):
@@ -85,13 +85,15 @@ class Player:
             self.anim = 0
             game.blit(self.images['hurt'][self.anim], (self.rect.x, self.rect.y))
         elif self.jump:
-            self.anim = not self.anim
             game.blit(self.images['jump'][self.anim], (self.rect.x, self.rect.y))
+        elif self.run:
+            self.anim = not self.anim
+            game.blit(self.images['run'][self.anim], (self.rect.x, self.rect.y))
 
     def spacebar(self):
         if not self.run:
             self.run = True
-            self.vel_x = 6
+            self.vel_x = 4
 
         elif self.jump < 2:
             self.jump += 1
