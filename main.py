@@ -242,7 +242,21 @@ while state != 'close':
                     state = 'start'
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                     player.spacebar()
+            if player.ended:
+                state = 'start'
 
+            # LOGIC
+            player.update()
+
+            # RENDER
+            player.draw(game)
+
+            # TIME
+            clock.tick(BASE_FPS)
+
+            # FLIP
+            render()
+            pygame.display.update()
 
 pygame.quit()
 sys.exit()
