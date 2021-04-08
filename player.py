@@ -29,7 +29,7 @@ class Player:
         self.rect.y = 368
         self.vel_x = 0
         self.vel_y = 0
-        self.grav = 7
+        self.grav = 3
         self.floor = 368
         self.life = 100.0
         self.damage = 0.5
@@ -76,6 +76,7 @@ class Player:
             self.life = 0
         if self.life == 0:
             self.level.song.stop()
+        print(self.vel_y)
 
     def draw(self, game):
         color = pygame.color.Color(255, 255, 255) - self.level.color
@@ -108,7 +109,7 @@ class Player:
 
         if self.jump < 2:
             self.jump += 1
-            self.vel_y += 50
+            self.vel_y += 30
             if self._TEST:
                 print('jump')
         if not self.life:
