@@ -279,7 +279,7 @@ while state != 'close':
             lifes_rect = lifes.get_rect()
             lifes_rect.topright = (700, 20)
             game.blit(lifes, (lifes_rect.x, lifes_rect.y))
-            game.blit(heart, (730, 20))
+            game.blit(heart, (lifes_rect.right, lifes_rect.center[1] - 16))
             # TIME
             clock.tick(BASE_FPS)
 

@@ -7,7 +7,7 @@ class Player:
     def __init__(self, level: Level):
 
         self.level = level
-        self._TEST = False
+
         # set images
         self.images = {
             'run': pygame.image.load('assets/images/run.png').convert(),
@@ -20,11 +20,11 @@ class Player:
 
         self.rect = self.images['stand'].get_rect()
 
-        self.rect.x = 30
+        self.rect.x = 50
         self.rect.y = 368
         self.vel_x = 0
         self.vel_y = 0
-        self.grav = 3
+        self.grav = 2
         self.floor = 368
         self.life = 10
         self.damage = 1
@@ -35,26 +35,17 @@ class Player:
 
     def update(self):
         if self.life:
-            if self._TEST:
-                print(1, self.rect.x, self.rect.y)
             self.collide = False
-            self.rect.y -= self.vel_y
             self.vel_y -= self.grav
-            if self._TEST:
-                print(2, self.rect.x, self.rect.y)
+            self.rect.y -= self.vel_y
             if self.rect.y >= self.floor:
                 self.rect.y = self.floor
                 self.vel_y = 0
                 self.jump = 0
-                if self._TEST:
-                    print(3, self.rect.x, self.rect.y)
 
             for obstacle in self.level.obstacles:
                 if self.rect.colliderect(obstacle):
-                    if self.collide:
-                        self.rect.y -= 1
-                    else:
-                        self.rect.bottom = obstacle.top
+                    self.rect.bottom = obstacle.top
                     if self.vel_y < 0:
                         self.vel_y = 0
                     self.jump = 0
@@ -99,8 +90,9 @@ class Player:
 
         if self.jump < 2:
             self.jump += 1
-            self.vel_y += 30
-            if self._TEST:
-                print('jump')
+            if self.vel_y < 0:
+                self.vel_y = 10
+            else:
+                self.vel_y += 20
         if not self.life:
             self.ended = True
