@@ -13,7 +13,7 @@ class Level:
         self.duration = int(self.song.get_length())
         self.array = pygame.sndarray.array(self.song)
         self.blocks = []
-        blocks_per_sec = 2
+        blocks_per_sec = 6
         sampler = len(self.array) // (self.duration * blocks_per_sec)
         for foo in range(int(self.duration * blocks_per_sec) - 1):
             self.blocks.append(self.array[foo*sampler:(foo+1)*sampler-1].mean())
@@ -26,14 +26,14 @@ class Level:
         self.blocks = new_blocks
         maximum = max(self.blocks)
         new_blocks = []
-        highs = 6
+        highs = 12
         for block in self.blocks:
             new_blocks.append(int(block / (maximum/highs + 1)))
         self.blocks = new_blocks
         self.obstacles = []
         self.color = pygame.color.Color(random.choice(list(neon.values())))
         self.colors = []
-        block_wid = 30
+        block_wid = 40
         block_hei = 15
         for index, block in enumerate(self.blocks):
             if block:
