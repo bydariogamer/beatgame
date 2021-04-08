@@ -24,9 +24,9 @@ class Player:
         self.rect.y = 368
         self.vel_x = 0
         self.vel_y = 0
-        self.grav = 2
+        self.grav = 1
         self.floor = 368
-        self.life = 100
+        self.life = len(self.level.obstacles)//20 + 1
         self.damage = 1
         self.jump = 0
         self.collide = False
@@ -106,9 +106,11 @@ class Player:
         if self.jump < 2:
             self.jump += 1
             self.combo += 1
+            if self.combo > 20:
+                self.life += 1
             if self.vel_y < 0:
                 self.vel_y = 10
             else:
-                self.vel_y += 20
+                self.vel_y += 15
         if not self.life:
             self.ended = True

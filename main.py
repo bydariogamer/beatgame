@@ -275,11 +275,21 @@ while state != 'close':
 
             # RENDER
             player.draw(game)
+
             lifes = FONT_SMALL.render(str(int(player.life)), False, player.level.color)
             lifes_rect = lifes.get_rect()
             lifes_rect.topright = (700, 20)
-            game.blit(lifes, (lifes_rect.x, lifes_rect.y))
-            game.blit(heart, (lifes_rect.right, lifes_rect.center[1] - 16))
+            game.blit(lifes, lifes_rect.topleft)
+            game.blit(heart, (lifes_rect.right, lifes_rect.center[1] - 14))
+
+            score = FONT_SMALL.render(str(int(player.score)), False, player.level.color)
+            combo = FONT_SMALL.render('  x '+str(int(player.combo)), False, player.level.color)
+            score_rect = score.get_rect()
+            score_rect.x = 20
+            score_rect.y = 20
+            game.blit(score, score_rect.topleft)
+            game.blit(combo, score_rect.topright)
+
             # TIME
             clock.tick(BASE_FPS)
 
