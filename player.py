@@ -26,7 +26,7 @@ class Player:
         self.vel_y = 0
         self.grav = 1
         self.floor = 368
-        self.life = len(self.level.obstacles)//20 + 1
+        self.life = len(self.level.obstacles)//40 + 1
         self.damage = 1
         self.jump = 0
         self.collide = False
@@ -58,8 +58,8 @@ class Player:
                     self.life -= self.damage
                     self.collide = True
                     self.combo = 0
-
-            self.score += self.combo
+            if self.level.obstacles:
+                self.score += self.combo
 
         if self.life < 0:
             self.life = 0

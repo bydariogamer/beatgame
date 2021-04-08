@@ -30,6 +30,7 @@ pygame.display.set_icon(DISP_ICO)
 display = pygame.display.set_mode((DISP_WID, DISP_HEI), pygame.RESIZABLE)
 display_rect = display.get_rect()
 game = pygame.Surface((DISP_WID, DISP_HEI))
+game_rect = game.get_rect()
 resize = None
 
 
@@ -289,8 +290,18 @@ while state != 'close':
             score_rect.y = 20
             game.blit(score, score_rect.topleft)
             game.blit(combo, score_rect.topright)
+            if not player.level.obstacles:
+                end = FONT_BIG.render('YOU WIN', False, (0, 0, 0))
+                end_rect = end.get_rect()
+                end_rect.center = game_rect.center
+                game.blit(end, end_rect.topleft)
+            if not player.life:
+                end = FONT_BIG.render('YOU LOSE', False, (0, 0, 0))
+                end_rect = end.get_rect()
+                end_rect.center = game_rect.center
+                game.blit(end, end_rect.topleft)
 
-            # TIME
+                # TIME
             clock.tick(BASE_FPS)
 
             # FLIP
