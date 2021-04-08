@@ -21,8 +21,6 @@ DISP_HEI = 500
 DISP_TIT = 'BEATGAME'
 DISP_ICO = pygame.image.load('assets/images/run1.png')
 BASE_FPS = 60
-if TEST:
-    BASE_FPS = 30
 PATH = os.path.abspath(os.path.dirname(sys.argv[0]))
 clock = pygame.time.Clock()
 
@@ -167,10 +165,9 @@ while state != 'close':
         page_forward = Button(pygame.color.Color('gray'), 20 + DISP_WID/2, DISP_HEI-80, DISP_WID/2-30, 70, image=FONT.render('>', False, (0, 0, 0)))
         page = 0
         pages = pager(len(SONGS), 5)
-
+        color = random.choice(list(colors.neon.values()))
         for song in SONGS:
             title = FONT.render(song[0].upper(), False, (0, 0, 0))
-            color = random.choice(list(colors.neon.values()))
             levels.append([Button(color, 10, 10 + 80*(len(levels) % 5), DISP_WID-20, 70, image=title), song[1]])
 
         mouse_rel = False
@@ -224,14 +221,23 @@ while state != 'close':
                             render()
                             pygame.display.update()
 
-            if page_back.mouseclic(resize=resize):
+            if page_back.mouseclic(resize=resize) and mouse_rel:
                 page -= 1
                 if page < 0:
                     page = 0
-            if page_forward.mouseclic(resize=resize):
+                mouse_rel = False
+                color = random.choice(list(colors.neon.values()))
+                for level in levels:
+                    level[0].color = color
+
+            if page_forward.mouseclic(resize=resize) and mouse_rel:
                 page += 1
                 if page > len(levels) // 5:
                     page -= 1
+                mouse_rel = False
+                color = random.choice(list(colors.neon.values()))
+                for level in levels:
+                    level[0].color = color
 
             # RENDER
             game.fill((0, 0, 0))
@@ -267,6 +273,12 @@ while state != 'close':
 
             # RENDER
             player.draw(game)
+            text_color = pygame.color.Color(255, 255, 255) - player.level.color
+            text_color.a = 200
+            lifes = FONT_SMALL.render(str(int(player.life)), False, text_color)
+            lifes_rect = lifes.get_rect()
+            lifes_rect.topright = (700, 20)
+            game.blit(lifes, (lifes_rect.x, lifes_rect.y))
 
             # TIME
             clock.tick(BASE_FPS)
