@@ -254,7 +254,7 @@ while state != 'close':
     # LEVEL ITSELF
     if state == 'level':
         heart = pygame.image.load('assets/images/heart.png')
-        heart.set_colorkey((0, 0, 0))
+
         while state == 'level':
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -279,7 +279,7 @@ while state != 'close':
             lifes_rect = lifes.get_rect()
             lifes_rect.topright = (700, 20)
             game.blit(lifes, (lifes_rect.x, lifes_rect.y))
-            game.blit(heart, (740, 10))
+            game.blit(heart, (730, 20))
             # TIME
             clock.tick(BASE_FPS)
 
