@@ -8,9 +8,6 @@ from level import Level
 import colors
 
 
-# TEST MODE
-TEST = True
-
 # INITIALIZE PYGAME
 pygame.init()
 pygame.mixer.init()
@@ -56,9 +53,6 @@ for file in os.listdir(os.path.join(PATH, 'assets', 'songs')):
     if os.path.isfile(os.path.join(PATH, 'assets', 'songs', file)):
         new_song = file.split('.')[0]
         SONGS.append([new_song.replace('_', ' '), os.path.join(PATH, 'assets', 'songs', file)])
-
-    if TEST:
-        print(SONGS)
 
 
 def pager(length, cut):
@@ -192,13 +186,9 @@ while state != 'close':
             # LOGIC
             for level in levels[pages[page]]:
                 if level[0].mouseclic(resize=resize):
-                    if TEST:
-                        print('level', level[1])
                     try:
                         if mouse_rel:
                             player = Player(Level(pygame.mixer.Sound(level[1])))
-                            if TEST:
-                                print(player)
                             state = 'level'
 
                     except pygame.error:

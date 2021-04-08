@@ -1,4 +1,4 @@
-#SONGS
+# SONGS
 
 The following /assets/songs are from this package from Alexander Ehlers:
 https://opengameart.org/content/free-music-pack
@@ -31,6 +31,6 @@ Check CC-BY-SA at https://creativecommons.org/licenses/by-sa/3.0/
 
 # IMAGES
 
-The /assets/images were made by me or were modified by from ones under Creative Commons Zero.
+The /assets/images were made by me or were modified by me from ones under Creative Commons Zero.
 Check CC0 at https://creativecommons.org/publicdomain/zero/1.0/
 (To unofficially sum up: no copyright)

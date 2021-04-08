@@ -50,14 +50,3 @@ class Level:
         for rect_color in self.colors:
             if rect_color.a < 255:
                 rect_color.a = 255
-
-
-if __name__ == '__main__':
-    level = Level(pygame.mixer.Sound('assets/songs/laundry_room.mp3'))
-    for obstacle in level.obstacles:
-        print(obstacle)
-    print(len(level.blocks))
-    print(len(level.obstacles))
-    print(len(level.colors))
-    for color in level.colors:
-        print(color)
