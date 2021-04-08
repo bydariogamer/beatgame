@@ -9,7 +9,7 @@ import colors
 
 
 # TEST MODE
-TEST = False
+TEST = True
 
 # INITIALIZE PYGAME
 pygame.init()
@@ -58,8 +58,8 @@ for file in os.listdir(os.path.join(PATH, 'assets', 'songs')):
         new_song = file.split('.')[0]
         SONGS.append([new_song.replace('_', ' '), os.path.join(PATH, 'assets', 'songs', file)])
 
-        if TEST:
-            print(SONGS)
+    if TEST:
+        print(SONGS)
 
 
 def pager(length, cut):
