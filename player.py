@@ -26,12 +26,14 @@ class Player:
         self.vel_y = 0
         self.grav = 2
         self.floor = 368
-        self.life = 10
+        self.life = 100
         self.damage = 1
         self.jump = 0
         self.collide = False
         self.run = False
         self.ended = False
+        self.score = 0
+        self.combo = 0
 
     def update(self):
         if self.life:
@@ -55,12 +57,25 @@ class Player:
                 if self.rect.colliderect(obstacle):
                     self.life -= self.damage
                     self.collide = True
+                    self.combo = 0
+
+            self.score += self.combo
 
         if self.life < 0:
             self.life = 0
         if self.life == 0:
             self.level.song.stop()
-        print(self.vel_y)
+
+        new_obstacles = []
+        new_colors = []
+        for index, obstacle in enumerate(self.level.obstacles):
+            if obstacle.x > -100:
+                new_obstacles.append(self.level.obstacles[index])
+                new_colors.append(self.level.colors[index])
+        self.level.obstacles = new_obstacles
+        self.level.colors = new_colors
+        print(len(self.level.obstacles))
+        print(len(self.level.colors))
 
     def draw(self, game):
         color = pygame.color.Color(255, 255, 255) - self.level.color
@@ -90,6 +105,7 @@ class Player:
 
         if self.jump < 2:
             self.jump += 1
+            self.combo += 1
             if self.vel_y < 0:
                 self.vel_y = 10
             else:

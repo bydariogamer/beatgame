@@ -33,7 +33,7 @@ class Level:
         self.obstacles = []
         self.color = pygame.color.Color(random.choice(list(neon.values())))
         self.colors = []
-        block_wid = 40
+        block_wid = 36
         block_hei = 10
         for index, block in enumerate(self.blocks):
             if block:

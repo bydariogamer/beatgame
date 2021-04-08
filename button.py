@@ -30,7 +30,7 @@ class Button:
 
     def mouseover(self, resize=None):
         if resize:
-            if self.rect.collidepoint(pygame.mouse.get_pos()[0]*resize[0], pygame.mouse.get_pos()[1]*resize[1]):
+            if self.rect.collidepoint(pygame.mouse.get_pos()[0]/resize[0], pygame.mouse.get_pos()[1]/resize[1]):
                 return True
         elif self.rect.collidepoint(pygame.mouse.get_pos()):
             return True
