@@ -29,7 +29,7 @@ class Player:
         self.rect.y = 368
         self.vel_x = 0
         self.vel_y = 0
-        self.grav = 3
+        self.grav = 7
         self.floor = 368
         self.life = 100.0
         self.damage = 0.5
@@ -57,23 +57,20 @@ class Player:
                     print(3, self.rect.x, self.rect.y)
 
             for obstacle in self.level.obstacles:
+                if self.rect.colliderect(obstacle):
+                    if self.collide:
+                        self.rect.y -= 1
+                    else:
+                        self.rect.bottom = obstacle.top
+                    if self.vel_y < 0:
+                        self.vel_y = 0
+                    self.jump = 0
+
+            for obstacle in self.level.obstacles:
                 obstacle.x -= self.vel_x
                 if self.rect.colliderect(obstacle):
                     self.life -= self.damage
                     self.collide = True
-
-            if not self.collide:
-                for obstacle in self.level.obstacles:
-                    if self.rect.colliderect(obstacle):
-                        self.rect.y = 0
-                        self.vel_y = 0
-                        self.jump = 0
-            else:
-                for obstacle in self.level.obstacles:
-                    if self.rect.colliderect(obstacle):
-                        self.rect.y += self.grav
-                        self.vel_y += self.grav
-                        self.jump = 0
 
         if self.life < 0:
             self.life = 0
@@ -106,12 +103,12 @@ class Player:
     def spacebar(self):
         if not self.run:
             self.run = True
-            self.vel_x = 7
+            self.vel_x = 4
             self.level.song.play()
 
         if self.jump < 2:
             self.jump += 1
-            self.vel_y += 20
+            self.vel_y += 50
             if self._TEST:
                 print('jump')
         if not self.life:
