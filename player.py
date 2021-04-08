@@ -10,20 +10,15 @@ class Player:
         self._TEST = False
         # set images
         self.images = {
-            'run': [
-                pygame.image.load('assets/images/run1.png').convert(),
-                pygame.image.load('assets/images/run2.png').convert()
-            ],
-            'stand': [pygame.image.load('assets/images/stand.png').convert()],
-            'jump': [pygame.image.load('assets/images/jump.png').convert()],
-            'hurt': [pygame.image.load('assets/images/hurt.png').convert()],
-            'dead': [pygame.image.load('assets/images/dead.png').convert()]
+            'run': pygame.image.load('assets/images/run.png').convert(),
+            'stand': pygame.image.load('assets/images/stand.png').convert(),
+            'up': pygame.image.load('assets/images/up.png').convert(),
+            'down': pygame.image.load('assets/images/down.png').convert(),
+            'dead': pygame.image.load('assets/images/dead.png').convert(),
+            'collide': pygame.image.load('assets/images/collide.png').convert()
         }
-        for key in self.images:
-            for image in self.images[key]:
-                image.set_colorkey((0, 0, 0))
 
-        self.rect = self.images['run'][0].get_rect()
+        self.rect = self.images['stand'].get_rect()
 
         self.rect.x = 30
         self.rect.y = 368
@@ -31,12 +26,10 @@ class Player:
         self.vel_y = 0
         self.grav = 3
         self.floor = 368
-        self.life = 100.0
-        self.damage = 0.5
+        self.life = 10
+        self.damage = 1
         self.jump = 0
         self.collide = False
-        self.anim = 0
-
         self.run = False
         self.ended = False
 
@@ -86,20 +79,17 @@ class Player:
             if self.level.obstacles[index].x < 800:
                 pygame.draw.rect(game, self.level.colors[index], self.level.obstacles[index])
         if not self.life:
-            self.anim = 0
-            game.blit(self.images['dead'][self.anim], (self.rect.x, self.rect.y))
+            game.blit(self.images['dead'], (self.rect.x, self.rect.y))
+        elif not self.run:
+            game.blit(self.images['stand'], (self.rect.x, self.rect.y))
         elif self.collide:
-            self.anim = 0
-            game.blit(self.images['hurt'][self.anim], (self.rect.x, self.rect.y))
-        elif self.jump:
-            self.anim = 0
-            game.blit(self.images['jump'][self.anim], (self.rect.x, self.rect.y))
-        elif self.run:
-            self.anim = not self.anim
-            game.blit(self.images['run'][self.anim], (self.rect.x, self.rect.y))
+            game.blit(self.images['collide'], (self.rect.x, self.rect.y))
+        elif self.vel_y > 0:
+            game.blit(self.images['up'], (self.rect.x, self.rect.y))
+        elif self.vel_y < 0:
+            game.blit(self.images['down'], (self.rect.x, self.rect.y))
         else:
-            self.anim = 0
-            game.blit(self.images['stand'][self.anim], (self.rect.x, self.rect.y))
+            game.blit(self.images['run'], (self.rect.x, self.rect.y))
 
     def spacebar(self):
         if not self.run:
