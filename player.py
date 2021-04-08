@@ -74,8 +74,8 @@ class Player:
                 new_colors.append(self.level.colors[index])
         self.level.obstacles = new_obstacles
         self.level.colors = new_colors
-        print(len(self.level.obstacles))
-        print(len(self.level.colors))
+        if not len(self.level.obstacles):
+            self.level.song.set_volume(self.level.song.get_volume()/1.01)
 
     def draw(self, game):
         color = pygame.color.Color(255, 255, 255) - self.level.color
@@ -105,7 +105,8 @@ class Player:
 
         if self.jump < 2:
             self.jump += 1
-            self.combo += 1
+            if self.level.obstacles:
+                self.combo += 1
             if self.combo > 20:
                 self.life += 1
             if self.vel_y < 0:
