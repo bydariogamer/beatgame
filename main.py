@@ -189,7 +189,7 @@ while state != 'close':
             clock.tick(BASE_FPS)
 
             # LOGIC
-            for level in levels[page * 5:page * 5 - 1 + len(levels) % 6]:
+            for level in levels[pages[page]]:
                 if level[0].mouseclic(resize=resize):
                     if TEST:
                         print('level', level[1])
