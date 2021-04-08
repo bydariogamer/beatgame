@@ -253,6 +253,8 @@ while state != 'close':
 
     # LEVEL ITSELF
     if state == 'level':
+        heart = pygame.image.load('assets/images/heart.png')
+        heart.set_colorkey((0, 0, 0))
         while state == 'level':
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -273,13 +275,11 @@ while state != 'close':
 
             # RENDER
             player.draw(game)
-            text_color = pygame.color.Color(255, 255, 255) - player.level.color
-            text_color.a = 200
-            lifes = FONT_SMALL.render(str(int(player.life)), False, text_color)
+            lifes = FONT_SMALL.render(str(int(player.life)), False, player.level.color)
             lifes_rect = lifes.get_rect()
             lifes_rect.topright = (700, 20)
             game.blit(lifes, (lifes_rect.x, lifes_rect.y))
-
+            game.blit(heart, (740, 10))
             # TIME
             clock.tick(BASE_FPS)
 
