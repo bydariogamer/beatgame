@@ -26,7 +26,7 @@ class Level:
         self.blocks = new_blocks
         maximum = max(self.blocks)
         new_blocks = []
-        highs = 10
+        highs = 12
         for block in self.blocks:
             new_blocks.append(int(block / (maximum/highs + 1)))
         self.blocks = new_blocks
@@ -34,18 +34,14 @@ class Level:
         self.color = pygame.color.Color(random.choice(list(neon.values())))
         self.colors = []
         block_wid = 36
-        block_hei = 15
+        block_hei = 10
         for index in range(len(self.blocks)-1):
             if self.blocks[index+1]-self.blocks[index] > 2:
                 self.blocks[index+1] = self.blocks[index] + 2
         for index, block in enumerate(self.blocks):
             if block:
                 self.obstacles.append(pygame.Rect((800 + index*block_wid, 400-block_hei*block, block_wid, block_hei*block)))
-                rect_color = int(random.uniform(0, 50))
-                if random.random() < 0.5:
-                    self.colors.append(pygame.Color(self.color)+pygame.color.Color(rect_color, rect_color, rect_color))
-                else:
-                    self.colors.append(pygame.Color(self.color)-pygame.color.Color(rect_color, rect_color, rect_color))
+                self.colors.append(pygame.color.Color(random.choice([*neon.values()])))
 
         for rect_color in self.colors:
             if rect_color.a < 255:

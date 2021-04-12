@@ -245,7 +245,10 @@ while state != 'close':
     # LEVEL ITSELF
     if state == 'level':
         heart = pygame.image.load('assets/images/heart.png')
-
+        ecu = pygame.image.load('assets/images/ecu.png')
+        ecu.set_colorkey((255, 255, 255))
+        damage = pygame.Surface((DISP_WID, DISP_HEI))
+        damage.fill((20, 0, 0, 30))
         while state == 'level':
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -267,29 +270,33 @@ while state != 'close':
             # RENDER
             player.draw(game)
 
-            lifes = FONT_SMALL.render(str(int(player.life)), False, player.level.color)
+            lifes = FONT_SMALL.render(str(int(player.life)), False, colors.neon['orange'])
+            shield = FONT_SMALL.render(str(int(player.shield)), False, colors.neon['orange'])
             lifes_rect = lifes.get_rect()
             lifes_rect.topright = (700, 20)
             game.blit(lifes, lifes_rect.topleft)
             game.blit(heart, (lifes_rect.right, lifes_rect.center[1] - 14))
-
-            score = FONT_SMALL.render(str(int(player.score)), False, player.level.color)
-            combo = FONT_SMALL.render('  x '+str(int(player.combo)), False, player.level.color)
+            game.blit(shield, (lifes_rect.left, lifes_rect.top + 30))
+            game.blit(ecu, (lifes_rect.right, lifes_rect.center[1] + 16))
+            score = FONT_SMALL.render(str(int(player.score)), False, colors.neon['orange'])
+            combo = FONT_SMALL.render('  x '+str(int(player.combo)), False, colors.neon['orange'])
             score_rect = score.get_rect()
             score_rect.x = 20
             score_rect.y = 20
             game.blit(score, score_rect.topleft)
             game.blit(combo, score_rect.topright)
             if not player.level.obstacles:
-                end = FONT_BIG.render('YOU WIN', False, (0, 0, 0))
+                end = FONT_BIG.render('YOU WIN', False, colors.metal['gold'])
                 end_rect = end.get_rect()
                 end_rect.center = game_rect.center
                 game.blit(end, end_rect.topleft)
             if not player.life:
-                end = FONT_BIG.render('YOU LOSE', False, (0, 0, 0))
+                end = FONT_BIG.render('YOU LOSE', False, colors.metal['silver'])
                 end_rect = end.get_rect()
                 end_rect.center = game_rect.center
                 game.blit(end, end_rect.topleft)
+            if player.collide:
+                pass
 
                 # TIME
             clock.tick(BASE_FPS)

@@ -26,19 +26,30 @@ class Player:
         self.vel_y = 0
         self.grav = 1
         self.floor = 368
-        self.life = len(self.level.obstacles)//40 + 1
-        self.damage = 1
+        self.life = self.level.duration + 10
+        self.shield = 20
         self.jump = 0
         self.collide = False
         self.run = False
         self.ended = False
         self.score = 0
         self.combo = 0
+        self.particles = []
 
     def update(self):
         if self.life:
             self.collide = False
-            self.vel_y -= self.grav
+            for obstacle in self.level.obstacles:
+                obstacle.x -= self.vel_x
+                if self.rect.colliderect(obstacle):
+                    self.damage()
+                    self.collide = True
+                    self.combo = 0
+                    self.jump = 0
+                    if self.vel_y < 0:
+                        self.vel_y = 0
+            if not self.collide:
+                self.vel_y -= self.grav
             self.rect.y -= self.vel_y
             if self.rect.y >= self.floor:
                 self.rect.y = self.floor
@@ -47,17 +58,12 @@ class Player:
 
             for obstacle in self.level.obstacles:
                 if self.rect.colliderect(obstacle):
-                    self.rect.bottom = obstacle.top
+                    if not self.collide:
+                        self.rect.bottom = obstacle.top
                     if self.vel_y < 0:
                         self.vel_y = 0
                     self.jump = 0
 
-            for obstacle in self.level.obstacles:
-                obstacle.x -= self.vel_x
-                if self.rect.colliderect(obstacle):
-                    self.life -= self.damage
-                    self.collide = True
-                    self.combo = 0
             if self.level.obstacles:
                 self.score += self.combo
 
@@ -77,12 +83,17 @@ class Player:
         if not len(self.level.obstacles):
             self.level.song.set_volume(self.level.song.get_volume()/1.01)
 
+    def damage(self):
+        self.shield -= 1
+        if self.shield < 0:
+            self.life += self.shield
+            self.shield = 0
+
     def draw(self, game):
-        color = pygame.color.Color(255, 255, 255) - self.level.color
-        game.fill(color)
-        pygame.draw.rect(game, color + pygame.color.Color(30, 30, 35), (0, 400, 800, 100))
+        game.fill((0, 0, 20))
+        pygame.draw.rect(game, (255, 240, 240), (0, 400, 800, 100))
         for index in range(len(self.level.obstacles)):
-            if self.level.obstacles[index].x < 800:
+            if self.level.obstacles[index].x < 801:
                 pygame.draw.rect(game, self.level.colors[index], self.level.obstacles[index])
         if not self.life:
             game.blit(self.images['dead'], (self.rect.x, self.rect.y))
@@ -107,8 +118,9 @@ class Player:
             self.jump += 1
             if self.level.obstacles:
                 self.combo += 1
-            if self.combo > 20:
-                self.life += 1
+                self.shield += self.combo
+                if self.shield > 100:
+                    self.shield = 100
             if self.vel_y < 0:
                 self.vel_y = 10
             else:
