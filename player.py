@@ -19,22 +19,33 @@ class Player:
         }
 
         self.rect = self.images['stand'].get_rect()
-
         self.rect.x = 50
         self.rect.y = 368
+        self.floor = 368
+
         self.vel_x = 0
         self.vel_y = 0
         self.grav = 1
-        self.floor = 368
+        self.jump = 0
+
+        self.score = 0
+        self.combo = 0
+
         self.life = self.level.duration + 10
         self.shield = 20
-        self.jump = 0
+
         self.collide = False
         self.run = False
         self.ended = False
-        self.score = 0
-        self.combo = 0
+
         self.particles = []
+        self.particle = pygame.Surface((2, 6))
+        self.particle.set_at((0, 1), (255, 0, 0))
+        self.particle.set_at((0, 2), (200, 0, 0))
+        self.particle.set_at((0, 3), (0, 255, 0))
+        self.particle.set_at((0, 4), (0, 200, 0))
+        self.particle.set_at((0, 5), (0, 0, 255))
+        self.particle.set_at((0, 6), (0, 0, 200))
 
     def update(self):
         if self.life:
