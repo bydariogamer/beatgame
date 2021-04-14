@@ -33,8 +33,8 @@ class Player:
         self.score = 0
         self.combo = 0
 
-        self.life = self.level.duration + 10
-        self.shield = 20
+        self.life = self.level.duration//3 + 5
+        self.shield = 2
 
         self.collide = False
         self.run = False
@@ -76,8 +76,8 @@ class Player:
             self.count %= 3
             if not self.count:
                 self.particles.append(self.rect.y)
-            if len(self.particles) > self.combo:
-                self.particles = self.particles[-1:-self.combo]
+            if not self.vel_y:
+                self.particles = []
 
         if self.life < 0:
             self.life = 0
@@ -134,8 +134,8 @@ class Player:
             if self.level.obstacles:
                 self.combo += 1
                 self.shield += self.combo
-                if self.shield > 100:
-                    self.shield = 100
+                if self.shield > 10:
+                    self.shield = 10
             if self.vel_y < 0:
                 self.vel_y = 10
             else:
