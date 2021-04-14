@@ -1,6 +1,8 @@
 import pygame
 from level import Level
 
+pygame.init()
+pygame.mixer.init()
 
 class Player:
 
@@ -18,6 +20,8 @@ class Player:
             'collide': pygame.image.load('assets/images/collide.png').convert()
         }
         self.particle = pygame.image.load('assets/images/particle.png').convert()
+        self.wrong = pygame.mixer.Sound('assets/sounds/wrong.wav')
+
         self.count = 0
 
         self.rect = self.images['stand'].get_rect()
@@ -100,7 +104,8 @@ class Player:
         if self.shield < 0:
             self.life += self.shield
             self.shield = 0
-
+        self.wrong.play()
+        
     def draw(self, game):
         game.fill((0, 0, 20))
         pygame.draw.rect(game, (255, 240, 240), (0, 400, 800, 100))
