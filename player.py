@@ -18,9 +18,10 @@ class Player:
             'collide': pygame.image.load('assets/images/collide.png').convert()
         }
         self.particle = pygame.image.load('assets/images/particle.png').convert()
+        self.count = 0
 
         self.rect = self.images['stand'].get_rect()
-        self.rect.x = 50
+        self.rect.x = 70
         self.rect.y = 368
         self.floor = 368
 
@@ -71,7 +72,10 @@ class Player:
 
             if self.level.obstacles:
                 self.score += self.combo
-            self.particles.append(self.rect.y)
+            self.count += 1
+            self.count %= 3
+            if not self.count:
+                self.particles.append(self.rect.y)
             if len(self.particles) > self.combo:
                 self.particles = self.particles[-1:-self.combo]
 
@@ -100,8 +104,9 @@ class Player:
     def draw(self, game):
         game.fill((0, 0, 20))
         pygame.draw.rect(game, (255, 240, 240), (0, 400, 800, 100))
-        for distance, pos_y in enumerate(self.particles):
-            game.blit(self.particle, (self.rect.x - 1 - distance, pos_y))
+        if self.vel_y:
+            for distance, pos_y in enumerate(self.particles):
+                game.blit(self.particle, (self.rect.x - 1 - 2 * distance, pos_y))
         for index in range(len(self.level.obstacles)):
             if self.level.obstacles[index].x < 801:
                 pygame.draw.rect(game, self.level.colors[index], self.level.obstacles[index])
