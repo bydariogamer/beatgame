@@ -298,7 +298,7 @@ while state != 'close':
             if player.collide:
                 pass
 
-                # TIME
+            # TIME
             clock.tick(BASE_FPS)
 
             # FLIP
