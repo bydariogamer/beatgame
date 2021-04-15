@@ -21,6 +21,8 @@ class Player:
         }
         self.particle = pygame.image.load('assets/images/particle.png').convert()
         self.wrong = pygame.mixer.Sound('assets/sounds/wrong.wav')
+        self.wrong.set_volume(0.3)
+
 
         self.count = 0
 
