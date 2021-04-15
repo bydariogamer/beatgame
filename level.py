@@ -18,6 +18,7 @@ class Level:
         stride = 500 # Factor for subsampling
         minimumBeatsPerSecond = 48/60.0
         maximumBeatsPerSecond = 240/60.0
+        debug = True
 
         ## Simplify signal
         mono_signal= np.mean(self.array, 1)
@@ -31,27 +32,81 @@ class Level:
         def default_autocorrelation(length, maximum):
             result = np.zeros(length)
             for i in range(length//2 +1):
-                temp = maximum*(i/length)
-                result[i] = temp
+                temp = maximum*(0.5 + i/length)
                 result[length-i-1] = temp
             return result
-        def gaussian(x, mu, sigma):
-            return (np.exp(-(x-mu)**2/2/sigma**2)/np.sqrt(2*np.pi)/sigma)
+        def correct_autocorrelation(autocorrelation, length):
+            result = autocorrelation - default_autocorrelation(length, max(autocorrelation))
+            result += max(0, -min(result)) #raise result above 0
+            return result
+        def argmax(signal):
+            length = len(signal)
+            max_index = np.argmax(signal)
+            #ignore maxima at the beginning and the end
+            a = 0
+            b = 0
+            while(max_index == 0 + a or max_index == length-1-b):
+                print('maximum at the beginning or end ignored', max_index)
+                if(max_index == 0 +a):
+                    a +=1
+                else:
+                    b +=1
+                max_index = np.argmax(signal[a:length-1-b]) + a
+            return max_index
         autocorrelation = np.correlate(subsampled, subsampled, 'same')
-        corrected_autocorr = autocorrelation - default_autocorrelation(len_subsampled, max(autocorrelation))
-        firstIndex = len_subsampled//2 + int(1/maximumBeatsPerSecond/self.duration*len_subsampled)
-        lastIndex = len_subsampled//2 + int(1/minimumBeatsPerSecond/self.duration*len_subsampled)
-        interestingPart = corrected_autocorr[firstIndex:lastIndex]
-        max_index_intPart = np.argmax(interestingPart) #TODO: don't just take the maximum, also check second derivative minimum or ignore maximum at the beginning or the end.
-        indexBeatLength = max_index_intPart + int(1/maximumBeatsPerSecond/self.duration*len_subsampled)
-        BeatLength = indexBeatLength/len_subsampled * self.duration
-        BeatsPerMinute = 60/BeatLength
-        print('BPM: ', 60/BeatLength)
-        plt.plot(interestingPart)
-        plt.scatter(max_index_intPart, interestingPart[max_index_intPart])
-        plt.show()
+        corrected_autocorr = correct_autocorrelation(autocorrelation, len_subsampled)
+        
+        def findBPMinRange(corrected_autocorrelation, minBPM, maxBPM):
+            length = len(corrected_autocorrelation)
+            firstOffset = int(1/maxBPM/self.duration*length)
+            firstIndex = length//2 + firstOffset
+            lastOffset = int(1/minBPM/self.duration*length)
+            lastIndex = length//2 + lastOffset
+            
+            interestingPart = corrected_autocorrelation[firstIndex:lastIndex]
+            n = 1 #uneven integer, not choosing one leads to worse results
+            ddinterestingPart = np.concatenate([np.zeros(n),np.diff(np.diff(interestingPart, n), n), np.zeros(n)])/(n**2)
 
+            indexBeatLength = argmax(interestingPart) + firstOffset
+            indexBeatLength_dd = argmax(-ddinterestingPart) + firstOffset
+            BPM = length/indexBeatLength*60/self.duration
+            BPM_dd = length/indexBeatLength_dd*60/self.duration
 
+            def temposAreSimilar(a,b):
+                if abs(a-b) <=1:
+                    return True
+                if (abs(2*a-b) <= 1):
+                    return True
+                if (abs(a-2*b) <= 1):
+                    return True
+                return False
+                
+            if(not temposAreSimilar(indexBeatLength, indexBeatLength_dd)):
+                if debug:
+                    print('Non-trivial rhythm')
+                    print(indexBeatLength, indexBeatLength_dd)
+                    print(BPM, BPM_dd)
+                    xRange = range(firstOffset, lastOffset)
+                    plt.plot(xRange, interestingPart)
+                    plt.plot(xRange, -ddinterestingPart)
+                    plt.scatter(indexBeatLength, interestingPart[indexBeatLength - firstOffset], label=str(BPM) + ' bpm')
+                    plt.scatter(indexBeatLength_dd, -ddinterestingPart[indexBeatLength_dd - firstOffset], label=str(BPM_dd) + ' bpm')
+                    plt.legend()
+                    plt.show()
+
+                    xRange = range(lastOffset*2)
+                    plt.plot(xRange, corrected_autocorrelation[length//2: length//2 + lastOffset*2])
+                    plt.scatter(indexBeatLength, interestingPart[indexBeatLength - firstOffset], label=str(BPM) + ' bpm')
+                    plt.scatter(indexBeatLength_dd, -ddinterestingPart[indexBeatLength_dd - firstOffset], label=str(BPM_dd) + ' bpm')
+                    plt.legend()
+                    plt.show()
+                #TODO: find the right tempo by comparing the doubles of both beat lengths
+                #for factor, variation in [(2, 0.1), (4, 0.03)]
+            else:
+                print('Tempo found:', BPM, 'bpm')
+
+        
+        findBPMinRange(corrected_autocorr, minimumBeatsPerSecond, maximumBeatsPerSecond)
 
         blocks_per_sec = 6
         sampler = len(self.array) // (self.duration * blocks_per_sec)
