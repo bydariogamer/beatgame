@@ -161,9 +161,9 @@ class Level:
         # Normalize blocks
         minimum = np.quantile(self.blocks, 0.05)
         self.blocks -= minimum
-        self.blocks = self.blocks.clip(min=0)
-        maximum = max(self.blocks)
+        maximum = np.quantile(self.blocks, 0.95)
         self.blocks *= heightLevels/maximum
+        self.blocks = self.blocks.clip(min=0, max=heightLevels)
         # Clear space at the beginning of the song
         start_Blocks = int(start_Offset/pixels_per_sec*blocks_per_sec)
         for i in range(start_Blocks-start_Blocks*2//3):
