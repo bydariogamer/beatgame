@@ -19,6 +19,7 @@ class Level:
         minimumBeatsPerMinute= 48
         maximumBeatsPerMinute = 240
         debugTempoFinder = False
+        aim_blocksPerSecond = 6
 
         ## Simplify signal
         mono_signal= np.mean(self.array, 1)
@@ -27,7 +28,8 @@ class Level:
         subsampled = np.zeros(len_subsampled)
         for i in range(len_subsampled):
             subsampled[i] = np.mean(np.abs(mono_signal[i*stride:(i+1)*stride]))
-        
+
+
         ## Find Tempo / Autocorrelation
         def default_autocorrelation(length, maximum):
             result = np.zeros(length)
@@ -46,7 +48,6 @@ class Level:
             a = 0
             b = 0
             while(max_index == 0 + a or max_index == length-1-b):
-                print('maximum at the beginning or end ignored', max_index)
                 if(max_index == 0 +a):
                     a +=1
                 else:
@@ -59,6 +60,8 @@ class Level:
                     b = 0
                     max_index = np.argmax(signal)
                     break
+            if (a+b > 0):
+                print('Maximum at the beginning (', a, ') or end (', b, ') ignored')
             return max_index
         def findBPMinRange(corrected_autocorrelation, minBPM, maxBPM, fineAdjustRecursion=3):
             length = len(corrected_autocorrelation)
@@ -129,17 +132,22 @@ class Level:
                 return 2*findBPMinRange(corrected_autocorrelation, rough_BPM*0.5*0.95, rough_BPM*0.5*1.05, fineAdjustRecursion-1)
             else:
                 return rough_BPM
-        
+
         autocorrelation = np.correlate(subsampled, subsampled, 'same')
         corrected_autocorr = correct_autocorrelation(autocorrelation, len_subsampled)
         BPM = findBPMinRange(corrected_autocorr, minimumBeatsPerMinute, maximumBeatsPerMinute, fineAdjustRecursion=3)
 
+        blocks_per_sec = BPM/60
+        while (blocks_per_sec < aim_blocksPerSecond*0.66):
+            blocks_per_sec *= 2
+        while (blocks_per_sec > aim_blocksPerSecond*1.33):
+            blocks_per_sec /= 2
+        print('Blocks per second: ', blocks_per_sec, 'that\'s', blocks_per_sec*60, 'bpm')
 
 
-        blocks_per_sec = 6
         sampler = len(self.array) // (self.duration * blocks_per_sec)
         for foo in range(int(self.duration * blocks_per_sec) - 1):
-            self.blocks.append(self.array[foo*sampler:(foo+1)*sampler-1].mean())
+            self.blocks.append(self.array[int(foo*sampler):int((foo+1)*sampler-1)].mean())
         print(len(self.blocks), self.duration)
         minimum = min(self.blocks)
         new_blocks = []
