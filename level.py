@@ -16,9 +16,9 @@ class Level:
         self.blocks = []
         
         stride = 500 # Factor for subsampling
-        minimumBeatsPerSecond = 48/60.0
-        maximumBeatsPerSecond = 240/60.0
-        debug = True
+        minimumBeatsPerMinute= 48
+        maximumBeatsPerMinute = 240
+        debugTempoFinder = False
 
         ## Simplify signal
         mono_signal= np.mean(self.array, 1)
@@ -51,16 +51,20 @@ class Level:
                     a +=1
                 else:
                     b +=1
-                max_index = np.argmax(signal[a:length-1-b]) + a
+                if (length -a -b >1):
+                    max_index = np.argmax(signal[a:length-1-b]) + a
+                else:
+                    print('The only possible maximum is not fully in range!')
+                    a = 0
+                    b = 0
+                    max_index = np.argmax(signal)
+                    break
             return max_index
-        autocorrelation = np.correlate(subsampled, subsampled, 'same')
-        corrected_autocorr = correct_autocorrelation(autocorrelation, len_subsampled)
-        
-        def findBPMinRange(corrected_autocorrelation, minBPM, maxBPM):
+        def findBPMinRange(corrected_autocorrelation, minBPM, maxBPM, fineAdjustRecursion=3):
             length = len(corrected_autocorrelation)
-            firstOffset = int(1/maxBPM/self.duration*length)
+            firstOffset = int(60/maxBPM/self.duration*length)
             firstIndex = length//2 + firstOffset
-            lastOffset = int(1/minBPM/self.duration*length)
+            lastOffset = int(60/minBPM/self.duration*length)
             lastIndex = length//2 + lastOffset
             
             interestingPart = corrected_autocorrelation[firstIndex:lastIndex]
@@ -80,33 +84,57 @@ class Level:
                 if (abs(a-2*b) <= 1):
                     return True
                 return False
-                
+            
+            if debugTempoFinder:
+                xRange = range(firstOffset, lastOffset)
+                plt.plot(xRange, interestingPart)
+                plt.plot(xRange, -ddinterestingPart)
+                plt.scatter(indexBeatLength, interestingPart[indexBeatLength - firstOffset], label=str(BPM) + ' bpm')
+                plt.scatter(indexBeatLength_dd, -ddinterestingPart[indexBeatLength_dd - firstOffset], label=str(BPM_dd) + ' bpm')
+                plt.legend()
+                plt.show()
+
+            rough_BPM=0.0
             if(not temposAreSimilar(indexBeatLength, indexBeatLength_dd)):
-                if debug:
+                # for a valid tempo half the tempo will also have a good autocorrelation
+                score = corrected_autocorrelation[length//2 + 2*indexBeatLength]
+                score_dd = corrected_autocorrelation[length//2 + 2*indexBeatLength_dd]                
+                if (score>score_dd):
+                    rough_BPM = BPM
+                else:
+                    rough_BPM = BPM_dd
+
+                if debugTempoFinder:
                     print('Non-trivial rhythm')
-                    print(indexBeatLength, indexBeatLength_dd)
-                    print(BPM, BPM_dd)
-                    xRange = range(firstOffset, lastOffset)
-                    plt.plot(xRange, interestingPart)
-                    plt.plot(xRange, -ddinterestingPart)
-                    plt.scatter(indexBeatLength, interestingPart[indexBeatLength - firstOffset], label=str(BPM) + ' bpm')
-                    plt.scatter(indexBeatLength_dd, -ddinterestingPart[indexBeatLength_dd - firstOffset], label=str(BPM_dd) + ' bpm')
-                    plt.legend()
-                    plt.show()
+                    print(' index:', indexBeatLength, indexBeatLength_dd)
+                    print(' bpm:', BPM, BPM_dd)
 
                     xRange = range(lastOffset*2)
                     plt.plot(xRange, corrected_autocorrelation[length//2: length//2 + lastOffset*2])
                     plt.scatter(indexBeatLength, interestingPart[indexBeatLength - firstOffset], label=str(BPM) + ' bpm')
                     plt.scatter(indexBeatLength_dd, -ddinterestingPart[indexBeatLength_dd - firstOffset], label=str(BPM_dd) + ' bpm')
+                    plt.scatter(2*indexBeatLength, score, label=str(0.5*BPM) + ' bpm')
+                    plt.scatter(2*indexBeatLength_dd, score_dd, label=str(0.5*BPM_dd) + ' bpm')
                     plt.legend()
                     plt.show()
-                #TODO: find the right tempo by comparing the doubles of both beat lengths
-                #for factor, variation in [(2, 0.1), (4, 0.03)]
             else:
-                print('Tempo found:', BPM, 'bpm')
+                rough_BPM = BPM
+                if debugTempoFinder:
+                    print('Tempos match: ', BPM, BPM_dd)
 
+            if(fineAdjustRecursion):
+                variation = 0.08
+                if debugTempoFinder:
+                    print('BPM-Range', rough_BPM*0.5*(1-variation), rough_BPM*0.5*(1+variation))
+                return 2*findBPMinRange(corrected_autocorrelation, rough_BPM*0.5*0.95, rough_BPM*0.5*1.05, fineAdjustRecursion-1)
+            else:
+                return rough_BPM
         
-        findBPMinRange(corrected_autocorr, minimumBeatsPerSecond, maximumBeatsPerSecond)
+        autocorrelation = np.correlate(subsampled, subsampled, 'same')
+        corrected_autocorr = correct_autocorrelation(autocorrelation, len_subsampled)
+        BPM = findBPMinRange(corrected_autocorr, minimumBeatsPerMinute, maximumBeatsPerMinute, fineAdjustRecursion=3)
+
+
 
         blocks_per_sec = 6
         sampler = len(self.array) // (self.duration * blocks_per_sec)
