@@ -58,8 +58,8 @@ class Player:
                     self.collide = True
                     self.combo = 0
                     self.jump = 0
-                    if self.vel_y < 0:
-                        self.vel_y = 0
+                    if self.vel_y < 1:
+                        self.vel_y = 1
             if not self.collide:
                 self.vel_y -= self.grav
             self.rect.y -= self.vel_y
