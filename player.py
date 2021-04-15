@@ -131,7 +131,7 @@ class Player:
     def spacebar(self):
         if not self.run:
             self.run = True
-            self.vel_x = 4
+            self.vel_x = 4 # Movement of the obstacles per frame (see BASE_FPS)
             self.level.song.play()
 
         if self.jump < 2:
