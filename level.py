@@ -21,16 +21,16 @@ class Level:
         debugTempoFinder = False
         aim_blocksPerSecond = 6
 
-        ## Simplify signal
+
+        ## Find Tempo / Autocorrelation
+        # Simplify signal
         mono_signal= np.mean(self.array, 1)
         # subsample
         len_subsampled = len(mono_signal) // stride
         subsampled = np.zeros(len_subsampled)
         for i in range(len_subsampled):
             subsampled[i] = np.mean(np.abs(mono_signal[i*stride:(i+1)*stride]))
-
-
-        ## Find Tempo / Autocorrelation
+        # tempo / autocorrelation
         def default_autocorrelation(length, maximum):
             result = np.zeros(length)
             for i in range(length//2 +1):
@@ -92,6 +92,8 @@ class Level:
                 xRange = range(firstOffset, lastOffset)
                 plt.plot(xRange, interestingPart)
                 plt.plot(xRange, -ddinterestingPart)
+                xRange = range(lastOffset)
+                plt.plot(xRange, corrected_autocorrelation[length//2: length//2 + lastOffset])           
                 plt.scatter(indexBeatLength, interestingPart[indexBeatLength - firstOffset], label=str(BPM) + ' bpm')
                 plt.scatter(indexBeatLength_dd, -ddinterestingPart[indexBeatLength_dd - firstOffset], label=str(BPM_dd) + ' bpm')
                 plt.legend()
@@ -108,9 +110,9 @@ class Level:
                     rough_BPM = BPM_dd
 
                 if debugTempoFinder:
-                    print('Non-trivial rhythm')
-                    print(' index:', indexBeatLength, indexBeatLength_dd)
-                    print(' bpm:', BPM, BPM_dd)
+                    print(' Non-trivial rhythm')
+                    print('  index:', indexBeatLength, indexBeatLength_dd)
+                    print('  bpm:', BPM, BPM_dd)
 
                     xRange = range(lastOffset*2)
                     plt.plot(xRange, corrected_autocorrelation[length//2: length//2 + lastOffset*2])
@@ -123,12 +125,12 @@ class Level:
             else:
                 rough_BPM = BPM
                 if debugTempoFinder:
-                    print('Tempos match: ', BPM, BPM_dd)
+                    print(' Tempos match: ', BPM, BPM_dd)
 
-            if(fineAdjustRecursion):
+            if(fineAdjustRecursion and (60/rough_BPM< self.duration/5)):
                 variation = 0.08
                 if debugTempoFinder:
-                    print('BPM-Range', rough_BPM*0.5*(1-variation), rough_BPM*0.5*(1+variation))
+                    print('', fineAdjustRecursion, 'BPM-Range', rough_BPM*0.5*(1-variation), rough_BPM*0.5*(1+variation))
                 return 2*findBPMinRange(corrected_autocorrelation, rough_BPM*0.5*0.95, rough_BPM*0.5*1.05, fineAdjustRecursion-1)
             else:
                 return rough_BPM
@@ -136,7 +138,8 @@ class Level:
         autocorrelation = np.correlate(subsampled, subsampled, 'same')
         corrected_autocorr = correct_autocorrelation(autocorrelation, len_subsampled)
         BPM = findBPMinRange(corrected_autocorr, minimumBeatsPerMinute, maximumBeatsPerMinute, fineAdjustRecursion=3)
-
+        if debugTempoFinder:
+            print('BPM:', BPM)
         blocks_per_sec = BPM/60
         while (blocks_per_sec < aim_blocksPerSecond*0.66):
             blocks_per_sec *= 2
@@ -145,7 +148,8 @@ class Level:
         print('Blocks per second: ', blocks_per_sec, 'that\'s', blocks_per_sec*60, 'bpm')
 
 
-        sampler = len(self.array) // (self.duration * blocks_per_sec)
+        ## Build Map from audio
+        sampler = len(self.array) // (self.duration * blocks_per_sec) # audio samples per block
         for foo in range(int(self.duration * blocks_per_sec) - 1):
             self.blocks.append(self.array[int(foo*sampler):int((foo+1)*sampler-1)].mean())
         print(len(self.blocks), self.duration)
@@ -161,6 +165,7 @@ class Level:
         for block in self.blocks:
             new_blocks.append(int(block / (maximum/highs + 1)))
         self.blocks = new_blocks
+        # Assign graphical elements to blocks
         self.obstacles = []
         self.color = pygame.color.Color(random.choice(list(neon.values())))
         self.colors = []
