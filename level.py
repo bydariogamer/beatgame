@@ -20,6 +20,7 @@ class Level:
         maximumBeatsPerMinute = 240
         debugTempoFinder = False
         aim_blocksPerSecond = 6
+        heightLevels = 10
 
 
         ## Find Tempo / Autocorrelation
@@ -151,25 +152,26 @@ class Level:
         ## Build Map from audio
         sampler = len(self.array) // (self.duration * blocks_per_sec) # audio samples per block
         for foo in range(int(self.duration * blocks_per_sec) - 1):
-            self.blocks.append(self.array[int(foo*sampler):int((foo+1)*sampler-1)].mean())
-        print(len(self.blocks), self.duration)
-        minimum = min(self.blocks)
-        new_blocks = []
-        for index, block in enumerate(self.blocks):
-            block -= minimum
-            new_blocks.append(int(block))
-        self.blocks = new_blocks
+            self.blocks.append(np.mean(np.abs(self.array[int(foo*sampler):int((foo+1)*sampler-1)])))
+        self.blocks = np.array(self.blocks)
+
+        # Normalize and quantize blocks
+        minimum = np.quantile(self.blocks, 0.05)
+        self.blocks -= minimum
+        self.blocks = self.blocks.clip(min=0)
         maximum = max(self.blocks)
-        new_blocks = []
-        highs = 10
-        for block in self.blocks:
-            new_blocks.append(int(block / (maximum/highs + 1)))
-        self.blocks = new_blocks
+        self.blocks = self.blocks/maximum*heightLevels
+        self.blocks = np.round(self.blocks)
+                
+        plt.bar(range(len(self.blocks))/blocks_per_sec, self.blocks, width=1/blocks_per_sec)
+        plt.legend()
+        plt.show()
+
         # Assign graphical elements to blocks
         self.obstacles = []
         self.color = pygame.color.Color(random.choice(list(neon.values())))
         self.colors = []
-        block_wid = 36
+        block_wid = int(36*6/blocks_per_sec)
         block_hei = 18
         # soft mode
         """
