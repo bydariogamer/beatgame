@@ -16,8 +16,8 @@ class Level:
         self.blocks = []
         
         stride = 500 # Factor for subsampling
-        minimumBeatsPerSecond = 0.8
-        maximumBeatsPerSecond = 4
+        minimumBeatsPerSecond = 48/60.0
+        maximumBeatsPerSecond = 240/60.0
 
         ## Simplify signal
         mono_signal= np.mean(self.array, 1)
@@ -42,7 +42,7 @@ class Level:
         firstIndex = len_subsampled//2 + int(1/maximumBeatsPerSecond/self.duration*len_subsampled)
         lastIndex = len_subsampled//2 + int(1/minimumBeatsPerSecond/self.duration*len_subsampled)
         interestingPart = corrected_autocorr[firstIndex:lastIndex]
-        max_index_intPart = np.argmax(interestingPart)
+        max_index_intPart = np.argmax(interestingPart) #TODO: don't just take the maximum, also check second derivative minimum or ignore maximum at the beginning or the end.
         indexBeatLength = max_index_intPart + int(1/maximumBeatsPerSecond/self.duration*len_subsampled)
         BeatLength = indexBeatLength/len_subsampled * self.duration
         BeatsPerMinute = 60/BeatLength
