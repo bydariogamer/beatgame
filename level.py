@@ -160,7 +160,7 @@ class Level:
         self.blocks -= minimum
         self.blocks = self.blocks.clip(min=0)
         maximum = max(self.blocks)
-        self.blocks = self.blocks/maximum*heightLevels
+        self.blocks *= heightLevels/maximum
         self.blocks = np.round(self.blocks)
                 
         plt.bar(range(len(self.blocks))/blocks_per_sec, self.blocks, width=1/blocks_per_sec)
