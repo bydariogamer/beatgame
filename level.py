@@ -23,6 +23,7 @@ class Level:
         heightLevels = 10
         start_Offset = 800 # see DISP_WID 
         pixels_per_sec = 240 # Moving at BASE_FPS*player.vel_x = 240 pixels/s.
+        player_pos_x = 70
 
 
         ## Find Tempo / Autocorrelation
@@ -165,10 +166,10 @@ class Level:
         self.blocks *= heightLevels/maximum
         # Clear space at the beginning of the song
         start_Blocks = int(start_Offset/pixels_per_sec*blocks_per_sec)
-        for i in range(start_Blocks-start_Blocks//2):
+        for i in range(start_Blocks-start_Blocks*2//3):
             self.blocks[i] = 0 # free plain
-        for i in range(start_Blocks-start_Blocks//2, start_Blocks): # ramping up to normal map
-            self.blocks[i] *= float(i)/start_Blocks*2-1
+        for i in range(start_Blocks-start_Blocks*2//3, start_Blocks): # ramping up to normal map
+            self.blocks[i] *= float(i)/start_Blocks*3/2-0.5
         # Quantize Blocks
         self.blocks = np.round(self.blocks)
                 
@@ -191,7 +192,7 @@ class Level:
         """
         for index, block in enumerate(self.blocks):
             if block:
-                self.obstacles.append(pygame.Rect((int(index*block_wid), 400-block_hei*block, int(block_wid), block_hei*block)))
+                self.obstacles.append(pygame.Rect((int(player_pos_x + index*block_wid), 400-block_hei*block, int(block_wid), block_hei*block)))
                 rect_color = int(random.uniform(0, 50))
                 if random.random() < 0.5:
                     self.colors.append(pygame.Color(self.color) + pygame.color.Color(rect_color, rect_color, rect_color))
