@@ -19,7 +19,7 @@ class Level:
         minimumBeatsPerMinute= 48
         maximumBeatsPerMinute = 240
         debugTempoFinder = False
-        aim_blocksPerSecond = 6
+        aim_blocksPerSecond = 4
         heightLevels = 10
 
 
