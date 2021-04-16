@@ -111,10 +111,10 @@ class Player:
 
         # stars code
         # move stars and delete the ones out of screen
-        if self.run and self.level.obstacles:
+        if self.run or self.level.obstacles:
             for index, star in enumerate(self.stars):
-                star[0] -= 3
-                if star[0] < -10:
+                star[0] -= 2
+                if star[0] < -5:
                     del self.stars[index]
             # every time half of the stars are deleted, new ones are added
             if len(self.stars) <= 30:
