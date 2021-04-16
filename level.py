@@ -193,14 +193,6 @@ class Level:
         block_wid = self.pixels_per_sec/blocks_per_sec
         block_hei = 18
 
-        # soft mode
-        # TODO do I remove soft mode note? I guess there is no need of using it anymore
-        """
-        for index in range(len(self.blocks)-1):
-            if self.blocks[index+1]-self.blocks[index] > 2:
-                self.blocks[index+1] = self.blocks[index] + 2
-        """
-
         for index, block in enumerate(self.blocks):
             if block:
                 self.obstacles.append(Obstacle(int(player_pos_x + index*block_wid), 400-block_hei*block, int(block_wid), block_hei*block))
