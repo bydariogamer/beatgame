@@ -84,10 +84,7 @@ class Player:
                     self.jump = 0
 
             if self.level.obstacles:
-                self.score += self.combo    # TODO maybe divide by fps
-                # TODO Actually I was gonna increase the combo only every 5 jumps
-                #  I changed it so it is increased only every jump (doesn't matter
-                #  if it is simple or double
+                self.score += self.combo
             self.count += 1
             self.count %= 3
             if not self.count:
