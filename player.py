@@ -37,9 +37,9 @@ class Player:
         self.vel_y = 0.
         self.jump = 0
         
-        self.grav = 4*900. # in pixels per second^2
-        self.vel_y_on_damage = 30. # in pixels per second
-        self.vel_y_on_jump = 900. # in pixels per second
+        self.grav = 4*900.  # in pixels per second^2
+        self.vel_y_on_damage = 30.  # in pixels per second
+        self.vel_y_on_jump = 900.   # in pixels per second
 
         self.score = 0.
         self.combo = 0
@@ -98,14 +98,10 @@ class Player:
         if self.life == 0:
             self.level.song.stop()
 
-        new_obstacles = []
-        new_colors = []
         for index, obstacle in enumerate(self.level.obstacles):
-            if obstacle.x > -100:
-                new_obstacles.append(self.level.obstacles[index])
-                new_colors.append(self.level.colors[index])
-        self.level.obstacles = new_obstacles
-        self.level.colors = new_colors
+            if obstacle.x < -100:
+                del self.level.obstacles[index]
+                del self.level.colors[index]
 
     def damage(self):
         self.shield -= 1
@@ -119,6 +115,7 @@ class Player:
         game.fill((0, 0, 20))
         # draw ground
         pygame.draw.rect(game, (255, 240, 240), (0, 400, 800, 100))
+
         # draw particles
         # TODO my particles sucks... My first time with particles to be honest, but still baaad
         if self.vel_y:
@@ -128,6 +125,7 @@ class Player:
         for index in range(len(self.level.obstacles)):
             if self.level.obstacles[index].x < 801:
                 pygame.draw.rect(game, self.level.colors[index], self.level.obstacles[index])
+
         # draw character
         if not self.life:
             game.blit(self.images['dead'], (self.rect.x, self.rect.y))
