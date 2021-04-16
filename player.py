@@ -111,14 +111,15 @@ class Player:
 
         # stars code
         # move stars and delete the ones out of screen
-        for index, star in enumerate(self.stars):
-            star[0] -= self.vel_x//3
-            if star[0] < -10:
-                del self.stars[index]
-        # every time half of the stars are deleted, new ones are added
-        if len(self.stars) <= 30:
-            for _ in range(30):
-                self.stars.append([int(random.uniform(0, 800)) + 800, int(random.uniform(0, 400))])
+        if self.run and self.level.obstacles:
+            for index, star in enumerate(self.stars):
+                star[0] -= 3
+                if star[0] < -10:
+                    del self.stars[index]
+            # every time half of the stars are deleted, new ones are added
+            if len(self.stars) <= 30:
+                for _ in range(30):
+                    self.stars.append([int(random.uniform(0, 800)) + 800, int(random.uniform(0, 400))])
 
     def damage(self):
         self.shield -= 1
