@@ -219,7 +219,7 @@ while state != 'close':
 
             if page_forward.mouseclic(resize=resize) and mouse_rel:
                 page += 1
-                if page > len(levels) // 5:
+                if page > len(pages):
                     page -= 1
                 mouse_rel = False
                 color = random.choice(list(colors.neon.values()))
