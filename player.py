@@ -83,7 +83,7 @@ class Player:
                     self.jump = 0
 
             if self.level.obstacles:
-                self.score += self.combo #TODO maybe divide by fps
+                self.score += self.combo *(60./self.fps)
             self.count += (60.0/self.fps)
             self.count %= 3
             if not self.count:
@@ -145,7 +145,7 @@ class Player:
         if self.jump < 2:
             self.jump += 1
             if self.level.obstacles:
-                self.combo += 60.0/self.fps
+                self.combo += 1
                 self.shield += self.combo
                 if self.shield > 10:
                     self.shield = 10
