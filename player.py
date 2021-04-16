@@ -26,7 +26,7 @@ class Player:
         self.wrong.set_volume(0.4)
 
 
-        self.count = 0.
+        self.particle_counter = 0
 
         self.rect = self.images['stand'].get_rect()
         self.rect.x = 70
@@ -84,12 +84,12 @@ class Player:
 
             if self.level.obstacles:
                 self.score += self.combo *(60./self.fps)
-            self.count += (60.0/self.fps)
-            self.count %= 3
-            if not self.count:
+            self.particle_counter += 1
+            if self.particle_counter>=self.fps/20: # add 20 particles per second
                 self.particles.append(self.rect.y)
             if not self.vel_y:
                 self.particles = []
+                self.particle_counter = 0
 
         if self.life < 0:
             self.life = 0
@@ -118,8 +118,8 @@ class Player:
         game.fill((0, 0, 20))
         pygame.draw.rect(game, (255, 240, 240), (0, 400, 800, 100))
         if self.vel_y:
-            for distance, pos_y in enumerate(self.particles):
-                game.blit(self.particle, (self.rect.x - 1 - 2 * distance, pos_y))
+            for index, pos_y in enumerate(self.particles):
+                game.blit(self.particle, (self.rect.x - 1 - 10 *((len(self.particles) - index)), pos_y))
         for index in range(len(self.level.obstacles)):
             if self.level.obstacles[index].x < 801:
                 pygame.draw.rect(game, self.level.colors[index], self.level.obstacles[index])
