@@ -56,15 +56,8 @@ for file in os.listdir(os.path.join(PATH, 'assets', 'songs')):
 
 
 def pager(length, cut):
-    solution = []
-    done = 0
-    for _ in range(int(length/cut)):
-        solution.append(slice(done, done+cut))
-        done += cut
-    if length % cut:
-        solution.append(slice(done, done + (length % cut)))
-    return solution
-# TODO I can do this function better for sure
+    return [slice(i, min(i + cut, length)) for i in range(0, length, cut)]
+
 # fixme menu crashed in chose state if the number of songs is  divisor of 5
 #  and you try to go further than the number of pages...
 
