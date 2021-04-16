@@ -87,9 +87,9 @@ class Player:
             self.particle_counter += 1
             if self.particle_counter>=self.fps/20: # add 20 particles per second
                 self.particles.append(self.rect.y)
+                self.particle_counter = 0
             if not self.vel_y:
                 self.particles = []
-                self.particle_counter = 0
 
         if self.life < 0:
             self.life = 0
