@@ -88,12 +88,14 @@ class Player:
                 # TODO Actually I was gonna increase the combo only every 5 jumps
                 #  I changed it so it is increased only every jump (doesn't matter
                 #  if it is simple or double
-            self.count += (60.0/self.fps)
+            self.count += 1
             self.count %= 3
             if not self.count:
                 self.particles.append(self.rect.y)
             if not self.vel_y:
                 self.particles = []
+            if self.combo > len(self.particles):
+                del self.particles[0:-int(self.combo)]
 
         if self.life < 0:
             self.life = 0
