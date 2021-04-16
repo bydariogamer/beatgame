@@ -12,7 +12,7 @@ pygame.mixer.init()
 class Level:
     def __init__(self, song: pygame.mixer.Sound):
         self.song = song
-        self.duration = int(self.song.get_length())
+        self.duration = self.song.get_length()
         self.array = pygame.sndarray.array(self.song)
         self.blocks = []
 
