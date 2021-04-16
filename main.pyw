@@ -64,6 +64,9 @@ def pager(length, cut):
     if length % cut:
         solution.append(slice(done, done + (length % cut)))
     return solution
+# TODO I can do this function better for sure
+# fixme menu crashed in chose state if the number of songs is  divisor of 5
+#  and you try to go further than the number of pages...
 
 
 # GAME LOOP
@@ -302,6 +305,9 @@ while state != 'close':
                 game.blit(end, end_rect.topleft)
             if player.collide:
                 pass
+                # TODO (big todo) I need to add some kind of... screen blink
+                #  or something if player collides... I tried to make the screen
+                #  a bit red, but it definitely fails...
 
             render()
 

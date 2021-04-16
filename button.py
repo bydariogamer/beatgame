@@ -35,7 +35,7 @@ class Button:
         elif self.rect.collidepoint(pygame.mouse.get_pos()):
             return True
 
-    def mouseclic(self, resize):
+    def mouseclic(self, resize=None):
         if self.mouseover(resize=resize) and pygame.mouse.get_pressed(num_buttons=3)[0]:
             return True
         else:

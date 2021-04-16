@@ -9,6 +9,7 @@ import random
 pygame.init()
 pygame.mixer.init()
 
+
 class Level:
     def __init__(self, song: pygame.mixer.Sound):
         self.song = song
@@ -16,9 +17,9 @@ class Level:
         self.array = pygame.sndarray.array(self.song)
         self.blocks = []
 
-        self.pixels_per_sec = 240 # Movement in x direction in pixels per second.
+        self.pixels_per_sec = 240   # Movement in x direction in pixels per second.
         
-        stride = 500 # Factor for subsampling
+        stride = 500    # Factor for subsampling
         minimumBeatsPerMinute= 48
         maximumBeatsPerMinute = 240
         debugTempoFinder = False
@@ -27,8 +28,7 @@ class Level:
         start_Offset = 800 # see DISP_WID 
         player_pos_x = 70
 
-
-        ## Find Tempo / Autocorrelation
+        # Find Tempo / Autocorrelation
         # Simplify signal
         mono_signal= np.mean(self.array, 1)
         # subsample
@@ -37,28 +37,31 @@ class Level:
         for i in range(len_subsampled):
             subsampled[i] = np.mean(np.abs(mono_signal[i*stride:(i+1)*stride]))
         # tempo / autocorrelation
+
         def default_autocorrelation(length, maximum):
             result = np.zeros(length)
-            for i in range(length//2 +1):
-                temp = maximum*(0.5 + i/length)
-                result[length-i-1] = temp
+            for i in range(length // 2 + 1):
+                temp = maximum * (0.5 + i / length)
+                result[length - i - 1] = temp
             return result
+
         def correct_autocorrelation(autocorrelation, length):
             result = autocorrelation - default_autocorrelation(length, max(autocorrelation))
-            result += max(0, -min(result)) #raise result above 0
+            result += max(0, -min(result))  # raise result above 0
             return result
+
         def argmax(signal):
             length = len(signal)
             max_index = np.argmax(signal)
-            #ignore maxima at the beginning and the end
+            # ignore maxima at the beginning and the end
             a = 0
             b = 0
-            while(max_index == 0 + a or max_index == length-1-b):
-                if(max_index == 0 +a):
-                    a +=1
+            while max_index == 0 + a or max_index == length-1-b:
+                if max_index == 0 +a:
+                    a += 1
                 else:
-                    b +=1
-                if (length -a -b >1):
+                    b += 1
+                if length - a - b > 1:
                     max_index = np.argmax(signal[a:length-1-b]) + a
                 else:
                     print('The only possible maximum is not fully in range!')
@@ -66,9 +69,10 @@ class Level:
                     b = 0
                     max_index = np.argmax(signal)
                     break
-            if (a+b > 0):
+            if a+b > 0:
                 print('Maximum at the beginning (', a, ') or end (', b, ') ignored')
             return max_index
+
         def findBPMinRange(corrected_autocorrelation, minBPM, maxBPM, fineAdjustRecursion=3):
             length = len(corrected_autocorrelation)
             firstOffset = int(60/maxBPM/self.duration*length)
@@ -77,7 +81,7 @@ class Level:
             lastIndex = length//2 + lastOffset
             
             interestingPart = corrected_autocorrelation[firstIndex:lastIndex]
-            n = 1 #uneven integer, not choosing one leads to worse results
+            n = 1   # uneven integer, not choosing one leads to worse results
             ddinterestingPart = np.concatenate([np.zeros(n),np.diff(np.diff(interestingPart, n), n), np.zeros(n)])/(n**2)
 
             indexBeatLength = argmax(interestingPart) + firstOffset
@@ -85,12 +89,12 @@ class Level:
             BPM = length/indexBeatLength*60/self.duration
             BPM_dd = length/indexBeatLength_dd*60/self.duration
 
-            def temposAreSimilar(a,b):
-                if abs(a-b) <=1:
+            def temposAreSimilar(a, b):
+                if abs(a - b) <= 1:
                     return True
-                if (abs(2*a-b) <= 1):
+                if abs(2 * a - b) <= 1:
                     return True
-                if (abs(a-2*b) <= 1):
+                if abs(a - 2 * b) <= 1:
                     return True
                 return False
             
@@ -105,12 +109,12 @@ class Level:
                 plt.legend()
                 plt.show()
 
-            rough_BPM=0.0
-            if(not temposAreSimilar(indexBeatLength, indexBeatLength_dd)):
+            rough_BPM = 0.0     # TODO is this declaration needed? (you declare it later again without using this)
+            if not temposAreSimilar(indexBeatLength, indexBeatLength_dd):
                 # for a valid tempo half the tempo will also have a good autocorrelation
                 score = corrected_autocorrelation[length//2 + 2*indexBeatLength]
                 score_dd = corrected_autocorrelation[length//2 + 2*indexBeatLength_dd]                
-                if (score>score_dd):
+                if score > score_dd:
                     rough_BPM = BPM
                 else:
                     rough_BPM = BPM_dd
@@ -133,7 +137,7 @@ class Level:
                 if debugTempoFinder:
                     print(' Tempos match: ', BPM, BPM_dd)
 
-            if(fineAdjustRecursion and (60/rough_BPM< self.duration/5)):
+            if fineAdjustRecursion and (60/rough_BPM < self.duration/5):
                 variation = 0.08
                 if debugTempoFinder:
                     print('', fineAdjustRecursion, 'BPM-Range', rough_BPM*0.5*(1-variation), rough_BPM*0.5*(1+variation))
@@ -147,14 +151,13 @@ class Level:
         if debugTempoFinder:
             print('BPM:', BPM)
         blocks_per_sec = BPM/60
-        while (blocks_per_sec < aim_blocksPerSecond*0.66):
+        while blocks_per_sec < aim_blocksPerSecond*0.66:
             blocks_per_sec *= 2
-        while (blocks_per_sec > aim_blocksPerSecond*1.33):
+        while blocks_per_sec > aim_blocksPerSecond*1.33:
             blocks_per_sec /= 2
         print('Blocks per second: ', blocks_per_sec, 'that\'s', blocks_per_sec*60, 'bpm')
 
-
-        ## Build Map from audio
+        # Build Map from audio
         sampler = len(self.array) // (self.duration * blocks_per_sec) # audio samples per block
         for foo in range(int(self.duration * blocks_per_sec) - 1):
             self.blocks.append(np.mean(np.abs(self.array[int(foo*sampler):int((foo+1)*sampler-1)])))
@@ -174,7 +177,7 @@ class Level:
             self.blocks[i] *= float(i)/start_Blocks*3/2-0.5
         # Quantize Blocks
         self.blocks = np.round(self.blocks)
-                
+        # TODO I think range is not used this way in this language ;)
         plt.bar(range(len(self.blocks))/blocks_per_sec, self.blocks, width=1/blocks_per_sec)
         plt.legend()
         plt.show()
@@ -187,11 +190,13 @@ class Level:
         block_hei = 18
 
         # soft mode
+        # TODO do I remove soft mode note? I guess there is no need of using it anymore
         """
         for index in range(len(self.blocks)-1):
             if self.blocks[index+1]-self.blocks[index] > 2:
                 self.blocks[index+1] = self.blocks[index] + 2
         """
+
         for index, block in enumerate(self.blocks):
             if block:
                 self.obstacles.append(Obstacle(int(player_pos_x + index*block_wid), 400-block_hei*block, int(block_wid), block_hei*block))

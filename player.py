@@ -2,8 +2,10 @@ import pygame
 from level import Level
 from obstacle import Obstacle
 
+
 pygame.init()
 pygame.mixer.init()
+
 
 class Player:
 
@@ -24,7 +26,6 @@ class Player:
         self.particle = pygame.image.load('assets/images/particle.png').convert()
         self.wrong = pygame.mixer.Sound('assets/sounds/wrong.wav')
         self.wrong.set_volume(0.4)
-
 
         self.count = 0.
 
@@ -83,7 +84,9 @@ class Player:
                     self.jump = 0
 
             if self.level.obstacles:
-                self.score += self.combo #TODO maybe divide by fps
+                self.score += self.combo    # TODO maybe divide by fps
+                # TODO Actually I was gonna increase the combo only every 5 jumps
+                #  I may do as you propose however
             self.count += (60.0/self.fps)
             self.count %= 3
             if not self.count:
@@ -115,14 +118,20 @@ class Player:
         self.wrong.play()
         
     def draw(self, game):
+        # draw background
         game.fill((0, 0, 20))
+        # draw ground
         pygame.draw.rect(game, (255, 240, 240), (0, 400, 800, 100))
+        # draw particles
+        # TODO my particles sucks... My first time with particles to be honest, but still baaad
         if self.vel_y:
             for distance, pos_y in enumerate(self.particles):
                 game.blit(self.particle, (self.rect.x - 1 - 2 * distance, pos_y))
+        # draw obstacles
         for index in range(len(self.level.obstacles)):
             if self.level.obstacles[index].x < 801:
                 pygame.draw.rect(game, self.level.colors[index], self.level.obstacles[index])
+        # draw character
         if not self.life:
             game.blit(self.images['dead'], (self.rect.x, self.rect.y))
         elif not self.run:
