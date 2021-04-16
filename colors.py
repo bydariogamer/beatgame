@@ -12,3 +12,6 @@ metal = {
     'gold': (0xD5, 0xBA, 0x4A),
     'silver': (0xE3, 0xE4, 0xE5)
     }
+# TODO it might seems stupid but you can propose colors...
+#  There might be some new palettes that give game a better
+#  style
