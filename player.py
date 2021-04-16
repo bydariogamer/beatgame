@@ -91,7 +91,7 @@ class Player:
                 self.particle_counter = 0
             if not self.vel_y:
                 self.particles = []
-            if self.combo > len(self.particles):
+            if self.combo < len(self.particles):
                 del self.particles[0:-int(self.combo)]
 
         if self.life < 0:
