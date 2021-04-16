@@ -1,6 +1,5 @@
 import pygame
 from level import Level
-from obstacle import Obstacle
 
 
 pygame.init()
