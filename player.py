@@ -159,3 +159,18 @@ class Player:
                 self.vel_y += self.vel_y_on_jump
         if not self.life:
             self.ended = True
+
+    def save(self):
+        highs = []
+        with open('highscores.txt', 'r') as highscores:
+            song = str(hash(self.level.song))
+            highs = highscores.readlines()
+            first_time = True
+            for index, line in highs:
+                if line.startswith(song):
+                    highs[index] = song + str(int(self.score))
+                    first_time = False
+            if first_time:
+                highs.append(song + str(int(self.score)))
+        with open('highscores.txt', 'w') as highscores:
+            highscores.writelines(highs)
