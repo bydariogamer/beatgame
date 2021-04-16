@@ -1,5 +1,6 @@
 import pygame
 from level import Level
+import random
 
 
 pygame.init()
@@ -50,7 +51,11 @@ class Player:
         self.collide = False
         self.run = False
         self.ended = False
+
         self.stars = []
+        for _ in range(30):
+            self.stars.append([int(random.uniform(0, 800)), int(random.uniform(0, 400))])
+            self.stars.append([int(random.uniform(0, 800)) + 800, int(random.uniform(0, 400))])
 
         self.particles = []
 
@@ -99,14 +104,21 @@ class Player:
         if self.life == 0:
             self.level.song.stop()
 
-        new_obstacles = []
-        new_colors = []
         for index, obstacle in enumerate(self.level.obstacles):
-            if obstacle.x > -100:
-                new_obstacles.append(self.level.obstacles[index])
-                new_colors.append(self.level.colors[index])
-        self.level.obstacles = new_obstacles
-        self.level.colors = new_colors
+            if obstacle.x < -100:
+                del self.level.obstacles[index]
+                del self.level.colors[index]
+
+        # stars code
+        # move stars and delete the ones out of screen
+        for index, star in enumerate(self.stars):
+            star[0] -= self.vel_x//3
+            if star[0] < -10:
+                del self.stars[index]
+        # every time half of the stars are deleted, new ones are added
+        if len(self.stars) <= 30:
+            for _ in range(30):
+                self.stars.append([int(random.uniform(0, 800)) + 800, int(random.uniform(0, 400))])
 
     def damage(self):
         self.shield -= 1
@@ -118,17 +130,25 @@ class Player:
     def draw(self, game):
         # draw background
         game.fill((0, 0, 20))
+
+        # draw stars
+        for star in self.stars:
+            pygame.draw.circle(game, (250, 250, 250), star, 2)
+
         # draw ground
         pygame.draw.rect(game, (255, 240, 240), (0, 400, 800, 100))
+
         # draw particles
         # TODO my particles sucks... My first time with particles to be honest, but still baaad
         if self.vel_y:
             for distance, pos_y in enumerate(self.particles):
                 game.blit(self.particle, (self.rect.x - 8 * distance, pos_y))
+
         # draw obstacles
         for index in range(len(self.level.obstacles)):
             if self.level.obstacles[index].x < 801:
                 pygame.draw.rect(game, self.level.colors[index], self.level.obstacles[index])
+
         # draw character
         if not self.life:
             game.blit(self.images['dead'], (self.rect.x, self.rect.y))
