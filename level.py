@@ -23,6 +23,7 @@ class Level:
         minimumBeatsPerMinute= 48
         maximumBeatsPerMinute = 240
         debugTempoFinder = False
+        debugLevelGeneration = False
         aim_blocksPerSecond = 4
         heightLevels = 10
         start_Offset = 800 # see DISP_WID 
@@ -178,10 +179,12 @@ class Level:
             self.blocks[i] *= float(i)/start_Blocks*3/2-0.5
         # Quantize Blocks
         self.blocks = np.round(self.blocks)
-        # TODO I think range is not used this way in this language ;)
-        plt.bar(range(len(self.blocks))/blocks_per_sec, self.blocks, width=1/blocks_per_sec)
-        plt.legend()
-        plt.show()
+        
+        # Show map in seperate window
+        if debugLevelGeneration:
+            plt.bar(range(len(self.blocks))/blocks_per_sec, self.blocks, width=1/blocks_per_sec)
+            plt.legend()
+            plt.show()
 
         # Assign graphical elements to blocks
         self.obstacles = []
