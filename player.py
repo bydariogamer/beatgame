@@ -86,7 +86,8 @@ class Player:
             if self.level.obstacles:
                 self.score += self.combo    # TODO maybe divide by fps
                 # TODO Actually I was gonna increase the combo only every 5 jumps
-                #  I may do as you propose however
+                #  I changed it so it is increased only every jump (doesn't matter
+                #  if it is simple or double
             self.count += (60.0/self.fps)
             self.count %= 3
             if not self.count:
@@ -126,7 +127,7 @@ class Player:
         # TODO my particles sucks... My first time with particles to be honest, but still baaad
         if self.vel_y:
             for distance, pos_y in enumerate(self.particles):
-                game.blit(self.particle, (self.rect.x - 1 - 2 * distance, pos_y))
+                game.blit(self.particle, (self.rect.x - 8 * distance, pos_y))
         # draw obstacles
         for index in range(len(self.level.obstacles)):
             if self.level.obstacles[index].x < 801:
@@ -154,7 +155,8 @@ class Player:
         if self.jump < 2:
             self.jump += 1
             if self.level.obstacles:
-                self.combo += 60.0/self.fps
+                if self.jump == 1:
+                    self.combo += 60.0/self.fps
                 self.shield += self.combo
                 if self.shield > 10:
                     self.shield = 10
