@@ -37,9 +37,9 @@ class Player:
         self.vel_y = 0.
         self.jump = 0
         
-        self.grav = 4*900. # in pixels per second^2
-        self.vel_y_on_damage = 30. # in pixels per second
-        self.vel_y_on_jump = 900. # in pixels per second
+        self.grav = 4*900.  # in pixels per second^2
+        self.vel_y_on_damage = 30.  # in pixels per second
+        self.vel_y_on_jump = 900.   # in pixels per second
 
         self.score = 0.
         self.combo = 0
