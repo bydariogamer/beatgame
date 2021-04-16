@@ -56,14 +56,7 @@ for file in os.listdir(os.path.join(PATH, 'assets', 'songs')):
 
 
 def pager(length, cut):
-    solution = []
-    done = 0
-    for _ in range(int(length/cut)):
-        solution.append(slice(done, done+cut))
-        done += cut
-    if length % cut:
-        solution.append(slice(done, done + (length % cut)))
-    return solution
+    return [slice(i, min(i + cut, length)) for i in range(0, length, cut)]
 
 
 # GAME LOOP
@@ -223,7 +216,7 @@ while state != 'close':
 
             if page_forward.mouseclic(resize=resize) and mouse_rel:
                 page += 1
-                if page > len(levels) // 5:
+                if page > len(pages) - 1:
                     page -= 1
                 mouse_rel = False
                 color = random.choice(list(colors.neon.values()))
@@ -302,6 +295,9 @@ while state != 'close':
                 game.blit(end, end_rect.topleft)
             if player.collide:
                 pass
+                # TODO (big todo) I need to add some kind of... screen blink
+                #  or something if player collides... I tried to make the screen
+                #  a bit red, but it definitely fails...
 
             # FLIP
             render()

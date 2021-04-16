@@ -1,9 +1,11 @@
 import pygame
 from level import Level
-from obstacle import Obstacle
+import random
+
 
 pygame.init()
 pygame.mixer.init()
+
 
 class Player:
 
@@ -28,6 +30,7 @@ class Player:
 
         self.particle_counter = 0
 
+
         self.rect = self.images['stand'].get_rect()
         self.rect.x = 70
         self.rect.y = 368
@@ -37,9 +40,9 @@ class Player:
         self.vel_y = 0.
         self.jump = 0
         
-        self.grav = 4*900. # in pixels per second^2
-        self.vel_y_on_damage = 30. # in pixels per second
-        self.vel_y_on_jump = 900. # in pixels per second
+        self.grav = 4*900.  # in pixels per second^2
+        self.vel_y_on_damage = 30.  # in pixels per second
+        self.vel_y_on_jump = 900.   # in pixels per second
 
         self.score = 0.
         self.combo = 0
@@ -50,6 +53,11 @@ class Player:
         self.collide = False
         self.run = False
         self.ended = False
+
+        self.stars = []
+        for _ in range(30):
+            self.stars.append([int(random.uniform(0, 800)), int(random.uniform(0, 400))])
+            self.stars.append([int(random.uniform(0, 800)) + 800, int(random.uniform(0, 400))])
 
         self.particles = []
 
@@ -90,22 +98,30 @@ class Player:
                 self.particle_counter = 0
             if not self.vel_y:
                 self.particles = []
+            if self.combo > len(self.particles):
+                del self.particles[0:-int(self.combo)]
 
         if self.life < 0:
             self.life = 0
         if self.life == 0:
             self.level.song.stop()
 
-        new_obstacles = []
-        new_colors = []
         for index, obstacle in enumerate(self.level.obstacles):
-            if obstacle.x > -100:
-                new_obstacles.append(self.level.obstacles[index])
-                new_colors.append(self.level.colors[index])
-        self.level.obstacles = new_obstacles
-        self.level.colors = new_colors
-        if not len(self.level.obstacles):
-            self.level.song.set_volume(self.level.song.get_volume()/1.01)
+            if obstacle.x < -100:
+                del self.level.obstacles[index]
+                del self.level.colors[index]
+
+        # stars code
+        # move stars and delete the ones out of screen
+        if self.run and self.level.obstacles:
+            for index, star in enumerate(self.stars):
+                star[0] -= 1
+                if star[0] < -5:
+                    del self.stars[index]
+            # every time half of the stars are deleted, new ones are added
+            if len(self.stars) <= 30:
+                for _ in range(30):
+                    self.stars.append([int(random.uniform(0, 800)) + 800, int(random.uniform(0, 400))])
 
     def damage(self):
         self.shield -= 1
@@ -115,14 +131,28 @@ class Player:
         self.wrong.play()
         
     def draw(self, game):
+        # draw background
         game.fill((0, 0, 20))
+
+        # draw stars
+        for star in self.stars:
+            pygame.draw.circle(game, (250, 250, 250), star, 2)
+
+        # draw ground
         pygame.draw.rect(game, (255, 240, 240), (0, 400, 800, 100))
+
+        # draw particles
+        # TODO my particles sucks... My first time with particles to be honest, but still baaad
         if self.vel_y:
             for index, pos_y in enumerate(self.particles):
-                game.blit(self.particle, (self.rect.x - 1 - 10 *((len(self.particles) - index)), pos_y))
+                game.blit(self.particle, (self.rect.x - 8 *((len(self.particles) - index)), pos_y))
+
+        # draw obstacles
         for index in range(len(self.level.obstacles)):
             if self.level.obstacles[index].x < 801:
                 pygame.draw.rect(game, self.level.colors[index], self.level.obstacles[index])
+
+        # draw character
         if not self.life:
             game.blit(self.images['dead'], (self.rect.x, self.rect.y))
         elif not self.run:
@@ -145,7 +175,8 @@ class Player:
         if self.jump < 2:
             self.jump += 1
             if self.level.obstacles:
-                self.combo += 1
+                if self.jump == 1:
+                    self.combo += 1
                 self.shield += self.combo
                 if self.shield > 10:
                     self.shield = 10
@@ -155,3 +186,18 @@ class Player:
                 self.vel_y += self.vel_y_on_jump
         if not self.life:
             self.ended = True
+
+    def save(self):
+        highs = []
+        with open('highscores.txt', 'r') as highscores:
+            song = str(hash(self.level.song))
+            highs = highscores.readlines()
+            first_time = True
+            for index, line in highs:
+                if line.startswith(song):
+                    highs[index] = song + str(int(self.score))
+                    first_time = False
+            if first_time:
+                highs.append(song + str(int(self.score)))
+        with open('highscores.txt', 'w') as highscores:
+            highscores.writelines(highs)
