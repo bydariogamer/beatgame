@@ -91,6 +91,8 @@ class Player:
                 self.particle_counter = 0
             if not self.vel_y:
                 self.particles = []
+            if self.combo > len(self.particles):
+                del self.particles[0:-int(self.combo)]
 
         if self.life < 0:
             self.life = 0
@@ -105,6 +107,8 @@ class Player:
                 new_colors.append(self.level.colors[index])
         self.level.obstacles = new_obstacles
         self.level.colors = new_colors
+
+        # TODO maybe this two lines are useless?
         if not len(self.level.obstacles):
             self.level.song.set_volume(self.level.song.get_volume()/1.01)
 
@@ -124,7 +128,7 @@ class Player:
         # TODO my particles sucks... My first time with particles to be honest, but still baaad
         if self.vel_y:
             for index, pos_y in enumerate(self.particles):
-                game.blit(self.particle, (self.rect.x - 1 - 10 *((len(self.particles) - index)), pos_y))
+                game.blit(self.particle, (self.rect.x - 8 * ((len(self.particles) - index)), pos_y))
         # draw obstacles
         for index in range(len(self.level.obstacles)):
             if self.level.obstacles[index].x < 801:
@@ -152,7 +156,8 @@ class Player:
         if self.jump < 2:
             self.jump += 1
             if self.level.obstacles:
-                self.combo += 1
+                if self.jump == 1:
+                    self.combo += 1
                 self.shield += self.combo
                 if self.shield > 10:
                     self.shield = 10
