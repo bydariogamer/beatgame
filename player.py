@@ -108,10 +108,6 @@ class Player:
         self.level.obstacles = new_obstacles
         self.level.colors = new_colors
 
-        # TODO maybe this two lines are useless?
-        if not len(self.level.obstacles):
-            self.level.song.set_volume(self.level.song.get_volume()/1.01)
-
     def damage(self):
         self.shield -= 1
         if self.shield < 0:
