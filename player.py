@@ -1,6 +1,5 @@
 import pygame
 from level import Level
-from obstacle import Obstacle
 
 
 pygame.init()
@@ -51,6 +50,7 @@ class Player:
         self.collide = False
         self.run = False
         self.ended = False
+        self.stars = []
 
         self.particles = []
 
