@@ -110,7 +110,6 @@ class Level:
                 plt.legend()
                 plt.show()
 
-            rough_BPM = 0.     # TODO is this declaration needed? (you declare it later again without using this)
             if not temposAreSimilar(indexBeatLength, indexBeatLength_dd):
                 # for a valid tempo half the tempo will also have a good autocorrelation
                 score = corrected_autocorrelation[length//2 + 2*indexBeatLength]
