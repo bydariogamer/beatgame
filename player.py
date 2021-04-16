@@ -117,7 +117,6 @@ class Player:
         pygame.draw.rect(game, (255, 240, 240), (0, 400, 800, 100))
 
         # draw particles
-        # TODO my particles sucks... My first time with particles to be honest, but still baaad
         if self.vel_y:
             for index, pos_y in enumerate(self.particles):
                 game.blit(self.particle, (self.rect.x - 8 * ((len(self.particles) - index)), pos_y))
