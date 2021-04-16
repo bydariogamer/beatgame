@@ -58,9 +58,6 @@ for file in os.listdir(os.path.join(PATH, 'assets', 'songs')):
 def pager(length, cut):
     return [slice(i, min(i + cut, length)) for i in range(0, length, cut)]
 
-# fixme menu crashed in chose state if the number of songs is  divisor of 5
-#  and you try to go further than the number of pages...
-
 
 # GAME LOOP
 state = 'start'
@@ -219,7 +216,7 @@ while state != 'close':
 
             if page_forward.mouseclic(resize=resize) and mouse_rel:
                 page += 1
-                if page > len(pages):
+                if page > len(pages) - 1:
                     page -= 1
                 mouse_rel = False
                 color = random.choice(list(colors.neon.values()))
