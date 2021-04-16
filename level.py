@@ -105,7 +105,7 @@ class Level:
                 plt.legend()
                 plt.show()
 
-            rough_BPM=0.0
+            rough_BPM=0.
             if(not temposAreSimilar(indexBeatLength, indexBeatLength_dd)):
                 # for a valid tempo half the tempo will also have a good autocorrelation
                 score = corrected_autocorrelation[length//2 + 2*indexBeatLength]
@@ -146,7 +146,7 @@ class Level:
         BPM = findBPMinRange(corrected_autocorr, minimumBeatsPerMinute, maximumBeatsPerMinute, fineAdjustRecursion=3)
         if debugTempoFinder:
             print('BPM:', BPM)
-        blocks_per_sec = BPM/60
+        blocks_per_sec = BPM/60.
         while (blocks_per_sec < aim_blocksPerSecond*0.66):
             blocks_per_sec *= 2
         while (blocks_per_sec > aim_blocksPerSecond*1.33):
