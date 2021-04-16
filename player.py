@@ -40,7 +40,6 @@ class Player:
         self.grav = 4*900. # in pixels per second^2
         self.vel_y_on_damage = 30. # in pixels per second
         self.vel_y_on_jump = 900. # in pixels per second
-        self.vel_y_on_falling_jump = 600. # in pixels per second
 
         self.score = 0.
         self.combo = 0
@@ -151,7 +150,7 @@ class Player:
                 if self.shield > 10:
                     self.shield = 10
             if self.vel_y < 0:
-                self.vel_y = self.vel_y_on_falling_jump
+                self.vel_y = self.vel_y_on_jump
             else:
                 self.vel_y += self.vel_y_on_jump
         if not self.life:
