@@ -306,6 +306,8 @@ while state != 'close':
 
             # Show
             pygame.display.update()
+        else:
+            player.save()
 
 pygame.quit()
 sys.exit()

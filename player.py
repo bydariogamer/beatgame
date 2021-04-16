@@ -187,7 +187,7 @@ class Player:
 
     def save(self):
         highs = []
-        with open('highscores.txt', 'r') as highscores:
+        with open('.score', 'r') as highscores:
             song = str(hash(self.level.song))
             highs = highscores.readlines()
             first_time = True
@@ -197,5 +197,5 @@ class Player:
                     first_time = False
             if first_time:
                 highs.append(song + str(int(self.score)))
-        with open('highscores.txt', 'w') as highscores:
+        with open('.score', 'w') as highscores:
             highscores.writelines(highs)
