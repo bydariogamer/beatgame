@@ -2,6 +2,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 import pygame
 from colors import neon
+from obstacle import Obstacle
 import random
 
 
@@ -14,6 +15,8 @@ class Level:
         self.duration = int(self.song.get_length())
         self.array = pygame.sndarray.array(self.song)
         self.blocks = []
+
+        self.pixels_per_sec = 240 # Movement in x direction in pixels per second.
         
         stride = 500 # Factor for subsampling
         minimumBeatsPerMinute= 48
@@ -22,7 +25,6 @@ class Level:
         aim_blocksPerSecond = 4
         heightLevels = 10
         start_Offset = 800 # see DISP_WID 
-        pixels_per_sec = 240 # Moving at BASE_FPS*player.vel_x = 240 pixels/s.
         player_pos_x = 70
 
 
@@ -165,7 +167,7 @@ class Level:
         self.blocks *= heightLevels/maximum
         self.blocks = self.blocks.clip(min=0, max=heightLevels)
         # Clear space at the beginning of the song
-        start_Blocks = int(start_Offset/pixels_per_sec*blocks_per_sec)
+        start_Blocks = int(start_Offset/self.pixels_per_sec*blocks_per_sec)
         for i in range(start_Blocks-start_Blocks*2//3):
             self.blocks[i] = 0 # free plain
         for i in range(start_Blocks-start_Blocks*2//3, start_Blocks): # ramping up to normal map
@@ -181,7 +183,7 @@ class Level:
         self.obstacles = []
         self.color = pygame.color.Color(random.choice(list(neon.values())))
         self.colors = []
-        block_wid = pixels_per_sec/blocks_per_sec
+        block_wid = self.pixels_per_sec/blocks_per_sec
         block_hei = 18
 
         # soft mode
@@ -192,7 +194,7 @@ class Level:
         """
         for index, block in enumerate(self.blocks):
             if block:
-                self.obstacles.append(pygame.Rect((int(player_pos_x + index*block_wid), 400-block_hei*block, int(block_wid), block_hei*block)))
+                self.obstacles.append(Obstacle(int(player_pos_x + index*block_wid), 400-block_hei*block, int(block_wid), block_hei*block))
                 rect_color = int(random.uniform(0, 50))
                 if random.random() < 0.5:
                     self.colors.append(pygame.Color(self.color) + pygame.color.Color(rect_color, rect_color, rect_color))

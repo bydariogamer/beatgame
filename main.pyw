@@ -188,7 +188,7 @@ while state != 'close':
                 if level[0].mouseclic(resize=resize):
                     try:
                         if mouse_rel:
-                            player = Player(Level(pygame.mixer.Sound(level[1])))
+                            player = Player(Level(pygame.mixer.Sound(level[1])), BASE_FPS)
                             state = 'level'
 
                     except pygame.error:
@@ -249,6 +249,7 @@ while state != 'close':
         ecu.set_colorkey((255, 255, 255))
         damage = pygame.Surface((DISP_WID, DISP_HEI))
         damage.fill((20, 0, 0, 30))
+        time_started = 0
         while state == 'level':
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -260,12 +261,16 @@ while state != 'close':
                     state = 'start'
                     player.level.song.stop()
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                    if not player.run:
+                        player.start()
+                        time_started = pygame.time.get_ticks()
                     player.spacebar()
             if player.ended:
                 state = 'start'
 
             # LOGIC
-            player.update()
+            if player.run:
+                player.update((pygame.time.get_ticks()-time_started)/1000)
 
             # RENDER
             player.draw(game)
@@ -298,11 +303,12 @@ while state != 'close':
             if player.collide:
                 pass
 
+            render()
+
             # TIME
             clock.tick(BASE_FPS)
 
-            # FLIP
-            render()
+            # Show
             pygame.display.update()
 
 pygame.quit()
