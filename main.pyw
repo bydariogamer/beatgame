@@ -56,14 +56,7 @@ for file in os.listdir(os.path.join(PATH, 'assets', 'songs')):
 
 
 def pager(length, cut):
-    solution = []
-    done = 0
-    for _ in range(int(length/cut)):
-        solution.append(slice(done, done+cut))
-        done += cut
-    if length % cut:
-        solution.append(slice(done, done + (length % cut)))
-    return solution
+    return [slice(i, min(i + cut, length)) for i in range(0, length, cut)]
 
 
 # GAME LOOP
@@ -188,7 +181,7 @@ while state != 'close':
                 if level[0].mouseclic(resize=resize):
                     try:
                         if mouse_rel:
-                            player = Player(Level(pygame.mixer.Sound(level[1])))
+                            player = Player(Level(pygame.mixer.Sound(level[1])), BASE_FPS)
                             state = 'level'
 
                     except pygame.error:
@@ -223,7 +216,7 @@ while state != 'close':
 
             if page_forward.mouseclic(resize=resize) and mouse_rel:
                 page += 1
-                if page > len(levels) // 5:
+                if page > len(pages) - 1:
                     page -= 1
                 mouse_rel = False
                 color = random.choice(list(colors.neon.values()))
@@ -249,6 +242,7 @@ while state != 'close':
         ecu.set_colorkey((255, 255, 255))
         damage = pygame.Surface((DISP_WID, DISP_HEI))
         damage.fill((20, 0, 0, 30))
+        time_started = None
         while state == 'level':
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -260,12 +254,16 @@ while state != 'close':
                     state = 'start'
                     player.level.song.stop()
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                    if not player.run:
+                        player.start()
+                        time_started = pygame.time.get_ticks()
                     player.spacebar()
             if player.ended:
                 state = 'start'
 
             # LOGIC
-            player.update()
+            if player.run:
+                player.update((pygame.time.get_ticks()-time_started)/1000)
 
             # RENDER
             player.draw(game)
@@ -297,13 +295,20 @@ while state != 'close':
                 game.blit(end, end_rect.topleft)
             if player.collide:
                 pass
-
-                # TIME
-            clock.tick(BASE_FPS)
+                # TODO (big todo) I need to add some kind of... screen blink
+                #  or something if player collides... I tried to make the screen
+                #  a bit red, but it definitely fails...
 
             # FLIP
             render()
+
+            # TIME
+            clock.tick(BASE_FPS)
+
+            # Show
             pygame.display.update()
+        else:
+            player.save()
 
 pygame.quit()
 sys.exit()
