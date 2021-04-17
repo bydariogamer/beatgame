@@ -1,4 +1,5 @@
 import pygame
+import os
 from level import Level
 
 
@@ -161,17 +162,20 @@ class Player:
             self.ended = True
 
     def save(self):
+        filename = 'highscores.txt'
+        song = self.level.song_name
+        separator = ' '
         highs = []
-        with open('highscores.txt', 'r') as highscores:
-            song = self.level.song_name
-            highs = highscores.readlines()
-            first_time = True
+        first_time = True
+        if os.path.exists(filename):
+            with open(filename, 'r') as highscores:
+                highs = highscores.readlines()
             for index, line in enumerate(highs):
                 if line.startswith(song):
-                    value = int(line.split(' ')[1])
-                    highs[index] = song + ' ' + str(int(max(self.score, value)))
+                    value = int(line.split(separator)[1])
+                    highs[index] = song + separator + str(int(max(self.score, value))) + '\n'
                     first_time = False
-            if first_time:
-                highs.append(song + ' ' + str(int(self.score)) + '\n')
-        with open('highscores.txt', 'w') as highscores:
+        if first_time:
+            highs.append(song + separator + str(int(self.score)) + '\n')
+        with open(filename, 'w') as highscores:
             highscores.writelines(highs)
