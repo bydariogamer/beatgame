@@ -11,7 +11,8 @@ class Player:
 
     def __init__(self, song: str, fps):
 
-        self.path = song
+        self.name = song.strip('/')[-1].strip('.')[0]
+        self.name.replace(' ', '_')
         self.level = Level(pygame.mixer.Sound(song))
         self.fps = fps
 
@@ -191,19 +192,21 @@ class Player:
         best = True
         cheat = False
         song_hash = str(hash(self.level.song))
-        new_mark = f"{self.path} {song_hash} {int(self.score)}"
+        new_mark = f"{self.name} {song_hash} {int(self.score)}"
         check = str(hash((song_hash, int(self.score))))
         try:
             with open('.score', 'r') as highscores:
                 highs = highscores.readlines()
                 for index, line in enumerate(highs):
-                    if line.startswith(self.path):
+                    if line.startswith(self.name):
                         if int(line.strip()[2]) < int(self.score):
                             del highs[index]
                         else:
                             best = False
                         if hash((int(line.strip()[1]), int(line.strip()[2]))) != int(line.strip()[3]):
                             cheat = True
+        except:
+            print('`.score` not found or unaccesible... creating a new score file')
         finally:
             if cheat:
                 highs = []
