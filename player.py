@@ -9,9 +9,10 @@ pygame.mixer.init()
 
 class Player:
 
-    def __init__(self, level: Level, fps):
+    def __init__(self, song: str, fps):
 
-        self.level = level
+        self.path = song
+        self.level = Level(pygame.mixer.Sound(song))
         self.fps = fps
 
         # set images
@@ -27,9 +28,7 @@ class Player:
         self.wrong = pygame.mixer.Sound('assets/sounds/wrong.wav')
         self.wrong.set_volume(0.4)
 
-
         self.particle_counter = 0
-
 
         self.rect = self.images['stand'].get_rect()
         self.rect.x = 70
@@ -91,9 +90,9 @@ class Player:
                     self.jump = 0
 
             if self.level.obstacles:
-                self.score += self.combo *(60./self.fps)
+                self.score += self.combo * (60./self.fps)
             self.particle_counter += 1
-            if self.particle_counter>=self.fps/20: # add 20 particles per second
+            if self.particle_counter >= self.fps/20:    # add 20 particles per second
                 self.particles.append(self.rect.y)
                 self.particle_counter = 0
             if not self.vel_y:
@@ -145,7 +144,7 @@ class Player:
         # TODO my particles sucks... My first time with particles to be honest, but still baaad
         if self.vel_y:
             for index, pos_y in enumerate(self.particles):
-                game.blit(self.particle, (self.rect.x - 8 *((len(self.particles) - index)), pos_y))
+                game.blit(self.particle, (self.rect.x - 8 * (len(self.particles) - index), pos_y))
 
         # draw obstacles
         for index in range(len(self.level.obstacles)):
@@ -189,16 +188,28 @@ class Player:
 
     def save(self):
         highs = []
+        best = True
+        cheat = False
+        song_hash = str(hash(self.level.song))
+        new_mark = f"{self.path} {song_hash} {int(self.score)}"
+        check = str(hash((song_hash, int(self.score))))
         try:
             with open('.score', 'r') as highscores:
-                song = str(hash(self.level.song))
                 highs = highscores.readlines()
                 for index, line in enumerate(highs):
-                    if line.startswith(song):
-                        del highs[index]
-        except:
-            pass
-        with open('.score', 'w') as highscores:
-            for line in highs:
-                highscores.write(line+'\n')
-                highscores.write(song + str(int(self.score)))
+                    if line.startswith(self.path):
+                        if int(line.strip()[2]) < int(self.score):
+                            del highs[index]
+                        else:
+                            best = False
+                        if hash((int(line.strip()[1]), int(line.strip()[2]))) != int(line.strip()[3]):
+                            cheat = True
+        finally:
+            if cheat:
+                highs = []
+            if best:
+                with open('.score', 'w') as highscores:
+                    for line in highs:
+                        highscores.write(line+'\n')
+                    if best:
+                        highscores.write(new_mark + ' ' + check)

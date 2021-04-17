@@ -181,7 +181,7 @@ while state != 'close':
                 if level[0].mouseclic(resize=resize):
                     try:
                         if mouse_rel:
-                            player = Player(Level(pygame.mixer.Sound(level[1])), BASE_FPS)
+                            player = Player(level[1], BASE_FPS)
                             state = 'level'
 
                     except pygame.error:
