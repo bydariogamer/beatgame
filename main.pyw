@@ -156,7 +156,7 @@ while state != 'close':
         color = random.choice(list(colors.neon.values()))
         for song in SONGS:
             title = FONT.render(song[0].upper(), False, (0, 0, 0))
-            levels.append([Button(color, 10, 10 + 80*(len(levels) % 5), DISP_WID-20, 70, image=title), song[1]])
+            levels.append([Button(color, 10, 10 + 80*(len(levels) % 5), DISP_WID-20, 70, image=title), song[1], song[0].upper()])
 
         mouse_rel = False
         while state == 'choose':
@@ -181,7 +181,7 @@ while state != 'close':
                 if level[0].mouseclic(resize=resize):
                     try:
                         if mouse_rel:
-                            player = Player(Level(pygame.mixer.Sound(level[1])), BASE_FPS)
+                            player = Player(Level(pygame.mixer.Sound(level[1]), level[2]), BASE_FPS)
                             state = 'level'
 
                     except pygame.error:
@@ -243,6 +243,7 @@ while state != 'close':
         damage = pygame.Surface((DISP_WID, DISP_HEI))
         damage.fill((20, 0, 0, 30))
         time_started = None
+        score_saved = False
         while state == 'level':
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -293,6 +294,9 @@ while state != 'close':
                 end_rect = end.get_rect()
                 end_rect.center = game_rect.center
                 game.blit(end, end_rect.topleft)
+            if (not player.life or not player.level.obstacles) and not score_saved:
+                player.save()
+                score_saved = True
             if player.collide:
                 pass
                 # TODO (big todo) I need to add some kind of... screen blink
