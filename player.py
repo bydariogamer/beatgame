@@ -189,15 +189,16 @@ class Player:
 
     def save(self):
         highs = []
-        with open('.score', 'r') as highscores:
-            song = str(hash(self.level.song))
-            highs = highscores.readlines()
-            first_time = True
-            for index, line in highs:
-                if line.startswith(song):
-                    highs[index] = song + str(int(self.score))
-                    first_time = False
-            if first_time:
-                highs.append(song + str(int(self.score)))
+        try:
+            with open('.score', 'r') as highscores:
+                song = str(hash(self.level.song))
+                highs = highscores.readlines()
+                for index, line in enumerate(highs):
+                    if line.startswith(song):
+                        del highs[index]
+        except:
+            pass
         with open('.score', 'w') as highscores:
-            highscores.writelines(highs)
+            for line in highs:
+                highscores.write(line+'\n')
+                highscores.write(song + str(int(self.score)))
