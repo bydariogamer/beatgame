@@ -82,7 +82,7 @@ class Level:
             
             interestingPart = corrected_autocorrelation[firstIndex:lastIndex]
             n = 1   # uneven integer, not choosing one leads to worse results
-            ddinterestingPart = np.concatenate([np.zeros(n),np.diff(np.diff(interestingPart, n), n), np.zeros(n)])/(n**2)
+            ddinterestingPart = np.concatenate([np.zeros(n), np.diff(np.diff(interestingPart, n), n), np.zeros(n)])/(n**2)
 
             indexBeatLength = argmax(interestingPart) + firstOffset
             indexBeatLength_dd = argmax(-ddinterestingPart) + firstOffset
@@ -109,8 +109,6 @@ class Level:
                 plt.legend()
                 plt.show()
 
-
-            rough_BPM = 0.0     # TODO is this declaration needed? (you declare it later again without using this)
             if not temposAreSimilar(indexBeatLength, indexBeatLength_dd):
                 # for a valid tempo half the tempo will also have a good autocorrelation
                 score = corrected_autocorrelation[length//2 + 2*indexBeatLength]
