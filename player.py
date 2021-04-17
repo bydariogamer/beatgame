@@ -1,6 +1,7 @@
 import pygame
 from level import Level
 import random
+import os
 
 
 pygame.init()
@@ -11,8 +12,8 @@ class Player:
 
     def __init__(self, song: str, fps):
 
-        self.name = song.strip('/')[-1].strip('.')[0]
-        self.name.replace(' ', '_')
+        self.name = song.split('\\')[-1].replace(' ', '_').split('.')[0]
+        print(self.name)
         self.level = Level(pygame.mixer.Sound(song))
         self.fps = fps
 
@@ -187,32 +188,34 @@ class Player:
         if not self.life:
             self.ended = True
 
-    def save(self):
+    def save(self, veteran):
         highs = []
         best = True
         cheat = False
         song_hash = str(hash(self.level.song))
+        print(song_hash)
         new_mark = f"{self.name} {song_hash} {int(self.score)}"
         check = str(hash((song_hash, int(self.score))))
-        try:
-            with open('.score', 'r') as highscores:
-                highs = highscores.readlines()
-                for index, line in enumerate(highs):
-                    if line.startswith(self.name):
-                        if int(line.strip()[2]) < int(self.score):
-                            del highs[index]
-                        else:
-                            best = False
-                        if hash((int(line.strip()[1]), int(line.strip()[2]))) != int(line.strip()[3]):
-                            cheat = True
-        except:
-            print('`.score` not found or unaccesible... creating a new score file')
-        finally:
-            if cheat:
-                highs = []
+        if not veteran:
+            with open('.score', 'w') as _:
+                print('`.score` not found... creating a new score file...')
+        with open('.score', 'r') as highscores:
+            highs = highscores.readlines()
+            for index, line in enumerate(highs):
+                if line.startswith(self.name):
+                    if int(line.split()[2]) < int(self.score):
+                        del highs[index]
+                    else:
+                        best = False
+                    if line.split()[1] != str(song_hash):
+                        print(line)
+                        cheat = True
+                        best = True
+        if cheat:
+            highs = []
+            print('we found you were cheating\ncleaning scores...')
+        with open('.score', 'w') as highscores:
+            for line in highs:
+                highscores.write(line+'\n')
             if best:
-                with open('.score', 'w') as highscores:
-                    for line in highs:
-                        highscores.write(line+'\n')
-                    if best:
-                        highscores.write(new_mark + ' ' + check)
+                highscores.write(new_mark + ' ' + check)

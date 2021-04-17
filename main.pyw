@@ -308,7 +308,7 @@ while state != 'close':
             # Show
             pygame.display.update()
         else:
-            player.save()
+            player.save(os.path.exists('.score'))
 
 pygame.quit()
 sys.exit()
