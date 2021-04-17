@@ -20,12 +20,12 @@ class Level:
         self.pixels_per_sec = 240   # Movement in x direction in pixels per second.
         
         stride = 500    # Factor for subsampling
-        minimumBeatsPerMinute= 48
+        minimumBeatsPerMinute = 48
         maximumBeatsPerMinute = 240
         debugTempoFinder = False
         aim_blocksPerSecond = 4
         heightLevels = 10
-        start_Offset = 800 # see DISP_WID 
+        start_Offset = 800  # see DISP_WID
         player_pos_x = 70
 
         # Find Tempo / Autocorrelation
@@ -57,7 +57,7 @@ class Level:
             a = 0
             b = 0
             while max_index == 0 + a or max_index == length-1-b:
-                if max_index == 0 +a:
+                if max_index == 0 + a:
                     a += 1
                 else:
                     b += 1
