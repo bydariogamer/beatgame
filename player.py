@@ -27,7 +27,9 @@ class Player:
         self.wrong = pygame.mixer.Sound('assets/sounds/wrong.wav')
         self.wrong.set_volume(0.4)
 
-        self.count = 0.
+
+        self.particle_counter = 0
+
 
         self.rect = self.images['stand'].get_rect()
         self.rect.x = 70
@@ -89,11 +91,11 @@ class Player:
                     self.jump = 0
 
             if self.level.obstacles:
-                self.score += self.combo
-            self.count += 1
-            self.count %= 3
-            if not self.count:
+                self.score += self.combo *(60./self.fps)
+            self.particle_counter += 1
+            if self.particle_counter>=self.fps/20: # add 20 particles per second
                 self.particles.append(self.rect.y)
+                self.particle_counter = 0
             if not self.vel_y:
                 self.particles = []
             if self.combo > len(self.particles):
@@ -142,8 +144,8 @@ class Player:
         # draw particles
         # TODO my particles sucks... My first time with particles to be honest, but still baaad
         if self.vel_y:
-            for distance, pos_y in enumerate(self.particles):
-                game.blit(self.particle, (self.rect.x - 8 * distance, pos_y))
+            for index, pos_y in enumerate(self.particles):
+                game.blit(self.particle, (self.rect.x - 8 *((len(self.particles) - index)), pos_y))
 
         # draw obstacles
         for index in range(len(self.level.obstacles)):
@@ -174,7 +176,7 @@ class Player:
             self.jump += 1
             if self.level.obstacles:
                 if self.jump == 1:
-                    self.combo += 60.0/self.fps
+                    self.combo += 1
                 self.shield += self.combo
                 if self.shield > 10:
                     self.shield = 10

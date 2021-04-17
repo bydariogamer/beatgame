@@ -242,7 +242,7 @@ while state != 'close':
         ecu.set_colorkey((255, 255, 255))
         damage = pygame.Surface((DISP_WID, DISP_HEI))
         damage.fill((20, 0, 0, 30))
-        time_started = 0
+        time_started = None
         while state == 'level':
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -299,6 +299,7 @@ while state != 'close':
                 #  or something if player collides... I tried to make the screen
                 #  a bit red, but it definitely fails...
 
+            # FLIP
             render()
 
             # TIME

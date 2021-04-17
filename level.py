@@ -13,7 +13,7 @@ pygame.mixer.init()
 class Level:
     def __init__(self, song: pygame.mixer.Sound):
         self.song = song
-        self.duration = int(self.song.get_length())
+        self.duration = self.song.get_length()
         self.array = pygame.sndarray.array(self.song)
         self.blocks = []
 
@@ -109,6 +109,7 @@ class Level:
                 plt.legend()
                 plt.show()
 
+
             rough_BPM = 0.0     # TODO is this declaration needed? (you declare it later again without using this)
             if not temposAreSimilar(indexBeatLength, indexBeatLength_dd):
                 # for a valid tempo half the tempo will also have a good autocorrelation
@@ -150,8 +151,10 @@ class Level:
         BPM = findBPMinRange(corrected_autocorr, minimumBeatsPerMinute, maximumBeatsPerMinute, fineAdjustRecursion=3)
         if debugTempoFinder:
             print('BPM:', BPM)
+
         blocks_per_sec = BPM/60
         while blocks_per_sec < aim_blocksPerSecond*0.66:
+
             blocks_per_sec *= 2
         while blocks_per_sec > aim_blocksPerSecond*1.33:
             blocks_per_sec /= 2
