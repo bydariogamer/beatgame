@@ -1,5 +1,6 @@
 /.git/
 /.idea/
+/.vscode/
 /venv/
 /__pycache__/
 /build/
