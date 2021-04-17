@@ -154,6 +154,7 @@ class Level:
         
         blocks_per_sec = BPM/60.
         while blocks_per_sec < aim_blocksPerSecond*0.66:
+
             blocks_per_sec *= 2
         while blocks_per_sec > aim_blocksPerSecond*1.33:
             blocks_per_sec /= 2
@@ -179,8 +180,7 @@ class Level:
             self.blocks[i] *= float(i)/start_Blocks*3/2-0.5
         # Quantize Blocks
         self.blocks = np.round(self.blocks)
-        
-        # Show map in seperate window
+
         if debugLevelGeneration:
             plt.bar(range(len(self.blocks))/blocks_per_sec, self.blocks, width=1/blocks_per_sec)
             plt.legend()

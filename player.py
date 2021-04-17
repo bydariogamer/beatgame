@@ -1,6 +1,8 @@
 import pygame
 import os
 from level import Level
+import random
+
 
 
 pygame.init()
@@ -29,6 +31,7 @@ class Player:
 
         self.particle_counter = 0
 
+
         self.rect = self.images['stand'].get_rect()
         self.rect.x = 70
         self.rect.y = 368
@@ -51,6 +54,11 @@ class Player:
         self.collide = False
         self.run = False
         self.ended = False
+
+        self.stars = []
+        for _ in range(30):
+            self.stars.append([int(random.uniform(0, 800)), int(random.uniform(0, 400))])
+            self.stars.append([int(random.uniform(0, 800)) + 800, int(random.uniform(0, 400))])
 
         self.particles = []
 
@@ -92,6 +100,7 @@ class Player:
             if not self.vel_y:
                 self.particles = []
             if self.combo < len(self.particles):
+
                 del self.particles[0:-int(self.combo)]
 
         if self.life < 0:
@@ -104,6 +113,19 @@ class Player:
                 del self.level.obstacles[index]
                 del self.level.colors[index]
 
+        # stars code
+        # move stars and delete the ones out of screen
+        if self.run and self.level.obstacles:
+            for index, star in enumerate(self.stars):
+                star[0] -= 1
+                if star[0] < -5:
+                    del self.stars[index]
+            # every time half of the stars are deleted, new ones are added
+            if len(self.stars) <= 30:
+                for _ in range(30):
+                    self.stars.append([int(random.uniform(0, 800)) + 800, int(random.uniform(0, 400))])
+
+
     def damage(self):
         self.shield -= 1
         if self.shield < 0:
@@ -114,6 +136,12 @@ class Player:
     def draw(self, game):
         # draw background
         game.fill((0, 0, 20))
+
+
+        # draw stars
+        for star in self.stars:
+            pygame.draw.circle(game, (250, 250, 250), star, 2)
+
         # draw ground
         pygame.draw.rect(game, (255, 240, 240), (0, 400, 800, 100))
 
@@ -121,6 +149,7 @@ class Player:
         if self.vel_y:
             for index, pos_y in enumerate(self.particles):
                 game.blit(self.particle, (self.rect.x - 8 * ((len(self.particles) - index)), pos_y))
+
         # draw obstacles
         for index in range(len(self.level.obstacles)):
             if self.level.obstacles[index].x < 801:
@@ -162,20 +191,16 @@ class Player:
             self.ended = True
 
     def save(self):
-        filename = 'highscores.txt'
-        song = self.level.song_name
-        separator = ' '
         highs = []
-        first_time = True
-        if os.path.exists(filename):
-            with open(filename, 'r') as highscores:
-                highs = highscores.readlines()
-            for index, line in enumerate(highs):
+        with open('.score', 'r') as highscores:
+            song = str(hash(self.level.song))
+            highs = highscores.readlines()
+            first_time = True
+            for index, line in highs:
                 if line.startswith(song):
-                    value = int(line.split(separator)[1])
-                    highs[index] = song + separator + str(int(max(self.score, value))) + '\n'
+                    highs[index] = song + str(int(self.score))
                     first_time = False
-        if first_time:
-            highs.append(song + separator + str(int(self.score)) + '\n')
-        with open(filename, 'w') as highscores:
+            if first_time:
+                highs.append(song + str(int(self.score)))
+        with open('.score', 'w') as highscores:
             highscores.writelines(highs)
