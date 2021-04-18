@@ -4,7 +4,6 @@ from level import Level
 import random
 
 
-
 pygame.init()
 pygame.mixer.init()
 
@@ -30,7 +29,6 @@ class Player:
         self.wrong.set_volume(0.4)
 
         self.particle_counter = 0
-
 
         self.rect = self.images['stand'].get_rect()
         self.rect.x = 70
@@ -100,7 +98,6 @@ class Player:
             if not self.vel_y:
                 self.particles = []
             if self.combo < len(self.particles):
-
                 del self.particles[0:-int(self.combo)]
 
         if self.life < 0:
@@ -125,7 +122,6 @@ class Player:
                 for _ in range(30):
                     self.stars.append([int(random.uniform(0, 800)) + 800, int(random.uniform(0, 400))])
 
-
     def damage(self):
         self.shield -= 1
         if self.shield < 0:
@@ -136,7 +132,6 @@ class Player:
     def draw(self, game):
         # draw background
         game.fill((0, 0, 20))
-
 
         # draw stars
         for star in self.stars:
@@ -191,16 +186,20 @@ class Player:
             self.ended = True
 
     def save(self):
+        filename = '.score'
+        song = str(hash(self.level.song_name))
+        separator = ' '
         highs = []
-        with open('.score', 'r') as highscores:
-            song = str(hash(self.level.song))
-            highs = highscores.readlines()
-            first_time = True
-            for index, line in highs:
+        first_time = True
+        if os.path.exists(filename):
+            with open(filename, 'r') as highscores:
+                highs = highscores.readlines()
+            for index, line in enumerate(highs):
                 if line.startswith(song):
-                    highs[index] = song + str(int(self.score))
+                    value = int(line.split(separator)[1])
+                    highs[index] = song + separator + str(int(max(self.score, value))) + '\n'
                     first_time = False
-            if first_time:
-                highs.append(song + str(int(self.score)))
-        with open('.score', 'w') as highscores:
+        if first_time:
+            highs.append(song + separator + str(int(self.score)) + '\n')
+        with open(filename, 'w') as highscores:
             highscores.writelines(highs)
