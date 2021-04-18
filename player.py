@@ -66,7 +66,7 @@ class Player:
                     self.combo = 0
                     self.jump = 0
                     if self.vel_y < config.VELOCITY_Y_DURING_DAMAGE:
-                        self.vel_y = float(config.VELOCITY_Y_DURING_DAMAGE
+                        self.vel_y = float(config.VELOCITY_Y_DURING_DAMAGE)
             if not self.collide:
                 self.vel_y -= self.grav/config.BASE_FPS
             self.rect.y -= self.vel_y/config.BASE_FPS   
