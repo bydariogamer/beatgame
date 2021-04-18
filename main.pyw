@@ -264,7 +264,7 @@ while state != 'close':
             # LOGIC
             if player.run:
                 player.update((pygame.time.get_ticks()-time_started)/1000)
-
+                
             # RENDER
             player.draw(game)
 
