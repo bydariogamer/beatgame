@@ -6,6 +6,7 @@ from button import Button
 from player import Player
 from level import Level
 import colors
+from config import *
 
 
 # INITIALIZE PYGAME
@@ -13,11 +14,6 @@ pygame.init()
 pygame.mixer.init()
 
 # WINDOW CONSTANTS
-DISP_WID = 800
-DISP_HEI = 500
-DISP_TIT = 'BEATGAME'
-DISP_ICO = pygame.image.load('assets/images/stand.png')
-BASE_FPS = 60
 PATH = os.path.abspath(os.path.dirname(sys.argv[0]))
 clock = pygame.time.Clock()
 
