@@ -156,7 +156,7 @@ while state != 'close':
         color = random.choice(list(colors.neon.values()))
         for song in SONGS:
             title = FONT.render(song[0].upper(), False, (0, 0, 0))
-            levels.append([Button(color, 10, 10 + 80*(len(levels) % 5), DISP_WID-20, 70, image=title), song[1]])
+            levels.append([Button(color, 10, 10 + 80*(len(levels) % 5), DISP_WID-20, 70, image=title), song[1], song[0].upper()])
 
         mouse_rel = False
         while state == 'choose':
@@ -181,7 +181,7 @@ while state != 'close':
                 if level[0].mouseclic(resize=resize):
                     try:
                         if mouse_rel:
-                            player = Player(Level(pygame.mixer.Sound(level[1])), BASE_FPS)
+                            player = Player(Level(pygame.mixer.Sound(level[1]), level[2]), BASE_FPS)
                             state = 'level'
 
                     except pygame.error:
