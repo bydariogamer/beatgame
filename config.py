@@ -1,6 +1,3 @@
-import pygame
-
-
 DISP_TIT = 'BEATGAME'
 DISP_ICO = 'assets/images/stand.png'
 DISP_WID = 800
@@ -50,3 +47,17 @@ JUMPS_PER_SECOND         = 2
 HIGHSCORE_FILENAME = '.score'
 SCORE_POINTS_PER_SECOND = 60
 SHIELD_MAXIMUM          = 10
+
+# Level generation
+BPM_FINDER_SUBSAMPLING = 500
+BPM_FINDER_MINIMUM     = 48
+BPM_FINDER_MAXIMUM     = 240
+BLOCKS_PER_SECOND_AIM  = 4
+HEIGHT_LEVELS          = 10
+MAP_UPPER_QUANTILE     = 0.95
+MAP_LOWER_QUANTILE     = 0.05
+RELATIVE_BLOCK_HEIGHT  = 0.45 # Amount of space between ground and top of the screen covered by the biggest obstacles
+
+# Debugging
+DEBUG_BPM_FINDER = False
+DEBUG_SHOW_LEVEL = False
