@@ -20,7 +20,7 @@ clock = pygame.time.Clock()
 
 # CREATE WINDOW
 pygame.display.set_caption(config.DISP_TIT)
-pygame.display.set_icon(config.DISP_ICO)
+pygame.display.set_icon(pygame.image.load(config.DISP_ICO))
 display = pygame.display.set_mode((DISP_WID, DISP_HEI), pygame.RESIZABLE)
 display_rect = display.get_rect()
 game = pygame.Surface((DISP_WID, DISP_HEI))
