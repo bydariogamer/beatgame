@@ -5,6 +5,4 @@
 /__pycache__/
 /build/
 /dist/
-highscores.txt
-
-Start.cmd
+.score
