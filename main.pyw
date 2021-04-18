@@ -38,10 +38,10 @@ def render():
 # CONSTANTS
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-FONT = pygame.font.Font("assets/fonts/8bitOperatorPlus-Bold.ttf", 48)
-FONT_BIG = pygame.font.Font("assets/fonts/8bitOperatorPlus-Bold.ttf", 64)
-FONT_SMALL = pygame.font.Font("assets/fonts/8bitOperatorPlus-Bold.ttf", 32)
-LIFE = pygame.image.load("assets/images/heart.png")
+FONT = pygame.font.Font(config.FONT_TYPE, config.FONT_SIZE_NORMAL)
+FONT_BIG = pygame.font.Font(config.FONT_TYPE, config.FONT_SIZE_BIG)
+FONT_SMALL = pygame.font.Font(config.FONT_TYPE, config.FONT_SIZE_SMALL)
+LIFE = pygame.image.load(config.LIFE_ICO)
 LIFE.set_colorkey(WHITE)
 LIFE = LIFE.convert()
 
@@ -70,12 +70,12 @@ while state != 'close':
 
     # START MENU
     if state == 'start':
-        title = FONT_BIG.render('> B E A T G A M E <', False, colors.neon['blue'])
-        author = FONT_SMALL.render('bydariogamer', False, colors.neon['red'])
+        title = FONT_BIG.render(config.GAME_TITLE, False, colors.neon['blue'])
+        author = FONT_SMALL.render(config.GAME_AUTHOR, False, colors.neon['red'])
         play_button = Button(colors.neon['fucsia'], 300, 150, 200, 70, image=FONT.render('PLAY', False, (0, 0, 0)))
         help_button = Button(colors.neon['fucsia'], 300, 250, 200, 70, image=FONT.render('HELP', False, (0, 0, 0)))
         exit_button = Button(colors.neon['fucsia'], 300, 350, 200, 70, image=FONT.render('EXIT', False, (0, 0, 0)))
-        background = pygame.image.load('assets/images/title_background.png').convert()
+        background = pygame.image.load(config.MENU_BACKGROUND).convert()
 
         # LOOP
         while state == 'start':
@@ -114,7 +114,7 @@ while state != 'close':
             pygame.display.update()
 
     if state == 'help':
-        help_page = pygame.image.load('assets/images/help.png')
+        help_page = pygame.image.load(config.HELP_IMAGE)
         help_page.set_colorkey((255, 255, 255))
         seen = False
         while state == 'help':
@@ -234,8 +234,8 @@ while state != 'close':
 
     # LEVEL ITSELF
     if state == 'level':
-        heart = pygame.image.load('assets/images/heart.png')
-        ecu = pygame.image.load('assets/images/ecu.png')
+        heart = pygame.image.load(config.LIFE_ICO)
+        ecu = pygame.image.load(config.ECU_ICO)
         ecu.set_colorkey((255, 255, 255))
         damage = pygame.Surface((DISP_WID, DISP_HEI))
         damage.fill((20, 0, 0, 30))
@@ -281,12 +281,12 @@ while state != 'close':
             game.blit(score, score_rect.topleft)
             game.blit(combo, score_rect.topright)
             if not player.level.obstacles:
-                end = FONT_BIG.render('YOU WIN', False, colors.metal['gold'])
+                end = FONT_BIG.render(config.WIN_MESSAGE, False, colors.metal['gold'])
                 end_rect = end.get_rect()
                 end_rect.center = game_rect.center
                 game.blit(end, end_rect.topleft)
             if not player.life:
-                end = FONT_BIG.render('YOU LOSE', False, colors.metal['silver'])
+                end = FONT_BIG.render(config.DEATH_MESSAGE, False, colors.metal['silver'])
                 end_rect = end.get_rect()
                 end_rect.center = game_rect.center
                 game.blit(end, end_rect.topleft)
