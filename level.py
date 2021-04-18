@@ -11,8 +11,9 @@ pygame.mixer.init()
 
 
 class Level:
-    def __init__(self, song: pygame.mixer.Sound):
+    def __init__(self, song: pygame.mixer.Sound, song_name):
         self.song = song
+        self.song_name = song_name
         self.duration = self.song.get_length()
         self.array = pygame.sndarray.array(self.song)
         self.blocks = []
@@ -23,6 +24,7 @@ class Level:
         minimumBeatsPerMinute= 48
         maximumBeatsPerMinute = 240
         debugTempoFinder = False
+        debugLevelGeneration = False
         aim_blocksPerSecond = 4
         heightLevels = 10
         start_Offset = 800 # see DISP_WID 
@@ -109,8 +111,6 @@ class Level:
                 plt.legend()
                 plt.show()
 
-
-            rough_BPM = 0.0     # TODO is this declaration needed? (you declare it later again without using this)
             if not temposAreSimilar(indexBeatLength, indexBeatLength_dd):
                 # for a valid tempo half the tempo will also have a good autocorrelation
                 score = corrected_autocorrelation[length//2 + 2*indexBeatLength]
@@ -151,10 +151,9 @@ class Level:
         BPM = findBPMinRange(corrected_autocorr, minimumBeatsPerMinute, maximumBeatsPerMinute, fineAdjustRecursion=3)
         if debugTempoFinder:
             print('BPM:', BPM)
-
-        blocks_per_sec = BPM/60
+        
+        blocks_per_sec = BPM/60.
         while blocks_per_sec < aim_blocksPerSecond*0.66:
-
             blocks_per_sec *= 2
         while blocks_per_sec > aim_blocksPerSecond*1.33:
             blocks_per_sec /= 2
@@ -180,10 +179,12 @@ class Level:
             self.blocks[i] *= float(i)/start_Blocks*3/2-0.5
         # Quantize Blocks
         self.blocks = np.round(self.blocks)
-        # TODO I think range is not used this way in this language ;)
-        plt.bar(range(len(self.blocks))/blocks_per_sec, self.blocks, width=1/blocks_per_sec)
-        plt.legend()
-        plt.show()
+        
+        # Show map in seperate window
+        if debugLevelGeneration:
+            plt.bar(range(len(self.blocks))/blocks_per_sec, self.blocks, width=1/blocks_per_sec)
+            plt.legend()
+            plt.show()
 
         # Assign graphical elements to blocks
         self.obstacles = []
@@ -191,14 +192,6 @@ class Level:
         self.colors = []
         block_wid = self.pixels_per_sec/blocks_per_sec
         block_hei = 18
-
-        # soft mode
-        # TODO do I remove soft mode note? I guess there is no need of using it anymore
-        """
-        for index in range(len(self.blocks)-1):
-            if self.blocks[index+1]-self.blocks[index] > 2:
-                self.blocks[index+1] = self.blocks[index] + 2
-        """
 
         for index, block in enumerate(self.blocks):
             if block:

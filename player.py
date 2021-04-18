@@ -1,4 +1,5 @@
 import pygame
+import os
 from level import Level
 import random
 
@@ -99,7 +100,7 @@ class Player:
                 self.particle_counter = 0
             if not self.vel_y:
                 self.particles = []
-            if self.combo > len(self.particles):
+            if self.combo < len(self.particles):
                 del self.particles[0:-int(self.combo)]
 
         if self.life < 0:
@@ -148,11 +149,9 @@ class Player:
         pygame.draw.rect(game, (255, 240, 240), (0, 400, 800, 100))
 
         # draw particles
-        # TODO my particles sucks... My first time with particles to be honest, but still baaad
         if self.vel_y:
             for index, pos_y in enumerate(self.particles):
                 game.blit(self.particle, (self.rect.x - 8 * (len(self.particles) - index), pos_y))
-
 
         # draw obstacles
         for index in range(len(self.level.obstacles)):
@@ -195,16 +194,20 @@ class Player:
             self.ended = True
 
     def save(self):
+        filename = '.score'
+        song = str(hash(self.level.song_name))
+        separator = ' '
         highs = []
-        with open('.score', 'r') as highscores:
-            song = str(hash(self.level.song))
-            highs = highscores.readlines()
-            first_time = True
-            for index, line in highs:
+        first_time = True
+        if os.path.exists(filename):
+            with open(filename, 'r') as highscores:
+                highs = highscores.readlines()
+            for index, line in enumerate(highs):
                 if line.startswith(song):
-                    highs[index] = song + str(int(self.score))
+                    value = int(line.split(separator)[1])
+                    highs[index] = song + separator + str(int(max(self.score, value))) + '\n'
                     first_time = False
-            if first_time:
-                highs.append(song + str(int(self.score)))
-        with open('.score', 'w') as highscores:
+        if first_time:
+            highs.append(song + separator + str(int(self.score)) + '\n')
+        with open(filename, 'w') as highscores:
             highscores.writelines(highs)
