@@ -6,7 +6,8 @@ from button import Button
 from player import Player
 from level import Level
 import colors
-from config import *
+import config
+from config import DISP_WID, DISP_HEI, BASE_FPS
 
 
 # INITIALIZE PYGAME
@@ -18,8 +19,8 @@ PATH = os.path.abspath(os.path.dirname(sys.argv[0]))
 clock = pygame.time.Clock()
 
 # CREATE WINDOW
-pygame.display.set_caption(DISP_TIT)
-pygame.display.set_icon(DISP_ICO)
+pygame.display.set_caption(config.DISP_TIT)
+pygame.display.set_icon(config.DISP_ICO)
 display = pygame.display.set_mode((DISP_WID, DISP_HEI), pygame.RESIZABLE)
 display_rect = display.get_rect()
 game = pygame.Surface((DISP_WID, DISP_HEI))
