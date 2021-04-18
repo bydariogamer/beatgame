@@ -27,9 +27,7 @@ class Player:
         self.wrong = pygame.mixer.Sound('assets/sounds/wrong.wav')
         self.wrong.set_volume(0.4)
 
-
         self.particle_counter = 0
-
 
         self.rect = self.images['stand'].get_rect()
         self.rect.x = 70
@@ -55,9 +53,12 @@ class Player:
         self.ended = False
 
         self.stars = []
+        self.star_shine = []
         for _ in range(30):
             self.stars.append([int(random.uniform(0, 800)), int(random.uniform(0, 400))])
             self.stars.append([int(random.uniform(0, 800)) + 800, int(random.uniform(0, 400))])
+        for _ in range(60):
+            self.star_shine.append(int(random.uniform(0, 30)))
 
         self.particles = []
 
@@ -91,9 +92,9 @@ class Player:
                     self.jump = 0
 
             if self.level.obstacles:
-                self.score += self.combo *(60./self.fps)
+                self.score += self.combo * (60./self.fps)
             self.particle_counter += 1
-            if self.particle_counter>=self.fps/20: # add 20 particles per second
+            if self.particle_counter >= self.fps/20:    # add 20 particles per second
                 self.particles.append(self.rect.y)
                 self.particle_counter = 0
             if not self.vel_y:
@@ -118,10 +119,12 @@ class Player:
                 star[0] -= 1
                 if star[0] < -5:
                     del self.stars[index]
+                    del self.star_shine[index]
             # every time half of the stars are deleted, new ones are added
             if len(self.stars) <= 30:
                 for _ in range(30):
                     self.stars.append([int(random.uniform(0, 800)) + 800, int(random.uniform(0, 400))])
+                    self.star_shine.append((int(random.uniform(0, 30))))
 
     def damage(self):
         self.shield -= 1
@@ -135,8 +138,11 @@ class Player:
         game.fill((0, 0, 20))
 
         # draw stars
-        for star in self.stars:
-            pygame.draw.circle(game, (250, 250, 250), star, 2)
+        for i, star in enumerate(self.stars):
+            color = pygame.Color(250, 250, 250)-pygame.Color(self.star_shine[i], self.star_shine[i], self.star_shine[i])
+            pygame.draw.circle(game, color, star, 2)
+            self.star_shine[i] += 1
+            self.star_shine[i] %= 30
 
         # draw ground
         pygame.draw.rect(game, (255, 240, 240), (0, 400, 800, 100))
@@ -145,7 +151,8 @@ class Player:
         # TODO my particles sucks... My first time with particles to be honest, but still baaad
         if self.vel_y:
             for index, pos_y in enumerate(self.particles):
-                game.blit(self.particle, (self.rect.x - 8 *((len(self.particles) - index)), pos_y))
+                game.blit(self.particle, (self.rect.x - 8 * (len(self.particles) - index), pos_y))
+
 
         # draw obstacles
         for index in range(len(self.level.obstacles)):
