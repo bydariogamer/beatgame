@@ -1,6 +1,7 @@
 import pygame
 import os
 from level import Level
+import random
 
 
 pygame.init()
@@ -51,6 +52,11 @@ class Player:
         self.collide = False
         self.run = False
         self.ended = False
+
+        self.stars = []
+        for _ in range(30):
+            self.stars.append([int(random.uniform(0, 800)), int(random.uniform(0, 400))])
+            self.stars.append([int(random.uniform(0, 800)) + 800, int(random.uniform(0, 400))])
 
         self.particles = []
 
@@ -104,6 +110,18 @@ class Player:
                 del self.level.obstacles[index]
                 del self.level.colors[index]
 
+        # stars code
+        # move stars and delete the ones out of screen
+        if self.run and self.level.obstacles:
+            for index, star in enumerate(self.stars):
+                star[0] -= 1
+                if star[0] < -5:
+                    del self.stars[index]
+            # every time half of the stars are deleted, new ones are added
+            if len(self.stars) <= 30:
+                for _ in range(30):
+                    self.stars.append([int(random.uniform(0, 800)) + 800, int(random.uniform(0, 400))])
+
     def damage(self):
         self.shield -= 1
         if self.shield < 0:
@@ -114,6 +132,11 @@ class Player:
     def draw(self, game):
         # draw background
         game.fill((0, 0, 20))
+
+        # draw stars
+        for star in self.stars:
+            pygame.draw.circle(game, (250, 250, 250), star, 2)
+
         # draw ground
         pygame.draw.rect(game, (255, 240, 240), (0, 400, 800, 100))
 
