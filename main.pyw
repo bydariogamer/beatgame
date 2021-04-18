@@ -178,7 +178,7 @@ while state != 'close':
                 if level[0].mouseclic(resize=resize):
                     try:
                         if mouse_rel:
-                            player = Player(Level(pygame.mixer.Sound(level[1]), level[2]), BASE_FPS)
+                            player = Player(Level(pygame.mixer.Sound(level[1]), level[2]))
                             state = 'level'
 
                     except pygame.error:
@@ -235,7 +235,7 @@ while state != 'close':
     # LEVEL ITSELF
     if state == 'level':
         heart = pygame.image.load(config.HEART_ICON)
-        ecu = pygame.image.load(config.ECU_ICO)
+        ecu = pygame.image.load(config.ECU_ICON)
         ecu.set_colorkey((255, 255, 255))
         damage = pygame.Surface((DISP_WID, DISP_HEI))
         damage.fill((20, 0, 0, 30))

@@ -20,7 +20,33 @@ MENU_BACKGROUND = 'assets/images/title_background.png'
 HELP_IMAGE = 'assets/images/help.png'
 
 # Ingame
+#   Units:
+#   position in pixels 
+#   velocity in pixels per second
 HEART_ICON = 'assets/images/heart.png'
-ECU_ICON  = 'assets/images/ecu.png'
+ECU_ICON   = 'assets/images/ecu.png'
 WIN_MESSAGE   = 'YOU WIN'
 DEATH_MESSAGE = 'YOU LOSE'
+PLAYER_ICONS = {
+    'run':      'assets/images/run.png',
+    'stand':    'assets/images/stand.png',
+    'up':       'assets/images/up.png',
+    'down':     'assets/images/down.png',
+    'dead':     'assets/images/dead.png',
+    'collide':  'assets/images/collide.png'
+}
+PARTICLE_ICON = 'assets/images/particle.png'
+PARTICLES_PER_SECOND = 20
+WRONG_SOUND  = 'assets/sounds/wrong.wav'
+WRONG_VOLUME = 0.4
+STARS_COUNT  = 30
+STAR_SIZE    = 2
+FLOOR_HEIGHT = 100
+PLAYER_POS_X = 70
+VELOCITY_X   = 240
+VELOCITY_Y_DURING_DAMAGE = 30
+VELOCITY_Y_ON_JUMP       = 900
+JUMPS_PER_SECOND         = 2
+HIGHSCORE_FILENAME = '.score'
+SCORE_POINTS_PER_SECOND = 60
+SHIELD_MAXIMUM          = 10
