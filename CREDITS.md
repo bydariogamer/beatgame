@@ -19,11 +19,9 @@ https://github.com/beat-feet/beat-feet
 - vivaldi.mp3 (this is from Vivaldi obviously)
 
 The following song was made by [bydariogamer](https://github.com/bydariogamer):
-
 - piloting waves.mp3
 
 The following song was made by [Sogolumbo](https://github.com/sogolumbo):
-
 - metronome.mp3
 
 I am not actually sure about the license of the songs took from beatfeet,
