@@ -144,6 +144,7 @@ class Player:
         if self.vel_y:
             for index, pos_y in enumerate(self.particles):
                 game.blit(self.particle, (self.rect.x - 8 * ((len(self.particles) - index)), pos_y))
+
         # draw obstacles
         for index in range(len(self.level.obstacles)):
             if self.level.obstacles[index].x < 801:
@@ -185,8 +186,8 @@ class Player:
             self.ended = True
 
     def save(self):
-        filename = 'highscores.txt'
-        song = self.level.song_name
+        filename = '.score'
+        song = str(hash(self.level.song_name))
         separator = ' '
         highs = []
         first_time = True
