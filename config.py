@@ -8,19 +8,19 @@ DISP_HEI = 500
 BASE_FPS = 60.0
 
 FONT_TYPE = 'assets/fonts/8bitOperatorPlus-Bold.ttf'
-FONT_SIZE_SMALL = 32
-FONT_SIZE_NORMAL = 48
-FONT_SIZE_BIG = 64
+FONT_SIZE_SMALL     = 32
+FONT_SIZE_NORMAL    = 48
+FONT_SIZE_BIG       = 64
 
 # Main Menu / Title
-GAME_TITLE = '> B E A T G A M E <'
+GAME_TITLE  = '> B E A T G A M E <'
 GAME_AUTHOR = 'bydariogamer'
 MENU_BACKGROUND = 'assets/images/title_background.png'
 
 HELP_IMAGE = 'assets/images/help.png'
 
 # Ingame
-LIFE_ICO = 'assets/images/heart.png'
-ECU_ICO = 'assets/images/ecu.png'
-WIN_MESSAGE = 'YOU WIN'
+HEART_ICON = 'assets/images/heart.png'
+ECU_ICON  = 'assets/images/ecu.png'
+WIN_MESSAGE   = 'YOU WIN'
 DEATH_MESSAGE = 'YOU LOSE'

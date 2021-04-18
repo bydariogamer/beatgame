@@ -41,7 +41,7 @@ WHITE = (255, 255, 255)
 FONT = pygame.font.Font(config.FONT_TYPE, config.FONT_SIZE_NORMAL)
 FONT_BIG = pygame.font.Font(config.FONT_TYPE, config.FONT_SIZE_BIG)
 FONT_SMALL = pygame.font.Font(config.FONT_TYPE, config.FONT_SIZE_SMALL)
-LIFE = pygame.image.load(config.LIFE_ICO)
+LIFE = pygame.image.load(config.HEART_ICON)
 LIFE.set_colorkey(WHITE)
 LIFE = LIFE.convert()
 
@@ -234,7 +234,7 @@ while state != 'close':
 
     # LEVEL ITSELF
     if state == 'level':
-        heart = pygame.image.load(config.LIFE_ICO)
+        heart = pygame.image.load(config.HEART_ICON)
         ecu = pygame.image.load(config.ECU_ICO)
         ecu.set_colorkey((255, 255, 255))
         damage = pygame.Surface((DISP_WID, DISP_HEI))
