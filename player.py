@@ -80,10 +80,12 @@ class Player:
                     if self.vel_y < 0:
                         self.vel_y = 0
                     self.jump = 0
-
-            #show particles when the player is in the air
+            
+            # increase score
             if self.level.obstacles:
                 self.score += self.combo *(config.SCORE_POINTS_PER_SECOND/config.BASE_FPS)
+            
+            # show particles when the player is in the air
             self.particle_counter += 1
             if self.particle_counter>=config.BASE_FPS/config.PARTICLES_PER_SECOND:
                 self.particles.append(self.rect.y)
@@ -116,10 +118,10 @@ class Player:
                     self.stars.append([int(random.uniform(0, config.DISP_WID)) +  config.DISP_WID, int(random.uniform(0, config.DISP_HEI - config.FLOOR_HEIGHT))])
 
     def damage(self):
-        self.shield -= 1
-        if self.shield < 0:
-            self.life += self.shield
-            self.shield = 0
+        if self.shield > 0:
+            self.shield -= 1
+        else:
+            self.life -= 1
         self.wrong.play()
         
     def draw(self, game):
