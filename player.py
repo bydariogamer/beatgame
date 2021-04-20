@@ -38,7 +38,7 @@ class Player:
         self.score = 0.
         self.combo = 0
 
-        self.life = self.level.duration//3 + 5
+        self.life = config.HEALTH_POINTS_PER_OBSTACLE * len(self.level.obstacles)
         self.shield = 2
 
         self.collide = False

@@ -47,6 +47,7 @@ JUMP_HEIGHT              = 6.25 # unit: height levels
 HIGHSCORE_FILENAME = '.score'
 SCORE_POINTS_PER_SECOND = 60
 SHIELD_MAXIMUM          = 10
+HEALTH_POINTS_PER_OBSTACLE = 0.09
 
 # Level generation
 BPM_FINDER_SUBSAMPLING = 500
