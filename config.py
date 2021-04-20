@@ -46,7 +46,7 @@ JUMP_LENGTH              = 1.6 # unit: blocks
 JUMP_HEIGHT              = 6.25 # unit: height levels
 HIGHSCORE_FILENAME = '.score'
 SCORE_POINTS_PER_SECOND = 60
-SHIELD_MAXIMUM          = 10
+SHIELD_MAXIMUM          = 4
 HEALTH_POINTS_PER_OBSTACLE = 0.09
 
 # Level generation
