@@ -22,11 +22,13 @@ class Level:
 
         # Find tempo of the song
         BPM = bpm_finder.getBPM(self.array, self.duration)
-        blocks_per_sec = BPM/60.
-        while blocks_per_sec < config.BLOCKS_PER_SECOND_AIM*0.66:
-            blocks_per_sec *= 2
-        while blocks_per_sec > config.BLOCKS_PER_SECOND_AIM*1.33:
-            blocks_per_sec /= 2
+        def adjust_frequency_to_aim(frequency, aim):
+            while frequency < aim * 0.66:
+                frequency *= 2
+            while frequency > aim * 1.33:
+                frequency /= 2
+            return frequency
+        blocks_per_sec = adjust_frequency_to_aim(BPM/60., config.BLOCKS_PER_SECOND_AIM)
         print('Blocks per second: ', blocks_per_sec, 'that\'s', blocks_per_sec*60, 'bpm')
 
         # Build map from audio
@@ -76,3 +78,9 @@ class Level:
         for rect_color in self.colors:
             if rect_color.a < 255:
                 rect_color.a = 255
+
+        # Set gravity to the beat
+        seconds_per_jump = config.JUMP_LENGTH/blocks_per_sec
+        self.jump_speed = 4 * config.JUMP_HEIGHT * block_hei / seconds_per_jump
+        self.gravity = 2 * self.jump_speed / seconds_per_jump
+        

@@ -34,8 +34,6 @@ class Player:
         self.vel_x = 0
         self.vel_y = 0.
         self.jump = 0
-        
-        self.grav = 2*float(config.JUMPS_PER_SECOND)*config.VELOCITY_Y_ON_JUMP
 
         self.score = 0.
         self.combo = 0
@@ -68,7 +66,7 @@ class Player:
                     if self.vel_y < config.VELOCITY_Y_DURING_DAMAGE:
                         self.vel_y = float(config.VELOCITY_Y_DURING_DAMAGE)
             if not self.collide:
-                self.vel_y -= self.grav/config.BASE_FPS
+                self.vel_y -= self.level.gravity/config.BASE_FPS
             self.rect.y -= self.vel_y/config.BASE_FPS   
             if self.rect.y >= self.floor:
                 self.rect.y = self.floor
@@ -174,9 +172,9 @@ class Player:
                 if self.shield > config.SHIELD_MAXIMUM:
                     self.shield = config.SHIELD_MAXIMUM
             if self.vel_y < 0:
-                self.vel_y = float(config.VELOCITY_Y_ON_JUMP)
+                self.vel_y = self.level.jump_speed
             else:
-                self.vel_y += config.VELOCITY_Y_ON_JUMP
+                self.vel_y += self.level.jump_speed
         if not self.life:
             self.ended = True
 
