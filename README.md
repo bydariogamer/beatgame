@@ -9,4 +9,4 @@ Requires `numpy` and `pygame` modules, that can be easily installed opening a te
 ```pip install -r requirements.txt```
 
 ## LICENSE
-The game itself is under the GNU GPL 3.0+ (you can read a copy in `LICENSE`), but the songs can have their own license. Check them at `CREDITS.md`.
+The game itself is under the GNU GPL 3.0+ (you can read a copy in [`LICENSE`](LICENSE)), but the songs can have their own license. Check them at [`CREDITS.md`](CREDITS.md).
