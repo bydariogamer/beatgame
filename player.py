@@ -21,10 +21,13 @@ class Player:
         for key in config.PLAYER_ICONS:
             self.images[key] = pygame.image.load(config.PLAYER_ICONS[key]).convert()
         self.particle = pygame.image.load(config.PARTICLE_ICON).convert()
+
         self.health_dmg_sound = pygame.mixer.Sound(config.HEALTH_DAMAGE_SOUND)
         self.health_dmg_sound.set_volume(config.HEALTH_DAMAGE_VOLUME)
         self.shield_dmg_sound = pygame.mixer.Sound(config.SHIELD_DAMAGE_SOUND)
         self.shield_dmg_sound.set_volume(config.SHIELD_DAMAGE_VOLUME)
+        self.shield_regen_sound = pygame.mixer.Sound(config.SHIELD_REGENERATION_SOUND)
+        self.shield_regen_sound.set_volume(config.SHIELD_REGENERATION_VOLUME)
 
         self.particle_counter = 0
 
@@ -173,9 +176,9 @@ class Player:
             if self.level.obstacles:
                 if self.jump == 1:
                     self.combo += 1
-                self.shield += self.combo
-                if self.shield > config.SHIELD_MAXIMUM:
-                    self.shield = config.SHIELD_MAXIMUM
+                if self.shield < config.SHIELD_MAXIMUM:
+                    self.shield += 1
+                    self.shield_regen_sound.play()
             if self.vel_y < 0:
                 self.vel_y = self.level.jump_speed
             else:
