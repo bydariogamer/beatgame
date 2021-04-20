@@ -21,8 +21,10 @@ class Player:
         for key in config.PLAYER_ICONS:
             self.images[key] = pygame.image.load(config.PLAYER_ICONS[key]).convert()
         self.particle = pygame.image.load(config.PARTICLE_ICON).convert()
-        self.wrong = pygame.mixer.Sound(config.WRONG_SOUND)
-        self.wrong.set_volume(config.WRONG_VOLUME)
+        self.health_dmg_sound = pygame.mixer.Sound(config.HEALTH_DAMAGE_SOUND)
+        self.health_dmg_sound.set_volume(config.HEALTH_DAMAGE_VOLUME)
+        self.shield_dmg_sound = pygame.mixer.Sound(config.SHIELD_DAMAGE_SOUND)
+        self.shield_dmg_sound.set_volume(config.SHIELD_DAMAGE_VOLUME)
 
         self.particle_counter = 0
 
@@ -120,9 +122,10 @@ class Player:
     def damage(self):
         if self.shield > 0:
             self.shield -= 1
+            self.shield_dmg_sound.play()
         else:
             self.life -= 1
-        self.wrong.play()
+            self.health_dmg_sound.play()
         
     def draw(self, game):
         # draw background

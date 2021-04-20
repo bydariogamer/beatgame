@@ -34,8 +34,10 @@ PLAYER_ICONS = {
 }
 PARTICLE_ICON = 'assets/images/particle.png'
 PARTICLES_PER_SECOND = 20
-WRONG_SOUND  = 'assets/sounds/wrong.wav'
-WRONG_VOLUME = 0.4
+HEALTH_DAMAGE_SOUND  = 'assets/sounds/wrong.wav'
+HEALTH_DAMAGE_VOLUME = 0.5
+SHIELD_DAMAGE_SOUND  = 'assets/sounds/wrong.wav'
+SHIELD_DAMAGE_VOLUME = 0.4
 STARS_COUNT  = 30
 STAR_SIZE    = 2
 FLOOR_HEIGHT = 100
