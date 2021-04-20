@@ -34,6 +34,5 @@ Check CC BY-SA 3.0 at https://creativecommons.org/licenses/by-sa/3.0/
 
 # IMAGES
 
-The /assets/images were made by me or were modified by me from ones under Creative Commons Zero.
-Check CC0 at https://creativecommons.org/publicdomain/zero/1.0/
-(To unofficially sum up: no copyright)
+All images in /assets/images were made by [bydariogamer](https://github.com/bydariogamer). The images by bydariogamer are distributed under the Creative Commons Attribution-ShareAlike 3.0 License (CC BY-SA 3.0).
+Check CC BY-SA 3.0 at https://creativecommons.org/licenses/by-sa/3.0/
