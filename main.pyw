@@ -47,12 +47,13 @@ LIFE = LIFE.convert()
 
 
 def add_songs_in_folder(folder, songs, recursive = True):
-    for item in os.listdir(os.path.join(PATH, 'assets', 'songs')):
-        path = os.path.join(PATH, 'assets', 'songs', item)
+    for item in os.listdir(folder):
+        path = os.path.join(PATH, folder, item)
         if os.path.isfile(path):
             song_title = item.split('.')[0].replace('_', ' ')
             songs.append([song_title, path])
         if recursive and os.path.isdir(path):
+            print(item)
             add_songs_in_folder(path, songs, recursive)
 
 SONGS = []
