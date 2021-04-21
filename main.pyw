@@ -45,11 +45,19 @@ LIFE = pygame.image.load(config.HEART_ICON)
 LIFE.set_colorkey(WHITE)
 LIFE = LIFE.convert()
 
+
+def add_songs_in_folder(folder, songs, recursive = True):
+    for item in os.listdir(folder):
+        path = os.path.join(PATH, folder, item)
+        if os.path.isfile(path):
+            song_title = item.split('.')[0].replace('_', ' ')
+            songs.append([song_title, path])
+        if recursive and os.path.isdir(path):
+            print(item)
+            add_songs_in_folder(path, songs, recursive)
+
 SONGS = []
-for file in os.listdir(os.path.join(PATH, 'assets', 'songs')):
-    if os.path.isfile(os.path.join(PATH, 'assets', 'songs', file)):
-        new_song = file.split('.')[0]
-        SONGS.append([new_song.replace('_', ' '), os.path.join(PATH, 'assets', 'songs', file)])
+add_songs_in_folder(os.path.join(PATH, 'assets', 'songs'), SONGS)
 
 
 def pager(length, cut):
