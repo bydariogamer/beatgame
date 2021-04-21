@@ -21,8 +21,13 @@ class Player:
         for key in config.PLAYER_ICONS:
             self.images[key] = pygame.image.load(config.PLAYER_ICONS[key]).convert()
         self.particle = pygame.image.load(config.PARTICLE_ICON).convert()
-        self.wrong = pygame.mixer.Sound(config.WRONG_SOUND)
-        self.wrong.set_volume(config.WRONG_VOLUME)
+
+        self.health_dmg_sound = pygame.mixer.Sound(config.HEALTH_DAMAGE_SOUND)
+        self.health_dmg_sound.set_volume(config.HEALTH_DAMAGE_VOLUME)
+        self.shield_dmg_sound = pygame.mixer.Sound(config.SHIELD_DAMAGE_SOUND)
+        self.shield_dmg_sound.set_volume(config.SHIELD_DAMAGE_VOLUME)
+        self.shield_regen_sound = pygame.mixer.Sound(config.SHIELD_REGENERATION_SOUND)
+        self.shield_regen_sound.set_volume(config.SHIELD_REGENERATION_VOLUME)
 
         self.particle_counter = 0
 
@@ -38,7 +43,7 @@ class Player:
         self.score = 0.
         self.combo = 0
 
-        self.life = self.level.duration//3 + 5
+        self.life = config.HEALTH_POINTS_PER_OBSTACLE * len(self.level.obstacles)
         self.shield = 2
 
         self.collide = False
@@ -80,10 +85,12 @@ class Player:
                     if self.vel_y < 0:
                         self.vel_y = 0
                     self.jump = 0
-
-            #show particles when the player is in the air
+            
+            # increase score
             if self.level.obstacles:
                 self.score += self.combo *(config.SCORE_POINTS_PER_SECOND/config.BASE_FPS)
+            
+            # show particles when the player is in the air
             self.particle_counter += 1
             if self.particle_counter>=config.BASE_FPS/config.PARTICLES_PER_SECOND:
                 self.particles.append(self.rect.y)
@@ -116,11 +123,12 @@ class Player:
                     self.stars.append([int(random.uniform(0, config.DISP_WID)) +  config.DISP_WID, int(random.uniform(0, config.DISP_HEI - config.FLOOR_HEIGHT))])
 
     def damage(self):
-        self.shield -= 1
-        if self.shield < 0:
-            self.life += self.shield
-            self.shield = 0
-        self.wrong.play()
+        if self.shield > 0:
+            self.shield -= 1
+            self.shield_dmg_sound.play()
+        else:
+            self.life -= 1
+            self.health_dmg_sound.play()
         
     def draw(self, game):
         # draw background
@@ -168,9 +176,9 @@ class Player:
             if self.level.obstacles:
                 if self.jump == 1:
                     self.combo += 1
-                self.shield += self.combo
-                if self.shield > config.SHIELD_MAXIMUM:
-                    self.shield = config.SHIELD_MAXIMUM
+                if self.shield < config.SHIELD_MAXIMUM:
+                    self.shield += 1
+                    self.shield_regen_sound.play()
             if self.vel_y < 0:
                 self.vel_y = self.level.jump_speed
             else:

@@ -34,8 +34,12 @@ PLAYER_ICONS = {
 }
 PARTICLE_ICON = 'assets/images/particle.png'
 PARTICLES_PER_SECOND = 20
-WRONG_SOUND  = 'assets/sounds/wrong.wav'
-WRONG_VOLUME = 0.4
+HEALTH_DAMAGE_SOUND  = 'assets/sounds/aztec_death_whistle.wav'
+HEALTH_DAMAGE_VOLUME = 0.5
+SHIELD_DAMAGE_SOUND  = 'assets/sounds/wrong.wav'
+SHIELD_DAMAGE_VOLUME = 0.5
+SHIELD_REGENERATION_SOUND  = 'assets/sounds/shield_regeneration.wav'
+SHIELD_REGENERATION_VOLUME = 0.5
 STARS_COUNT  = 30
 STAR_SIZE    = 2
 FLOOR_HEIGHT = 100
@@ -46,7 +50,8 @@ JUMP_LENGTH              = 1.6 # unit: blocks
 JUMP_HEIGHT              = 6.25 # unit: height levels
 HIGHSCORE_FILENAME = '.score'
 SCORE_POINTS_PER_SECOND = 60
-SHIELD_MAXIMUM          = 10
+SHIELD_MAXIMUM          = 4
+HEALTH_POINTS_PER_OBSTACLE = 0.09
 
 # Level generation
 BPM_FINDER_SUBSAMPLING = 500
