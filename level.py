@@ -2,7 +2,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 import pygame
 import random
-from colors import neon
+import colors
 from obstacle import Obstacle
 import config
 import bpm_finder
@@ -60,7 +60,7 @@ class Level:
 
         # Assign graphical elements to blocks
         self.obstacles = []
-        self.color = pygame.color.Color(random.choice(list(neon.values())))
+        self.color = pygame.color.Color(random.choice(list(colors.neon.values())))
         self.colors = []
         floor_pos = config.DISP_HEI - config.FLOOR_HEIGHT
         block_hei = floor_pos / config.HEIGHT_LEVELS * config.RELATIVE_BLOCK_HEIGHT
