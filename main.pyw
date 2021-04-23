@@ -45,11 +45,20 @@ LIFE = pygame.image.load(config.HEART_ICON)
 LIFE.set_colorkey(WHITE)
 LIFE = LIFE.convert()
 
+
+def add_songs_in_folder(folder, songs, recursive=True):
+    for item in os.listdir(folder):
+        path = os.path.join(PATH, folder, item)
+        if os.path.isfile(path):
+            song_title = item.split('.')[0].replace('_', ' ')
+            songs.append([song_title, path])
+        if recursive and os.path.isdir(path):
+            print(item)
+            add_songs_in_folder(path, songs, recursive)
+
+
 SONGS = []
-for file in os.listdir(os.path.join(PATH, 'assets', 'songs')):
-    if os.path.isfile(os.path.join(PATH, 'assets', 'songs', file)):
-        new_song = file.split('.')[0]
-        SONGS.append([new_song.replace('_', ' '), os.path.join(PATH, 'assets', 'songs', file)])
+add_songs_in_folder(os.path.join(PATH, 'assets', 'songs'), SONGS)
 
 
 def pager(length, cut):
@@ -240,6 +249,8 @@ while state != 'close':
         damage = pygame.Surface((DISP_WID, DISP_HEI))
         damage.fill((20, 0, 0, 30))
         time_started = None
+        lose_played = False
+        lose = pygame.mixer.Sound('assets/sounds/lose.ogg')
         while state == 'level':
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -290,11 +301,9 @@ while state != 'close':
                 end_rect = end.get_rect()
                 end_rect.center = game_rect.center
                 game.blit(end, end_rect.topleft)
-            if player.collide:
-                pass
-                # TODO (big todo) I need to add some kind of... screen blink
-                #  or something if player collides... I tried to make the screen
-                #  a bit red, but it definitely fails...
+                if not lose_played:
+                    lose.play()
+                    lose_played = True
 
             # FLIP
             render()

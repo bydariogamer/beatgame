@@ -1,8 +1,11 @@
 import numpy as np
-from matplotlib import pyplot as plt
 import config
+if config.DEBUG_SHOW_LEVEL or config.DEBUG_BPM_FINDER:
+    from matplotlib import pyplot as plt
+
 
 # Find the tempo (Beats Per Minute) of a song (assuming constant tempo)
+
 
 def default_autocorrelation(length, maximum):
     result = np.zeros(length)
@@ -11,10 +14,12 @@ def default_autocorrelation(length, maximum):
         result[length - i - 1] = temp
     return result
 
+
 def correct_autocorrelation(autocorrelation, length):
     result = autocorrelation - default_autocorrelation(length, max(autocorrelation))
     result += max(0, -min(result))  # raise result above 0
     return result
+
 
 def argmax(signal):
     length = len(signal)
@@ -39,6 +44,7 @@ def argmax(signal):
         print('Maximum at the beginning (', a, ') or end (', b, ') ignored')
     return max_index
 
+
 def findBPMinRange(corrected_autocorrelation, minBPM, maxBPM, duration, fineAdjustRecursion=3):
     length = len(corrected_autocorrelation)
     firstOffset = int(60/maxBPM/duration*length)
@@ -48,7 +54,7 @@ def findBPMinRange(corrected_autocorrelation, minBPM, maxBPM, duration, fineAdju
     
     interestingPart = corrected_autocorrelation[firstIndex:lastIndex]
     n = 1   # uneven integer, not choosing one leads to worse results
-    ddinterestingPart = np.concatenate([np.zeros(n),np.diff(np.diff(interestingPart, n), n), np.zeros(n)])/(n**2)
+    ddinterestingPart = np.concatenate([np.zeros(n), np.diff(np.diff(interestingPart, n), n), np.zeros(n)])/(n**2) # dd is the second derivative
 
     indexBeatLength = argmax(interestingPart) + firstOffset
     indexBeatLength_dd = argmax(-ddinterestingPart) + firstOffset
@@ -76,10 +82,15 @@ def findBPMinRange(corrected_autocorrelation, minBPM, maxBPM, duration, fineAdju
         plt.show()
 
     if not temposAreSimilar(indexBeatLength, indexBeatLength_dd):
-        # for a valid tempo half the tempo will also have a good autocorrelation
-        score = corrected_autocorrelation[length//2 + 2*indexBeatLength]
-        score_dd = corrected_autocorrelation[length//2 + 2*indexBeatLength_dd]                
-        if score > score_dd:
+        # Compare the quality of the findings by comparing the autocorrelation for 2, 3 and 4 beats
+        beats = np.array([2, 3, 4])
+        scores = np.zeros(len(beats))
+        scores_dd = np.zeros(len(beats))
+        for i, n in enumerate(beats):
+            scores[i] = corrected_autocorrelation[length//2 + n*indexBeatLength]
+            scores_dd[i] = corrected_autocorrelation[length//2 + n*indexBeatLength_dd]  
+         
+        if sum(scores) > sum(scores_dd):
             rough_BPM = BPM
         else:
             rough_BPM = BPM_dd
@@ -93,8 +104,8 @@ def findBPMinRange(corrected_autocorrelation, minBPM, maxBPM, duration, fineAdju
             plt.plot(xRange, corrected_autocorrelation[length//2: length//2 + lastOffset*2])
             plt.scatter(indexBeatLength, interestingPart[indexBeatLength - firstOffset], label=str(BPM) + ' bpm')
             plt.scatter(indexBeatLength_dd, -ddinterestingPart[indexBeatLength_dd - firstOffset], label=str(BPM_dd) + ' bpm')
-            plt.scatter(2*indexBeatLength, score, label=str(0.5*BPM) + ' bpm')
-            plt.scatter(2*indexBeatLength_dd, score_dd, label=str(0.5*BPM_dd) + ' bpm')
+            plt.scatter(beats*indexBeatLength, scores, label=str(BPM) + ' bpm beats')
+            plt.scatter(beats*indexBeatLength_dd, scores_dd, label=str(BPM_dd) + ' bpm beats')
             plt.legend()
             plt.show()
     else:
@@ -109,6 +120,7 @@ def findBPMinRange(corrected_autocorrelation, minBPM, maxBPM, duration, fineAdju
         return 2*findBPMinRange(corrected_autocorrelation, rough_BPM*0.5*0.95, rough_BPM*0.5*1.05, duration, fineAdjustRecursion-1)
     else:
         return rough_BPM
+
 
 def getBPM(song, duration):
     # Simplify signal
