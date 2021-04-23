@@ -1,12 +1,12 @@
 import numpy as np
-from matplotlib import pyplot as plt
 import pygame
 import random
 import colors
 from obstacle import Obstacle
 import config
 import bpm_finder
-
+if config.DEBUG_SHOW_LEVEL or config.DEBUG_BPM_FINDER:
+    from matplotlib import pyplot as plt
 
 pygame.init()
 pygame.mixer.init()
@@ -22,6 +22,7 @@ class Level:
 
         # Find tempo of the song
         BPM = bpm_finder.getBPM(self.array, self.duration)
+
         def adjust_frequency_to_aim(frequency, aim):
             while frequency < aim * 0.66:
                 frequency *= 2
@@ -83,4 +84,3 @@ class Level:
         seconds_per_jump = config.JUMP_LENGTH/blocks_per_sec
         self.jump_speed = 4 * config.JUMP_HEIGHT * block_hei / seconds_per_jump
         self.gravity = 2 * self.jump_speed / seconds_per_jump
-        

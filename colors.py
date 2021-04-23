@@ -13,6 +13,7 @@ metal = {
     'silver': (0xE3, 0xE4, 0xE5)
     }
 
-planets = {'moon': (194, 197, 204),
-        'mars': (0xFE,0x87,0x5F)
-        }
+planets = {
+    'moon': (194, 197, 204),
+    'mars': (0xFE, 0x87, 0x5F)
+    }
