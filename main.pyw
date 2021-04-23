@@ -298,11 +298,6 @@ while state != 'close':
                 end_rect = end.get_rect()
                 end_rect.center = game_rect.center
                 game.blit(end, end_rect.topleft)
-            if player.collide:
-                pass
-                # TODO (big todo) I need to add some kind of... screen blink
-                #  or something if player collides... I tried to make the screen
-                #  a bit red, but it definitely fails...
 
             # FLIP
             render()
