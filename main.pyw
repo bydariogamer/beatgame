@@ -249,6 +249,8 @@ while state != 'close':
         damage = pygame.Surface((DISP_WID, DISP_HEI))
         damage.fill((20, 0, 0, 30))
         time_started = None
+        lose_played = False
+        lose = pygame.mixer.Sound('assets/sounds/lose.ogg')
         while state == 'level':
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -299,6 +301,9 @@ while state != 'close':
                 end_rect = end.get_rect()
                 end_rect.center = game_rect.center
                 game.blit(end, end_rect.topleft)
+                if not lose_played:
+                    lose.play()
+                    lose_played = True
 
             # FLIP
             render()
