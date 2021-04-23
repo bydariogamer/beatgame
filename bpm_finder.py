@@ -1,8 +1,11 @@
 import numpy as np
-from matplotlib import pyplot as plt
 import config
+if config.DEBUG_SHOW_LEVEL or config.DEBUG_BPM_FINDER:
+    from matplotlib import pyplot as plt
+
 
 # Find the tempo (Beats Per Minute) of a song (assuming constant tempo)
+
 
 def default_autocorrelation(length, maximum):
     result = np.zeros(length)
@@ -11,10 +14,12 @@ def default_autocorrelation(length, maximum):
         result[length - i - 1] = temp
     return result
 
+
 def correct_autocorrelation(autocorrelation, length):
     result = autocorrelation - default_autocorrelation(length, max(autocorrelation))
     result += max(0, -min(result))  # raise result above 0
     return result
+
 
 def argmax(signal):
     length = len(signal)
@@ -39,6 +44,7 @@ def argmax(signal):
         print('Maximum at the beginning (', a, ') or end (', b, ') ignored')
     return max_index
 
+
 def findBPMinRange(corrected_autocorrelation, minBPM, maxBPM, duration, fineAdjustRecursion=3):
     length = len(corrected_autocorrelation)
     firstOffset = int(60/maxBPM/duration*length)
@@ -48,7 +54,7 @@ def findBPMinRange(corrected_autocorrelation, minBPM, maxBPM, duration, fineAdju
     
     interestingPart = corrected_autocorrelation[firstIndex:lastIndex]
     n = 1   # uneven integer, not choosing one leads to worse results
-    ddinterestingPart = np.concatenate([np.zeros(n),np.diff(np.diff(interestingPart, n), n), np.zeros(n)])/(n**2) # dd is the second derivative
+    ddinterestingPart = np.concatenate([np.zeros(n), np.diff(np.diff(interestingPart, n), n), np.zeros(n)])/(n**2) # dd is the second derivative
 
     indexBeatLength = argmax(interestingPart) + firstOffset
     indexBeatLength_dd = argmax(-ddinterestingPart) + firstOffset
@@ -114,6 +120,7 @@ def findBPMinRange(corrected_autocorrelation, minBPM, maxBPM, duration, fineAdju
         return 2*findBPMinRange(corrected_autocorrelation, rough_BPM*0.5*0.95, rough_BPM*0.5*1.05, duration, fineAdjustRecursion-1)
     else:
         return rough_BPM
+
 
 def getBPM(song, duration):
     # Simplify signal
