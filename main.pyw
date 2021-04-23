@@ -46,7 +46,7 @@ LIFE.set_colorkey(WHITE)
 LIFE = LIFE.convert()
 
 
-def add_songs_in_folder(folder, songs, recursive = True):
+def add_songs_in_folder(folder, songs, recursive=True):
     for item in os.listdir(folder):
         path = os.path.join(PATH, folder, item)
         if os.path.isfile(path):
@@ -55,6 +55,7 @@ def add_songs_in_folder(folder, songs, recursive = True):
         if recursive and os.path.isdir(path):
             print(item)
             add_songs_in_folder(path, songs, recursive)
+
 
 SONGS = []
 add_songs_in_folder(os.path.join(PATH, 'assets', 'songs'), SONGS)
