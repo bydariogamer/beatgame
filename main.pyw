@@ -8,6 +8,7 @@ from level import Level
 import colors
 import config
 from config import DISP_WID, DISP_HEI, BASE_FPS
+from pydub import AudioSegment
 
 
 # INITIALIZE PYGAME
@@ -63,6 +64,15 @@ add_songs_in_folder(os.path.join(PATH, 'assets', 'songs'), SONGS)
 
 def pager(length, cut):
     return [slice(i, min(i + cut, length)) for i in range(0, length, cut)]
+
+
+def transform(path, new_format, replace=False):
+    audio = AudioSegment.from_file(path)
+    name = os.path.basename(path).split('.')[0] + '.' + new_format
+    new_path = os.path.join(os.path.dirname(path), name)
+    audio.export(new_path, new_format)
+    if replace:
+        os.remove(path)
 
 
 # GAME LOOP
