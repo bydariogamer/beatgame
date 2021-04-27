@@ -77,8 +77,8 @@ SONGS = []  # [song title, path]
 add_songs_in_folder(os.path.join(PATH, 'assets', 'songs'), SONGS)
 
 for song in SONGS:
-    if song[0].split('.')[-1] != 'ogg':
-        song[0] = transform(song[0], 'ogg', True, True)
+    if song[0].split('.')[-1].lower() != 'ogg':
+        song[1] = transform(song[1], 'ogg', True, True)
 
 
 # GAME LOOP
