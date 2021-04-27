@@ -12,6 +12,7 @@ FONT_SIZE_BIG       = 64
 # Main Menu / Title
 GAME_TITLE  = '> B E A T G A M E <'
 GAME_AUTHOR = 'bydariogamer'
+GAME_AUTHOR2 = 'Sogolumbo'
 MENU_BACKGROUND = 'assets/images/title_background.png'
 
 HELP_IMAGE = 'assets/images/help.png'

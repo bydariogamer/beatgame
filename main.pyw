@@ -76,9 +76,9 @@ def transform(path, new_format, replace=False, return_path=False):
 SONGS = []  # [song title, path]
 add_songs_in_folder(os.path.join(PATH, 'assets', 'songs'), SONGS)
 
-for song in SONGS:
-    if song[0].split('.')[-1].lower() != 'ogg':
-        song[1] = transform(song[1], 'ogg', True, True)
+##for song in SONGS:
+##    if song[0].split('.')[-1].lower() != 'ogg':
+##        song[1] = transform(song[1], 'ogg', True, True)
 
 
 # GAME LOOP
@@ -97,9 +97,10 @@ while state != 'close':
     if state == 'start':
         title = FONT_BIG.render(config.GAME_TITLE, False, colors.neon['blue'])
         author = FONT_SMALL.render(config.GAME_AUTHOR, False, colors.neon['red'])
-        play_button = Button(colors.neon['fucsia'], 300, 150, 200, 70, image=FONT.render('PLAY', False, (0, 0, 0)))
-        help_button = Button(colors.neon['fucsia'], 300, 250, 200, 70, image=FONT.render('HELP', False, (0, 0, 0)))
-        exit_button = Button(colors.neon['fucsia'], 300, 350, 200, 70, image=FONT.render('EXIT', False, (0, 0, 0)))
+        author2 = FONT_SMALL.render(config.GAME_AUTHOR2, False, colors.neon['red'])
+        play_button = Button(colors.neon['fucsia'], 300, 200, 200, 70, image=FONT.render('PLAY', False, (0, 0, 0)))
+        help_button = Button(colors.neon['fucsia'], 300, 280, 200, 70, image=FONT.render('HELP', False, (0, 0, 0)))
+        exit_button = Button(colors.neon['fucsia'], 300, 360, 200, 70, image=FONT.render('EXIT', False, (0, 0, 0)))
         background = pygame.image.load(config.MENU_BACKGROUND).convert()
 
         # LOOP
@@ -130,6 +131,7 @@ while state != 'close':
             game.blit(background, (0, 0))
             game.blit(title, (90, 10))
             game.blit(author, (100, 90))
+            game.blit(author2, (100, 130))
             play_button.draw(game)
             help_button.draw(game)
             exit_button.draw(game)
