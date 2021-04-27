@@ -58,21 +58,27 @@ def add_songs_in_folder(folder, songs, recursive=True):
             add_songs_in_folder(path, songs, recursive)
 
 
-SONGS = []
-add_songs_in_folder(os.path.join(PATH, 'assets', 'songs'), SONGS)
-
-
 def pager(length, cut):
     return [slice(i, min(i + cut, length)) for i in range(0, length, cut)]
 
 
-def transform(path, new_format, replace=False):
+def transform(path, new_format, replace=False, return_path=False):
     audio = AudioSegment.from_file(path)
     name = os.path.basename(path).split('.')[0] + '.' + new_format
     new_path = os.path.join(os.path.dirname(path), name)
     audio.export(new_path, new_format)
     if replace:
         os.remove(path)
+    if return_path:
+        return new_path
+
+
+SONGS = []  # [song title, path]
+add_songs_in_folder(os.path.join(PATH, 'assets', 'songs'), SONGS)
+
+for song in SONGS:
+    if song[0].split('.')[-1] != 'ogg':
+        song[0] = transform(song[0], 'ogg', True, True)
 
 
 # GAME LOOP
