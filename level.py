@@ -21,7 +21,7 @@ class Level:
         self.blocks = []
 
         # Find tempo of the song
-        BPM = bpm_finder.getBPM(self.array, self.duration)
+        bpm = bpm_finder.get_bpm(self.array, self.duration)
 
         def adjust_frequency_to_aim(frequency, aim):
             while frequency < aim * 0.66:
@@ -29,7 +29,7 @@ class Level:
             while frequency > aim * 1.33:
                 frequency /= 2
             return frequency
-        blocks_per_sec = adjust_frequency_to_aim(BPM/60., config.BLOCKS_PER_SECOND_AIM)
+        blocks_per_sec = adjust_frequency_to_aim(bpm/60., config.BLOCKS_PER_SECOND_AIM)
         print('Blocks per second: ', blocks_per_sec, 'that\'s', blocks_per_sec*60, 'bpm')
 
         # Build map from audio
@@ -45,11 +45,11 @@ class Level:
         self.blocks *= config.HEIGHT_LEVELS/maximum
         self.blocks = self.blocks.clip(min=0, max=config.HEIGHT_LEVELS)
         # Clear space at the beginning of the song
-        start_Blocks = int(config.DISP_HEI/config.VELOCITY_X*blocks_per_sec)
-        for i in range(start_Blocks-start_Blocks*2//3):
+        start_blocks = int(config.DISP_HEI/config.VELOCITY_X*blocks_per_sec)
+        for i in range(start_blocks-start_blocks*2//3):
             self.blocks[i] = 0 # free plain
-        for i in range(start_Blocks-start_Blocks*2//3, start_Blocks): # ramping up to normal map
-            self.blocks[i] *= float(i)/start_Blocks*3/2-0.5
+        for i in range(start_blocks-start_blocks*2//3, start_blocks): # ramping up to normal map
+            self.blocks[i] *= float(i)/start_blocks*3/2-0.5
         # Quantize blocks
         self.blocks = np.round(self.blocks)
         

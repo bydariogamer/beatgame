@@ -62,7 +62,7 @@ class Player:
             self.collide = False
             offset = int(-timePassed * self.vel_x)
             for obstacle in self.level.obstacles:
-                obstacle.updateOffset(offset)
+                obstacle.update_offset(offset)
                 if self.rect.colliderect(obstacle):
                     self.damage()
                     self.collide = True
