@@ -50,7 +50,7 @@ def add_songs_in_folder(folder, songs, recursive=True):
     for item in os.listdir(folder):
         path = os.path.join(PATH, folder, item)
         if os.path.isfile(path):
-            song_title = item.split('.')[0].replace('_', ' ')
+            song_title = item.split(".")[0].replace("_", " ")
             songs.append([song_title, path])
         if recursive and os.path.isdir(path):
             print(item)
@@ -62,53 +62,77 @@ def pager(length, cut):
 
 
 SONGS = []  # [song title, path]
-add_songs_in_folder(os.path.join(PATH, 'assets', 'songs'), SONGS)
+add_songs_in_folder(os.path.join(PATH, "assets", "songs"), SONGS)
 
 
 # GAME LOOP
-state = 'start'
-while state != 'close':
+state = "start"
+while state != "close":
 
     # EMERGENCY EXIT
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            state = 'close'
+            state = "close"
         if event.type == pygame.VIDEORESIZE:
             display_rect = display.get_rect()
             resize = (display_rect.w / DISP_WID, display_rect.h / DISP_HEI)
 
     # START MENU
-    if state == 'start':
-        title = FONT_BIG.render(config.GAME_TITLE, False, colors.neon['blue'])
-        author = FONT_SMALL.render(config.GAME_AUTHOR, False, colors.neon['red'])
-        author2 = FONT_SMALL.render(config.GAME_AUTHOR2, False, colors.neon['red'])
-        play_button = Button(colors.neon['fucsia'], 300, 200, 200, 70, image=FONT.render('PLAY', False, (0, 0, 0)))
-        help_button = Button(colors.neon['fucsia'], 300, 280, 200, 70, image=FONT.render('HELP', False, (0, 0, 0)))
-        exit_button = Button(colors.neon['fucsia'], 300, 360, 200, 70, image=FONT.render('EXIT', False, (0, 0, 0)))
+    if state == "start":
+        title = FONT_BIG.render(config.GAME_TITLE, False, colors.neon["blue"])
+        author = FONT_SMALL.render(config.GAME_AUTHOR, False, colors.neon["red"])
+        author2 = FONT_SMALL.render(config.GAME_AUTHOR2, False, colors.neon["red"])
+        play_button = Button(
+            colors.neon["fucsia"],
+            300,
+            200,
+            200,
+            70,
+            image=FONT.render("PLAY", False, (0, 0, 0)),
+        )
+        help_button = Button(
+            colors.neon["fucsia"],
+            300,
+            280,
+            200,
+            70,
+            image=FONT.render("HELP", False, (0, 0, 0)),
+        )
+        exit_button = Button(
+            colors.neon["fucsia"],
+            300,
+            360,
+            200,
+            70,
+            image=FONT.render("EXIT", False, (0, 0, 0)),
+        )
         background = pygame.image.load(config.MENU_BACKGROUND).convert()
 
         # LOOP
-        while state == 'start':
+        while state == "start":
             # EVENTS
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    state = 'close'
+                    state = "close"
                 if event.type == pygame.VIDEORESIZE:
                     display_rect = display.get_rect()
-                    resize = (float(display_rect.w) / float(DISP_WID), float(display_rect.h) / float(DISP_HEI))
+                    resize = (
+                        float(display_rect.w) / float(DISP_WID),
+                        float(display_rect.h) / float(DISP_HEI),
+                    )
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                    state = 'close'
+                    state = "close"
 
             # TIME
             clock.tick(BASE_FPS)
 
             # LOGIC
             if play_button.mouseclic(resize=resize):
-                state = 'choose'
+                state = "choose"
             if help_button.mouseclic(resize=resize):
-                state = 'help'
+                state = "help"
             if exit_button.mouseclic(resize=resize):
-                state = 'close'
+                state = "close"
 
             # RENDER
             game.fill((0, 0, 0))
@@ -124,24 +148,24 @@ while state != 'close':
             render()
             pygame.display.update()
 
-    if state == 'help':
+    if state == "help":
         help_page = pygame.image.load(config.HELP_IMAGE)
         help_page.set_colorkey((255, 255, 255))
         seen = False
-        while state == 'help':
+        while state == "help":
             # EVENTS
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    state = 'close'
+                    state = "close"
                 if event.type == pygame.VIDEORESIZE:
                     display_rect = display.get_rect()
                     resize = (display_rect.w / DISP_WID, display_rect.h / DISP_HEI)
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                    state = 'start'
+                    state = "start"
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     seen = True
                 if event.type == pygame.MOUSEBUTTONUP and seen:
-                    state = 'start'
+                    state = "start"
 
             # RENDER
             game.fill((240, 250, 240))
@@ -155,29 +179,56 @@ while state != 'close':
             clock.tick(BASE_FPS)
 
     # LEVEL SELECTOR
-    if state == 'choose':
+    if state == "choose":
         levels = []
-        page_back = Button(pygame.color.Color('gray'), 10, DISP_HEI-80, DISP_WID/2-30, 70, image=FONT.render('<', False, (0, 0, 0)))
-        page_forward = Button(pygame.color.Color('gray'), 20 + DISP_WID/2, DISP_HEI-80, DISP_WID/2-30, 70, image=FONT.render('>', False, (0, 0, 0)))
+        page_back = Button(
+            pygame.color.Color("gray"),
+            10,
+            DISP_HEI - 80,
+            DISP_WID / 2 - 30,
+            70,
+            image=FONT.render("<", False, (0, 0, 0)),
+        )
+        page_forward = Button(
+            pygame.color.Color("gray"),
+            20 + DISP_WID / 2,
+            DISP_HEI - 80,
+            DISP_WID / 2 - 30,
+            70,
+            image=FONT.render(">", False, (0, 0, 0)),
+        )
         page = 0
         pages = pager(len(SONGS), 5)
         color = random.choice(list(colors.neon.values()))
         for song in SONGS:
             title = FONT.render(song[0].upper(), False, (0, 0, 0))
-            levels.append([Button(color, 10, 10 + 80*(len(levels) % 5), DISP_WID-20, 70, image=title), song[1], song[0].upper()])
+            levels.append(
+                [
+                    Button(
+                        color,
+                        10,
+                        10 + 80 * (len(levels) % 5),
+                        DISP_WID - 20,
+                        70,
+                        image=title,
+                    ),
+                    song[1],
+                    song[0].upper(),
+                ]
+            )
 
         mouse_rel = False
-        while state == 'choose':
+        while state == "choose":
 
             # EVENTS
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    state = 'close'
+                    state = "close"
                 if event.type == pygame.VIDEORESIZE:
                     display_rect = display.get_rect()
                     resize = (display_rect.w / DISP_WID, display_rect.h / DISP_HEI)
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                    state = 'start'
+                    state = "start"
                 if event.type == pygame.MOUSEBUTTONUP:
                     mouse_rel = True
 
@@ -189,8 +240,10 @@ while state != 'close':
                 if level[0].mouseclic(resize=resize):
                     try:
                         if mouse_rel:
-                            player = Player(Level(pygame.mixer.Sound(level[1]), level[2]))
-                            state = 'level'
+                            player = Player(
+                                Level(pygame.mixer.Sound(level[1]), level[2])
+                            )
+                            state = "level"
 
                     except pygame.error:
                         clic = False
@@ -198,18 +251,33 @@ while state != 'close':
                             for event in pygame.event.get():
                                 if event.type == pygame.QUIT:
                                     clic = True
-                                    state = 'close'
+                                    state = "close"
                                 if event.type == pygame.VIDEORESIZE:
                                     display_rect = display.get_rect()
-                                    resize = (display_rect.w / DISP_WID, display_rect.h / DISP_HEI)
-                                if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                                    resize = (
+                                        display_rect.w / DISP_WID,
+                                        display_rect.h / DISP_HEI,
+                                    )
+                                if (
+                                    event.type == pygame.KEYDOWN
+                                    and event.key == pygame.K_ESCAPE
+                                ):
                                     clic = True
                                 if event.type == pygame.MOUSEBUTTONDOWN:
                                     clic = True
 
                             clock.tick(BASE_FPS)
-                            pygame.draw.rect(game, (255, 255, 255), (20, 100, DISP_WID-40, 70))
-                            game.blit(FONT_SMALL.render('ERROR LOADING SONG, CHECK FILE FORMAT', False, (255, 0, 0)), (30, 100))
+                            pygame.draw.rect(
+                                game, (255, 255, 255), (20, 100, DISP_WID - 40, 70)
+                            )
+                            game.blit(
+                                FONT_SMALL.render(
+                                    "ERROR LOADING SONG, CHECK FILE FORMAT",
+                                    False,
+                                    (255, 0, 0),
+                                ),
+                                (30, 100),
+                            )
                             render()
                             pygame.display.update()
 
@@ -244,7 +312,7 @@ while state != 'close':
             pygame.display.update()
 
     # LEVEL ITSELF
-    if state == 'level':
+    if state == "level":
         heart = pygame.image.load(config.HEART_ICON)
         ecu = pygame.image.load(config.ECU_ICON)
         ecu.set_colorkey((255, 255, 255))
@@ -252,16 +320,16 @@ while state != 'close':
         damage.fill((20, 0, 0, 30))
         time_started = None
         lose_played = False
-        lose = pygame.mixer.Sound('assets/sounds/lose.ogg')
-        while state == 'level':
+        lose = pygame.mixer.Sound("assets/sounds/lose.ogg")
+        while state == "level":
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    state = 'close'
+                    state = "close"
                 if event.type == pygame.VIDEORESIZE:
                     display_rect = display.get_rect()
                     resize = (display_rect.w / DISP_WID, display_rect.h / DISP_HEI)
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                    state = 'start'
+                    state = "start"
                     player.level.song.stop()
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                     if not player.run:
@@ -269,37 +337,47 @@ while state != 'close':
                         time_started = pygame.time.get_ticks()
                     player.spacebar()
             if player.ended:
-                state = 'start'
+                state = "start"
 
             # LOGIC
             if player.run:
-                player.update((pygame.time.get_ticks()-time_started)/1000)
-                
+                player.update((pygame.time.get_ticks() - time_started) / 1000)
+
             # RENDER
             player.draw(game)
 
-            lifes = FONT_SMALL.render(str(int(player.life)), False, colors.neon['orange'])
-            shield = FONT_SMALL.render(str(int(player.shield)), False, colors.neon['orange'])
+            lifes = FONT_SMALL.render(
+                str(int(player.life)), False, colors.neon["orange"]
+            )
+            shield = FONT_SMALL.render(
+                str(int(player.shield)), False, colors.neon["orange"]
+            )
             lifes_rect = lifes.get_rect()
             lifes_rect.topright = (700, 20)
             game.blit(lifes, lifes_rect.topleft)
             game.blit(heart, (lifes_rect.right, lifes_rect.center[1] - 14))
             game.blit(shield, (lifes_rect.left, lifes_rect.top + 30))
             game.blit(ecu, (lifes_rect.right, lifes_rect.center[1] + 16))
-            score = FONT_SMALL.render(str(int(player.score)), False, colors.neon['orange'])
-            combo = FONT_SMALL.render('  x '+str(int(player.combo)), False, colors.neon['orange'])
+            score = FONT_SMALL.render(
+                str(int(player.score)), False, colors.neon["orange"]
+            )
+            combo = FONT_SMALL.render(
+                "  x " + str(int(player.combo)), False, colors.neon["orange"]
+            )
             score_rect = score.get_rect()
             score_rect.x = 20
             score_rect.y = 20
             game.blit(score, score_rect.topleft)
             game.blit(combo, score_rect.topright)
             if not player.level.obstacles:
-                end = FONT_BIG.render(config.WIN_MESSAGE, False, colors.metal['gold'])
+                end = FONT_BIG.render(config.WIN_MESSAGE, False, colors.metal["gold"])
                 end_rect = end.get_rect()
                 end_rect.center = game_rect.center
                 game.blit(end, end_rect.topleft)
             if not player.life:
-                end = FONT_BIG.render(config.DEATH_MESSAGE, False, colors.metal['silver'])
+                end = FONT_BIG.render(
+                    config.DEATH_MESSAGE, False, colors.metal["silver"]
+                )
                 end_rect = end.get_rect()
                 end_rect.center = game_rect.center
                 game.blit(end, end_rect.topleft)
