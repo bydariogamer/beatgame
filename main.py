@@ -3,6 +3,7 @@ import pygame
 import os
 import sys
 import random
+
 from button import Button
 from player import Player
 from level import Level
@@ -25,7 +26,6 @@ pygame.display.set_icon(pygame.image.load(config.DISP_ICO))
 display = pygame.display.set_mode((DISP_WID, DISP_HEI), pygame.RESIZABLE)
 display_rect = display.get_rect()
 game = pygame.Surface((DISP_WID, DISP_HEI))
-game_rect = game.get_rect()
 resize = None
 
 
@@ -37,10 +37,11 @@ def render():
 
 
 # CONSTANTS
-FONT = pygame.font.Font(config.FONT_TYPE, config.FONT_SIZE_NORMAL)
-FONT_BIG = pygame.font.Font(config.FONT_TYPE, config.FONT_SIZE_BIG)
-FONT_SMALL = pygame.font.Font(config.FONT_TYPE, config.FONT_SIZE_SMALL)
-LIFE = pygame.image.load(config.HEART_ICON).convert_alpha()
+FONTS = {
+    "normal": pygame.font.Font(config.FONT_TYPE, config.FONT_SIZE_NORMAL),
+    "big": pygame.font.Font(config.FONT_TYPE, config.FONT_SIZE_BIG),
+    "small": pygame.font.Font(config.FONT_TYPE, config.FONT_SIZE_SMALL)
+}
 
 
 def add_songs_in_folder(folder, songs, recursive=True):
@@ -67,17 +68,17 @@ player = ...
 
 
 async def menu_start_loop():
-    global clock, display, display_rect, game, game_rect, resize, FONT, FONT_BIG, FONT_SMALL, LIFE, SONGS, state, player
-    title = FONT_BIG.render(config.GAME_TITLE, False, colors.neon["blue"])
-    author = FONT_SMALL.render(config.GAME_AUTHOR, False, colors.neon["red"])
-    author2 = FONT_SMALL.render(config.GAME_AUTHOR2, False, colors.neon["red"])
+    global clock, display, display_rect, game, resize, FONTS, SONGS, state, player
+    title = FONTS["big"].render(config.GAME_TITLE, False, colors.neon["blue"])
+    author = FONTS["small"].render(config.GAME_AUTHOR, False, colors.neon["red"])
+    author2 = FONTS["small"].render(config.GAME_AUTHOR2, False, colors.neon["red"])
     play_button = Button(
         colors.neon["fucsia"],
         300,
         200,
         200,
         70,
-        image=FONT.render("PLAY", False, (0, 0, 0)),
+        image=FONTS["normal"].render("PLAY", False, (0, 0, 0)),
     )
     help_button = Button(
         colors.neon["fucsia"],
@@ -85,7 +86,7 @@ async def menu_start_loop():
         280,
         200,
         70,
-        image=FONT.render("HELP", False, (0, 0, 0)),
+        image=FONTS["normal"].render("HELP", False, (0, 0, 0)),
     )
     exit_button = Button(
         colors.neon["fucsia"],
@@ -93,7 +94,7 @@ async def menu_start_loop():
         360,
         200,
         70,
-        image=FONT.render("EXIT", False, (0, 0, 0)),
+        image=FONTS["normal"].render("EXIT", False, (0, 0, 0)),
     )
     background = pygame.image.load(config.MENU_BACKGROUND).convert()
 
@@ -140,7 +141,7 @@ async def menu_start_loop():
 
 
 async def menu_help_loop():
-    global clock, display, display_rect, game, game_rect, resize, FONT, FONT_BIG, FONT_SMALL, LIFE, SONGS, state, player
+    global clock, display, display_rect, game, resize, FONTS, SONGS, state, player
 
     help_page = pygame.image.load(config.HELP_IMAGE)
     help_page.set_colorkey((255, 255, 255))
@@ -174,7 +175,7 @@ async def menu_help_loop():
 
 
 async def menu_choose_loop():
-    global clock, display, display_rect, game, game_rect, resize, FONT, FONT_BIG, FONT_SMALL, LIFE, SONGS, state, player
+    global clock, display, display_rect, game, resize, FONTS, SONGS, state, player
 
     levels = []
     page_back = Button(
@@ -183,7 +184,7 @@ async def menu_choose_loop():
         DISP_HEI - 80,
         DISP_WID / 2 - 30,
         70,
-        image=FONT.render("<", False, (0, 0, 0)),
+        image=FONTS["normal"].render("<", False, (0, 0, 0)),
     )
     page_forward = Button(
         pygame.color.Color("gray"),
@@ -191,13 +192,13 @@ async def menu_choose_loop():
         DISP_HEI - 80,
         DISP_WID / 2 - 30,
         70,
-        image=FONT.render(">", False, (0, 0, 0)),
+        image=FONTS["normal"].render(">", False, (0, 0, 0)),
     )
     page = 0
     pages = pager(len(SONGS), 5)
     color = random.choice(list(colors.neon.values()))
     for song in SONGS:
-        title = FONT.render(song[0].upper(), False, (0, 0, 0))
+        title = FONTS["normal"].render(song[0].upper(), False, (0, 0, 0))
         levels.append(
             [
                 Button(
@@ -266,7 +267,7 @@ async def menu_choose_loop():
                             game, (255, 255, 255), (20, 100, DISP_WID - 40, 70)
                         )
                         game.blit(
-                            FONT_SMALL.render(
+                            FONTS["small"].render(
                                 "ERROR LOADING SONG, CHECK FILE FORMAT",
                                 False,
                                 (255, 0, 0),
@@ -310,7 +311,7 @@ async def menu_choose_loop():
 
 
 async def level_loop():
-    global clock, display, display_rect, game, game_rect, resize, FONT, FONT_BIG, FONT_SMALL, LIFE, SONGS, state, player
+    global clock, display, display_rect, game, resize, FONTS, SONGS, state, player
 
     heart = pygame.image.load(config.HEART_ICON)
     ecu = pygame.image.load(config.ECU_ICON)
@@ -345,8 +346,8 @@ async def level_loop():
         # RENDER
         player.draw(game)
 
-        lifes = FONT_SMALL.render(str(int(player.life)), False, colors.neon["orange"])
-        shield = FONT_SMALL.render(
+        lifes = FONTS["small"].render(str(int(player.life)), False, colors.neon["orange"])
+        shield = FONTS["small"].render(
             str(int(player.shield)), False, colors.neon["orange"]
         )
         lifes_rect = lifes.get_rect()
@@ -355,8 +356,8 @@ async def level_loop():
         game.blit(heart, (lifes_rect.right, lifes_rect.center[1] - 14))
         game.blit(shield, (lifes_rect.left, lifes_rect.top + 30))
         game.blit(ecu, (lifes_rect.right, lifes_rect.center[1] + 16))
-        score = FONT_SMALL.render(str(int(player.score)), False, colors.neon["orange"])
-        combo = FONT_SMALL.render(
+        score = FONTS["small"].render(str(int(player.score)), False, colors.neon["orange"])
+        combo = FONTS["small"].render(
             "  x " + str(int(player.combo)), False, colors.neon["orange"]
         )
         score_rect = score.get_rect()
@@ -365,14 +366,14 @@ async def level_loop():
         game.blit(score, score_rect.topleft)
         game.blit(combo, score_rect.topright)
         if not player.level.obstacles:
-            end = FONT_BIG.render(config.WIN_MESSAGE, False, colors.metal["gold"])
+            end = FONTS["big"].render(config.WIN_MESSAGE, False, colors.metal["gold"])
             end_rect = end.get_rect()
-            end_rect.center = game_rect.center
+            end_rect.center = (DISP_WID // 2, DISP_HEI // 2)
             game.blit(end, end_rect.topleft)
         if not player.life:
-            end = FONT_BIG.render(config.DEATH_MESSAGE, False, colors.metal["silver"])
+            end = FONTS["big"].render(config.DEATH_MESSAGE, False, colors.metal["silver"])
             end_rect = end.get_rect()
-            end_rect.center = game_rect.center
+            end_rect.center = (DISP_WID // 2, DISP_HEI // 2)
             game.blit(end, end_rect.topleft)
             if not lose_played:
                 lose.play()
@@ -393,7 +394,7 @@ async def level_loop():
 
 
 async def main():
-    global clock, display, display_rect, game, game_rect, resize, FONT, FONT_BIG, FONT_SMALL, LIFE, SONGS, state, player
+    global clock, display, display_rect, game, resize, FONTS, SONGS, state, player
     while state != "close":
 
         # EMERGENCY EXIT
