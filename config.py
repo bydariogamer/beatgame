@@ -4,13 +4,13 @@ DISP_WID = 800
 DISP_HEI = 500
 BASE_FPS = 60.0
 
-FONT_TYPE = "assets/fonts/8bitOperatorPlus-Bold.ttf"
+FONT_TYPE = "assets/fonts/dogica.ttf"
 FONT_SIZE_SMALL = 32
 FONT_SIZE_NORMAL = 48
 FONT_SIZE_BIG = 64
 
 # Main Menu / Title
-GAME_TITLE = "> B E A T G A M E <"
+GAME_TITLE = ">BEATGAME<"
 GAME_AUTHOR = "bydariogamer"
 GAME_AUTHOR2 = "Sogolumbo"
 MENU_BACKGROUND = "assets/images/title_background.png"
