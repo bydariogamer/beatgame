@@ -25,7 +25,6 @@ pygame.display.set_icon(pygame.image.load(config.DISP_ICO))
 display = pygame.display.set_mode((config.DISP_WID, config.DISP_HEI), pygame.RESIZABLE)
 display_rect = display.get_rect()
 game = pygame.Surface((config.DISP_WID, config.DISP_HEI))
-resize = None
 
 
 def render():
@@ -67,7 +66,7 @@ player = ...
 
 
 async def menu_start_loop():
-    global clock, display, display_rect, game, resize, FONTS, SONGS, state, player
+    global clock, display, display_rect, game, FONTS, SONGS, state, player
     title = FONTS["big"].render(config.GAME_TITLE, False, colors.neon["blue"])
     author = FONTS["small"].render(config.GAME_AUTHOR, False, colors.neon["red"])
     author2 = FONTS["small"].render(config.GAME_AUTHOR2, False, colors.neon["red"])
@@ -105,7 +104,7 @@ async def menu_start_loop():
                 state = "close"
             if event.type == pygame.VIDEORESIZE:
                 display_rect = display.get_rect()
-                resize = (
+                config.resize = (
                     float(display_rect.w) / float(config.DISP_WID),
                     float(display_rect.h) / float(config.DISP_HEI),
                 )
@@ -116,11 +115,11 @@ async def menu_start_loop():
         clock.tick(config.BASE_FPS)
 
         # LOGIC
-        if play_button.mouseclick(resize=resize):
+        if play_button.mouseclick():
             state = "choose"
-        if help_button.mouseclick(resize=resize):
+        if help_button.mouseclick():
             state = "help"
-        if exit_button.mouseclick(resize=resize):
+        if exit_button.mouseclick():
             state = "close"
 
         # RENDER
@@ -140,7 +139,7 @@ async def menu_start_loop():
 
 
 async def menu_help_loop():
-    global clock, display, display_rect, game, resize, FONTS, SONGS, state, player
+    global clock, display, display_rect, game, FONTS, SONGS, state, player
 
     help_page = pygame.image.load(config.HELP_IMAGE)
     help_page.set_colorkey((255, 255, 255))
@@ -152,7 +151,7 @@ async def menu_help_loop():
                 state = "close"
             if event.type == pygame.VIDEORESIZE:
                 display_rect = display.get_rect()
-                resize = (display_rect.w / config.DISP_WID, display_rect.h / config.DISP_HEI)
+                config.resize = (display_rect.w / config.DISP_WID, display_rect.h / config.DISP_HEI)
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 state = "start"
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -174,7 +173,7 @@ async def menu_help_loop():
 
 
 async def menu_choose_loop():
-    global clock, display, display_rect, game, resize, FONTS, SONGS, state, player
+    global clock, display, display_rect, game, FONTS, SONGS, state, player
 
     levels = []
     page_back = Button(
@@ -222,7 +221,7 @@ async def menu_choose_loop():
                 state = "close"
             if event.type == pygame.VIDEORESIZE:
                 display_rect = display.get_rect()
-                resize = (display_rect.w / config.DISP_WID, display_rect.h / config.DISP_HEI)
+                config.resize = (display_rect.w / config.DISP_WID, display_rect.h / config.DISP_HEI)
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 state = "start"
             if event.type == pygame.MOUSEBUTTONUP:
@@ -233,7 +232,7 @@ async def menu_choose_loop():
 
         # LOGIC
         for level in levels[pages[page]]:
-            if level[0].mouseclick(resize=resize):
+            if level[0].mouseclick():
                 try:
                     if mouse_rel:
                         player = Player(Level(pygame.mixer.Sound(level[1]), level[2]))
@@ -249,7 +248,7 @@ async def menu_choose_loop():
                                 state = "close"
                             if event.type == pygame.VIDEORESIZE:
                                 display_rect = display.get_rect()
-                                resize = (
+                                config.resize = (
                                     display_rect.w / config.DISP_WID,
                                     display_rect.h / config.DISP_HEI,
                                 )
@@ -277,7 +276,7 @@ async def menu_choose_loop():
                         pygame.display.update()
                         await asyncio.sleep(0)
 
-        if page_back.mouseclick(resize=resize) and mouse_rel:
+        if page_back.mouseclick() and mouse_rel:
             page -= 1
             if page < 0:
                 page = 0
@@ -286,7 +285,7 @@ async def menu_choose_loop():
             for level in levels:
                 level[0].color = color
 
-        if page_forward.mouseclick(resize=resize) and mouse_rel:
+        if page_forward.mouseclick() and mouse_rel:
             page += 1
             if page > len(pages) - 1:
                 page -= 1
@@ -310,7 +309,7 @@ async def menu_choose_loop():
 
 
 async def level_loop():
-    global clock, display, display_rect, game, resize, FONTS, SONGS, state, player
+    global clock, display, display_rect, game, FONTS, SONGS, state, player
 
     heart = pygame.image.load(config.HEART_ICON)
     ecu = pygame.image.load(config.ECU_ICON)
@@ -326,7 +325,7 @@ async def level_loop():
                 state = "close"
             if event.type == pygame.VIDEORESIZE:
                 display_rect = display.get_rect()
-                resize = (display_rect.w / config.DISP_WID, display_rect.h / config.DISP_HEI)
+                config.resize = (display_rect.w / config.DISP_WID, display_rect.h / config.DISP_HEI)
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 state = "start"
                 player.level.song.stop()
@@ -393,7 +392,7 @@ async def level_loop():
 
 
 async def main():
-    global clock, display, display_rect, game, resize, FONTS, SONGS, state, player
+    global clock, display, display_rect, game, FONTS, SONGS, state, player
     while state != "close":
 
         # EMERGENCY EXIT
@@ -402,7 +401,7 @@ async def main():
                 state = "close"
             if event.type == pygame.VIDEORESIZE:
                 display_rect = display.get_rect()
-                resize = (display_rect.w / config.DISP_WID, display_rect.h / config.DISP_HEI)
+                config.resize = (display_rect.w / config.DISP_WID, display_rect.h / config.DISP_HEI)
 
         # START MENU
         if state == "start":

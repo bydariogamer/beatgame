@@ -1,13 +1,18 @@
+# Display configuration
 DISP_TIT = "BEATGAME"
 DISP_ICO = "assets/images/stand.png"
 DISP_WID = 800
 DISP_HEI = 500
 BASE_FPS = 60
 
+# Font configuration
 FONT_TYPE = "assets/fonts/dogica.ttf"
 FONT_SIZE_SMALL = 32
 FONT_SIZE_NORMAL = 48
 FONT_SIZE_BIG = 64
+
+# Resize factor
+resize = None
 
 # Main Menu / Title
 GAME_TITLE = ">BEATGAME<"

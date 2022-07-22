@@ -1,5 +1,7 @@
 import pygame
 
+import config
+
 
 class Button:
     def __init__(self, color, x, y, width, height, outcolor=None, image=None):
@@ -37,15 +39,15 @@ class Button:
                     (self.rect.x + 1, self.rect.y + (self.rect.h - self.image_h) / 2),
                 )
 
-    def mouseover(self, resize=None):
-        if resize:
+    def mouseover(self):
+        if config.resize:
             if self.rect.collidepoint(
-                pygame.mouse.get_pos()[0] / resize[0],
-                pygame.mouse.get_pos()[1] / resize[1],
+                pygame.mouse.get_pos()[0] / config.resize[0],
+                pygame.mouse.get_pos()[1] / config.resize[1],
             ):
                 return True
         elif self.rect.collidepoint(pygame.mouse.get_pos()):
             return True
 
-    def mouseclick(self, resize=None):
-        return self.mouseover(resize=resize) and pygame.mouse.get_pressed(num_buttons=3)[0]
+    def mouseclick(self):
+        return self.mouseover() and pygame.mouse.get_pressed(num_buttons=3)[0]
