@@ -116,11 +116,11 @@ async def menu_start_loop():
         clock.tick(config.BASE_FPS)
 
         # LOGIC
-        if play_button.mouseclic(resize=resize):
+        if play_button.mouseclick(resize=resize):
             state = "choose"
-        if help_button.mouseclic(resize=resize):
+        if help_button.mouseclick(resize=resize):
             state = "help"
-        if exit_button.mouseclic(resize=resize):
+        if exit_button.mouseclick(resize=resize):
             state = "close"
 
         # RENDER
@@ -233,7 +233,7 @@ async def menu_choose_loop():
 
         # LOGIC
         for level in levels[pages[page]]:
-            if level[0].mouseclic(resize=resize):
+            if level[0].mouseclick(resize=resize):
                 try:
                     if mouse_rel:
                         player = Player(Level(pygame.mixer.Sound(level[1]), level[2]))
@@ -277,7 +277,7 @@ async def menu_choose_loop():
                         pygame.display.update()
                         await asyncio.sleep(0)
 
-        if page_back.mouseclic(resize=resize) and mouse_rel:
+        if page_back.mouseclick(resize=resize) and mouse_rel:
             page -= 1
             if page < 0:
                 page = 0
@@ -286,7 +286,7 @@ async def menu_choose_loop():
             for level in levels:
                 level[0].color = color
 
-        if page_forward.mouseclic(resize=resize) and mouse_rel:
+        if page_forward.mouseclick(resize=resize) and mouse_rel:
             page += 1
             if page > len(pages) - 1:
                 page -= 1
