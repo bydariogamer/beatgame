@@ -9,7 +9,6 @@ from player import Player
 from level import Level
 import colors
 import config
-from config import DISP_WID, DISP_HEI, BASE_FPS
 
 
 # INITIALIZE PYGAME
@@ -23,14 +22,14 @@ clock = pygame.time.Clock()
 # CREATE WINDOW
 pygame.display.set_caption(config.DISP_TIT)
 pygame.display.set_icon(pygame.image.load(config.DISP_ICO))
-display = pygame.display.set_mode((DISP_WID, DISP_HEI), pygame.RESIZABLE)
+display = pygame.display.set_mode((config.DISP_WID, config.DISP_HEI), pygame.RESIZABLE)
 display_rect = display.get_rect()
-game = pygame.Surface((DISP_WID, DISP_HEI))
+game = pygame.Surface((config.DISP_WID, config.DISP_HEI))
 resize = None
 
 
 def render():
-    if display_rect.h != DISP_HEI or display_rect.w != DISP_WID:
+    if display_rect.h != config.DISP_HEI or display_rect.w != config.DISP_WID:
         pygame.transform.scale(game, (display_rect.w, display_rect.h), display)
     else:
         display.blit(game, (0, 0))
@@ -107,14 +106,14 @@ async def menu_start_loop():
             if event.type == pygame.VIDEORESIZE:
                 display_rect = display.get_rect()
                 resize = (
-                    float(display_rect.w) / float(DISP_WID),
-                    float(display_rect.h) / float(DISP_HEI),
+                    float(display_rect.w) / float(config.DISP_WID),
+                    float(display_rect.h) / float(config.DISP_HEI),
                 )
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 state = "close"
 
         # TIME
-        clock.tick(BASE_FPS)
+        clock.tick(config.BASE_FPS)
 
         # LOGIC
         if play_button.mouseclic(resize=resize):
@@ -153,7 +152,7 @@ async def menu_help_loop():
                 state = "close"
             if event.type == pygame.VIDEORESIZE:
                 display_rect = display.get_rect()
-                resize = (display_rect.w / DISP_WID, display_rect.h / DISP_HEI)
+                resize = (display_rect.w / config.DISP_WID, display_rect.h / config.DISP_HEI)
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 state = "start"
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -170,7 +169,7 @@ async def menu_help_loop():
         pygame.display.update()
 
         # TIME
-        clock.tick(BASE_FPS)
+        clock.tick(config.BASE_FPS)
         await asyncio.sleep(0)
 
 
@@ -181,16 +180,16 @@ async def menu_choose_loop():
     page_back = Button(
         pygame.color.Color("gray"),
         10,
-        DISP_HEI - 80,
-        DISP_WID / 2 - 30,
+        config.DISP_HEI - 80,
+        config.DISP_WID / 2 - 30,
         70,
         image=FONTS["normal"].render("<", False, (0, 0, 0)),
     )
     page_forward = Button(
         pygame.color.Color("gray"),
-        20 + DISP_WID / 2,
-        DISP_HEI - 80,
-        DISP_WID / 2 - 30,
+        20 + config.DISP_WID / 2,
+        config.DISP_HEI - 80,
+        config.DISP_WID / 2 - 30,
         70,
         image=FONTS["normal"].render(">", False, (0, 0, 0)),
     )
@@ -205,7 +204,7 @@ async def menu_choose_loop():
                     color,
                     10,
                     10 + 80 * (len(levels) % 5),
-                    DISP_WID - 20,
+                    config.DISP_WID - 20,
                     70,
                     image=title,
                 ),
@@ -223,14 +222,14 @@ async def menu_choose_loop():
                 state = "close"
             if event.type == pygame.VIDEORESIZE:
                 display_rect = display.get_rect()
-                resize = (display_rect.w / DISP_WID, display_rect.h / DISP_HEI)
+                resize = (display_rect.w / config.DISP_WID, display_rect.h / config.DISP_HEI)
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 state = "start"
             if event.type == pygame.MOUSEBUTTONUP:
                 mouse_rel = True
 
         # TIME
-        clock.tick(BASE_FPS)
+        clock.tick(config.BASE_FPS)
 
         # LOGIC
         for level in levels[pages[page]]:
@@ -251,8 +250,8 @@ async def menu_choose_loop():
                             if event.type == pygame.VIDEORESIZE:
                                 display_rect = display.get_rect()
                                 resize = (
-                                    display_rect.w / DISP_WID,
-                                    display_rect.h / DISP_HEI,
+                                    display_rect.w / config.DISP_WID,
+                                    display_rect.h / config.DISP_HEI,
                                 )
                             if (
                                 event.type == pygame.KEYDOWN
@@ -262,9 +261,9 @@ async def menu_choose_loop():
                             if event.type == pygame.MOUSEBUTTONDOWN:
                                 clic = True
 
-                        clock.tick(BASE_FPS)
+                        clock.tick(config.BASE_FPS)
                         pygame.draw.rect(
-                            game, (255, 255, 255), (20, 100, DISP_WID - 40, 70)
+                            game, (255, 255, 255), (20, 100, config.DISP_WID - 40, 70)
                         )
                         game.blit(
                             FONTS["small"].render(
@@ -316,7 +315,7 @@ async def level_loop():
     heart = pygame.image.load(config.HEART_ICON)
     ecu = pygame.image.load(config.ECU_ICON)
     ecu.set_colorkey((255, 255, 255))
-    damage = pygame.Surface((DISP_WID, DISP_HEI))
+    damage = pygame.Surface((config.DISP_WID, config.DISP_HEI))
     damage.fill((20, 0, 0, 30))
     time_started = None
     lose_played = False
@@ -327,7 +326,7 @@ async def level_loop():
                 state = "close"
             if event.type == pygame.VIDEORESIZE:
                 display_rect = display.get_rect()
-                resize = (display_rect.w / DISP_WID, display_rect.h / DISP_HEI)
+                resize = (display_rect.w / config.DISP_WID, display_rect.h / config.DISP_HEI)
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 state = "start"
                 player.level.song.stop()
@@ -368,12 +367,12 @@ async def level_loop():
         if not player.level.obstacles:
             end = FONTS["big"].render(config.WIN_MESSAGE, False, colors.metal["gold"])
             end_rect = end.get_rect()
-            end_rect.center = (DISP_WID // 2, DISP_HEI // 2)
+            end_rect.center = (config.DISP_WID // 2, config.DISP_HEI // 2)
             game.blit(end, end_rect.topleft)
         if not player.life:
             end = FONTS["big"].render(config.DEATH_MESSAGE, False, colors.metal["silver"])
             end_rect = end.get_rect()
-            end_rect.center = (DISP_WID // 2, DISP_HEI // 2)
+            end_rect.center = (config.DISP_WID // 2, config.DISP_HEI // 2)
             game.blit(end, end_rect.topleft)
             if not lose_played:
                 lose.play()
@@ -383,7 +382,7 @@ async def level_loop():
         render()
 
         # TIME
-        clock.tick(BASE_FPS)
+        clock.tick(config.BASE_FPS)
 
         # Show
         pygame.display.update()
@@ -403,7 +402,7 @@ async def main():
                 state = "close"
             if event.type == pygame.VIDEORESIZE:
                 display_rect = display.get_rect()
-                resize = (display_rect.w / DISP_WID, display_rect.h / DISP_HEI)
+                resize = (display_rect.w / config.DISP_WID, display_rect.h / config.DISP_HEI)
 
         # START MENU
         if state == "start":
