@@ -194,9 +194,13 @@ async def menu_choose_loop():
     )
     page = 0
     pages = pager(len(SONGS), 5)
-    color = random.choice(list(colors.neon.values()))
+    # color = random.choice(list(colors.neon.values()))
+    color = last_color = colors.neon[random.choice(list(colors.neon))]
     for song in SONGS:
         title = FONTS["normal"].render(song[0].upper(), False, (0, 0, 0))
+        while color == last_color:
+            color = colors.neon[random.choice(list(colors.neon))]
+        last_color = color
         levels.append(
             [
                 Button(
@@ -281,18 +285,18 @@ async def menu_choose_loop():
             if page < 0:
                 page = 0
             mouse_rel = False
-            color = random.choice(list(colors.neon.values()))
-            for level in levels:
-                level[0].color = color
+            # color = random.choice(list(colors.neon.values()))
+            # for level in levels:
+            #     level[0].color = color
 
         if page_forward.mouseclick() and mouse_rel:
             page += 1
             if page > len(pages) - 1:
                 page -= 1
             mouse_rel = False
-            color = random.choice(list(colors.neon.values()))
-            for level in levels:
-                level[0].color = color
+            # color = random.choice(list(colors.neon.values()))
+            # for level in levels:
+            #     level[0].color = color
 
         # RENDER
         game.fill((0, 0, 0))
