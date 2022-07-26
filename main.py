@@ -125,9 +125,9 @@ async def menu_start_loop():
         # RENDER
         game.fill((0, 0, 0))
         game.blit(background, (0, 0))
-        game.blit(title, (90, 10))
-        game.blit(author, (100, 90))
-        game.blit(author2, (100, 130))
+        game.blit(title, (90, 20))
+        game.blit(author, (100, 100))
+        game.blit(author2, (100, 140))
         play_button.draw(game)
         help_button.draw(game)
         exit_button.draw(game)
