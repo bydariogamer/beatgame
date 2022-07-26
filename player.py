@@ -66,10 +66,10 @@ class Player:
 
         self.particles = []
 
-    def update(self, timePassed):
+    def update(self, dt):
         if self.life:
             self.collide = False
-            offset = int(-timePassed * self.vel_x)
+            offset = int(-dt * self.vel_x)
             for obstacle in self.level.obstacles:
                 obstacle.update_offset(offset)
                 if self.rect.colliderect(obstacle):
@@ -172,7 +172,7 @@ class Player:
             for index, pos_y in enumerate(self.particles):
                 game.blit(
                     self.particle,
-                    (self.rect.x - 8 * ((len(self.particles) - index)), pos_y),
+                    (self.rect.x - 8 * (len(self.particles) - index), pos_y),
                 )
 
         # draw obstacles
