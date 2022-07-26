@@ -177,15 +177,16 @@ async def menu_choose_loop():
 
     levels = []
     page_back = Button(
-        pygame.color.Color("gray"),
+        pygame.Color("darkgray"),
         10,
         config.DISP_HEI - 80,
         config.DISP_WID / 2 - 30,
         70,
+        outcolor=pygame.Color("darkgray"),
         image=FONTS["normal"].render("<", False, (0, 0, 0)),
     )
     page_forward = Button(
-        pygame.color.Color("gray"),
+        pygame.Color("gray"),
         20 + config.DISP_WID / 2,
         config.DISP_HEI - 80,
         config.DISP_WID / 2 - 30,
@@ -283,20 +284,42 @@ async def menu_choose_loop():
         if page_back.mouseclick() and mouse_rel:
             page -= 1
             if page < 0:
-                page = 0
+                page += 1
+            else:
+                pass
+                # color = random.choice(list(colors.neon.values()))
+                # for level in levels:
+                #     level[0].color = color
+
+            if page == 0:
+                page_back.color = pygame.Color("darkgray")
+                page_back.outcolor = pygame.Color("darkgray")
+
+            if page != len(pages) - 1:
+                page_forward.color = pygame.Color("gray")
+                page_forward.outcolor = pygame.Color("gray") + pygame.Color(15, 15, 15, 15)
+
             mouse_rel = False
-            # color = random.choice(list(colors.neon.values()))
-            # for level in levels:
-            #     level[0].color = color
 
         if page_forward.mouseclick() and mouse_rel:
             page += 1
             if page > len(pages) - 1:
                 page -= 1
+            else:
+                pass
+                # color = random.choice(list(colors.neon.values()))
+                # for level in levels:
+                #     level[0].color = color
+
+            if page != 0:
+                page_back.color = pygame.Color("gray")
+                page_back.outcolor = pygame.Color("gray") + pygame.Color(15, 15, 15, 15)
+
+            if page == len(pages) - 1:
+                page_forward.color = pygame.Color("darkgray")
+                page_forward.outcolor = pygame.Color("darkgray")
+
             mouse_rel = False
-            # color = random.choice(list(colors.neon.values()))
-            # for level in levels:
-            #     level[0].color = color
 
         # RENDER
         game.fill((0, 0, 0))

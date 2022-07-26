@@ -81,7 +81,7 @@ class Level:
 
         # Assign graphical elements to blocks
         self.obstacles = []
-        self.color = pygame.color.Color(random.choice(list(colors.neon.values())))
+        self.color = pygame.Color(random.choice(list(colors.neon.values())))
         self.colors = []
         floor_pos = config.DISP_HEI - config.FLOOR_HEIGHT
         block_hei = floor_pos / config.HEIGHT_LEVELS * config.RELATIVE_BLOCK_HEIGHT
@@ -101,12 +101,12 @@ class Level:
                 if random.random() < 0.5:
                     self.colors.append(
                         pygame.Color(self.color)
-                        + pygame.color.Color(rect_color, rect_color, rect_color)
+                        + pygame.Color(rect_color, rect_color, rect_color)
                     )
                 else:
                     self.colors.append(
                         pygame.Color(self.color)
-                        - pygame.color.Color(rect_color, rect_color, rect_color)
+                        - pygame.Color(rect_color, rect_color, rect_color)
                     )
 
         for rect_color in self.colors:
