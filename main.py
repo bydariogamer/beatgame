@@ -38,7 +38,7 @@ def render():
 FONTS = {
     "normal": pygame.font.Font(config.FONT_TYPE, config.FONT_SIZE_NORMAL),
     "big": pygame.font.Font(config.FONT_TYPE, config.FONT_SIZE_BIG),
-    "small": pygame.font.Font(config.FONT_TYPE, config.FONT_SIZE_SMALL)
+    "small": pygame.font.Font(config.FONT_TYPE, config.FONT_SIZE_SMALL),
 }
 
 
@@ -151,7 +151,10 @@ async def menu_help_loop():
                 state = "close"
             if event.type == pygame.VIDEORESIZE:
                 display_rect = display.get_rect()
-                config.resize = (display_rect.w / config.DISP_WID, display_rect.h / config.DISP_HEI)
+                config.resize = (
+                    display_rect.w / config.DISP_WID,
+                    display_rect.h / config.DISP_HEI,
+                )
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 state = "start"
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -226,7 +229,10 @@ async def menu_choose_loop():
                 state = "close"
             if event.type == pygame.VIDEORESIZE:
                 display_rect = display.get_rect()
-                config.resize = (display_rect.w / config.DISP_WID, display_rect.h / config.DISP_HEI)
+                config.resize = (
+                    display_rect.w / config.DISP_WID,
+                    display_rect.h / config.DISP_HEI,
+                )
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 state = "start"
             if event.type == pygame.MOUSEBUTTONUP:
@@ -297,7 +303,9 @@ async def menu_choose_loop():
 
             if page != len(pages) - 1:
                 page_forward.color = pygame.Color("gray")
-                page_forward.outcolor = pygame.Color("gray") + pygame.Color(15, 15, 15, 15)
+                page_forward.outcolor = pygame.Color("gray") + pygame.Color(
+                    15, 15, 15, 15
+                )
 
             mouse_rel = False
 
@@ -352,7 +360,10 @@ async def level_loop():
                 state = "close"
             if event.type == pygame.VIDEORESIZE:
                 display_rect = display.get_rect()
-                config.resize = (display_rect.w / config.DISP_WID, display_rect.h / config.DISP_HEI)
+                config.resize = (
+                    display_rect.w / config.DISP_WID,
+                    display_rect.h / config.DISP_HEI,
+                )
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 state = "start"
                 player.level.song.stop()
@@ -371,7 +382,9 @@ async def level_loop():
         # RENDER
         player.draw(game)
 
-        lifes = FONTS["small"].render(str(int(player.life)), False, colors.neon["orange"])
+        lifes = FONTS["small"].render(
+            str(int(player.life)), False, colors.neon["orange"]
+        )
         shield = FONTS["small"].render(
             str(int(player.shield)), False, colors.neon["orange"]
         )
@@ -381,7 +394,9 @@ async def level_loop():
         game.blit(heart, (lifes_rect.right, lifes_rect.center[1] - 14))
         game.blit(shield, (lifes_rect.left, lifes_rect.top + 30))
         game.blit(ecu, (lifes_rect.right, lifes_rect.center[1] + 16))
-        score = FONTS["small"].render(str(int(player.score)), False, colors.neon["orange"])
+        score = FONTS["small"].render(
+            str(int(player.score)), False, colors.neon["orange"]
+        )
         combo = FONTS["small"].render(
             "  x " + str(int(player.combo)), False, colors.neon["orange"]
         )
@@ -396,7 +411,9 @@ async def level_loop():
             end_rect.center = (config.DISP_WID // 2, config.DISP_HEI // 2)
             game.blit(end, end_rect.topleft)
         if not player.life:
-            end = FONTS["big"].render(config.DEATH_MESSAGE, False, colors.metal["silver"])
+            end = FONTS["big"].render(
+                config.DEATH_MESSAGE, False, colors.metal["silver"]
+            )
             end_rect = end.get_rect()
             end_rect.center = (config.DISP_WID // 2, config.DISP_HEI // 2)
             game.blit(end, end_rect.topleft)
@@ -428,7 +445,10 @@ async def main():
                 state = "close"
             if event.type == pygame.VIDEORESIZE:
                 display_rect = display.get_rect()
-                config.resize = (display_rect.w / config.DISP_WID, display_rect.h / config.DISP_HEI)
+                config.resize = (
+                    display_rect.w / config.DISP_WID,
+                    display_rect.h / config.DISP_HEI,
+                )
 
         # START MENU
         if state == "start":
