@@ -1,4 +1,3 @@
 pygame >= 2.0.1
 numpy
-pydub
-ffmpeg
+unidecode
