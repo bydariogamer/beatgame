@@ -49,6 +49,8 @@ def add_songs_in_folder(folder, songs, recursive=True):
         path = os.path.join(PATH, folder, item)
         if os.path.isfile(path):
             song_title = unidecode.unidecode(item.split(".")[0].replace("_", " "))
+            if len(song_title) > 16:
+                song_title = song_title[:7] + "[\u2026]" + song_title[-6:]
             songs.append([song_title, path])
         if recursive and os.path.isdir(path):
             print(item)
