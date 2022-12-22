@@ -16,7 +16,6 @@ import config
 # INITIALIZE PYGAME
 pygame.init()
 
-
 # WINDOW CONSTANTS
 PATH = os.path.abspath(os.path.dirname(sys.argv[0]))
 clock = pygame.time.Clock()
@@ -257,10 +256,8 @@ async def menu_choose_loop():
             if level[0].mouseclick():
                 try:
                     if mouse_rel:
-                        player = Player(Level(level[1]))
-                        state = "level"
-                        print("-level-")
-                        return
+                        player = level[1]
+                        state = "loading"
                 except pygame.error:
                     clic = False
                     while not clic:
@@ -344,6 +341,26 @@ async def menu_choose_loop():
 
         # ASYNC LOOP SLEEP
         await asyncio.sleep(0)
+
+
+async def loading_loop():
+    global clock, display, display_rect, game, FONTS, SONGS, state, player
+    while state == "loading":
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                state = "close"
+            if event.type == pygame.VIDEORESIZE:
+                display_rect = display.get_rect()
+                config.resize = (
+                    display_rect.w / config.DISP_WID,
+                    display_rect.h / config.DISP_HEI,
+                )
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                state = "start"
+                pygame.mixer.music.unload()
+
+        player = Player(Level(player))
+        state = "level"
 
 
 async def level_loop():
@@ -468,6 +485,10 @@ async def main():
         # LEVEL SELECTOR
         if state == "choose":
             await menu_choose_loop()
+
+        # LOADING SCREEN
+        if state == "loading":
+            await loading_loop()
 
         # LEVEL ITSELF
         if state == "level":
