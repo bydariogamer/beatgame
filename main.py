@@ -213,7 +213,12 @@ async def menu_choose_loop():
         levels.append(
             [
                 Button(
-                    colors.neon[list(colors.neon)[int(hashlib.md5(song[0].encode()).hexdigest(), 16) % len(colors.neon)]],
+                    colors.neon[
+                        list(colors.neon)[
+                            int(hashlib.md5(song[0].encode()).hexdigest(), 16)  # random but determined by song name
+                            % len(colors.neon)
+                        ]
+                    ],
                     10,
                     10 + 80 * (len(levels) % 5),
                     config.DISP_WID - 20,
