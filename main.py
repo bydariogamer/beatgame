@@ -1,7 +1,7 @@
 import asyncio
 import os
 import sys
-import random
+import hashlib
 
 import pygame
 import unidecode
@@ -208,17 +208,12 @@ async def menu_choose_loop():
     )
     page = 0
     pages = pager(len(SONGS), 5)
-    # color = random.choice(list(colors.neon.values()))
-    color = last_color = colors.neon[random.choice(list(colors.neon))]
     for song in SONGS:
         title = FONTS["normal"].render(song[0].upper(), False, (0, 0, 0))
-        while color == last_color:
-            color = colors.neon[random.choice(list(colors.neon))]
-        last_color = color
         levels.append(
             [
                 Button(
-                    color,
+                    colors.neon[list(colors.neon)[int(hashlib.md5(song[0].encode()).hexdigest(), 16) % len(colors.neon)]],
                     10,
                     10 + 80 * (len(levels) % 5),
                     config.DISP_WID - 20,
@@ -303,11 +298,6 @@ async def menu_choose_loop():
             page -= 1
             if page < 0:
                 page += 1
-            else:
-                pass
-                # color = random.choice(list(colors.neon.values()))
-                # for level in levels:
-                #     level[0].color = color
 
             if page == 0:
                 page_back.color = pygame.Color("darkgray")
@@ -325,11 +315,6 @@ async def menu_choose_loop():
             page += 1
             if page > len(pages) - 1:
                 page -= 1
-            else:
-                pass
-                # color = random.choice(list(colors.neon.values()))
-                # for level in levels:
-                #     level[0].color = color
 
             if page != 0:
                 page_back.color = pygame.Color("gray")
