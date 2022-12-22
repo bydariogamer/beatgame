@@ -351,8 +351,8 @@ async def level_loop():
     global clock, display, display_rect, game, FONTS, SONGS, state, player
 
     heart = pygame.image.load(config.HEART_ICON)
-    shield = pygame.image.load(config.SHIELD_ICON)
-    shield.set_colorkey((255, 255, 255))
+    shield_icon = pygame.image.load(config.SHIELD_ICON)
+    shield_icon.set_colorkey((255, 255, 255))
     damage = pygame.Surface((config.DISP_WID, config.DISP_HEI))
     damage.fill((20, 0, 0, 30))
     time_started = None
@@ -397,7 +397,7 @@ async def level_loop():
         game.blit(lifes, lifes_rect.topleft)
         game.blit(heart, (lifes_rect.right, lifes_rect.center[1] - 14))
         game.blit(shield, (lifes_rect.left, lifes_rect.top + 30))
-        game.blit(shield, (lifes_rect.right, lifes_rect.center[1] + 16))
+        game.blit(shield_icon, (lifes_rect.right, lifes_rect.center[1] + 16))
         score = FONTS["small"].render(
             str(int(player.score)), False, colors.neon["orange"]
         )
