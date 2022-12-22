@@ -1,8 +1,10 @@
 import asyncio
-import pygame
 import os
 import sys
 import random
+
+import pygame
+import unidecode
 
 from button import Button
 from player import Player
@@ -46,7 +48,7 @@ def add_songs_in_folder(folder, songs, recursive=True):
     for item in os.listdir(folder):
         path = os.path.join(PATH, folder, item)
         if os.path.isfile(path):
-            song_title = item.split(".")[0].replace("_", " ")
+            song_title = unidecode.unidecode(item.split(".")[0].replace("_", " "))
             songs.append([song_title, path])
         if recursive and os.path.isdir(path):
             print(item)
@@ -135,6 +137,8 @@ async def menu_start_loop():
         # FLIP
         render()
         pygame.display.update()
+
+        # ASYNC LOOP SLEEP
         await asyncio.sleep(0)
 
 
@@ -172,12 +176,16 @@ async def menu_help_loop():
 
         # TIME
         clock.tick(config.BASE_FPS)
+
+        # ASYNC LOOP SLEEP
         await asyncio.sleep(0)
 
 
 async def menu_choose_loop():
+    # LOAD GLOBALS
     global clock, display, display_rect, game, FONTS, SONGS, state, player
 
+    # PREVIOUS STEPS
     levels = []
     page_back = Button(
         pygame.Color("darkgray"),
@@ -221,6 +229,8 @@ async def menu_choose_loop():
         )
     background = pygame.image.load(config.MENU_BACKGROUND).convert()
     mouse_rel = False
+
+    # ACTUAL MENU LOOP
     while state == "choose":
 
         # EVENTS
@@ -340,6 +350,8 @@ async def menu_choose_loop():
         # FLIP
         render()
         pygame.display.update()
+
+        # ASYNC LOOP SLEEP
         await asyncio.sleep(0)
 
 
@@ -347,8 +359,8 @@ async def level_loop():
     global clock, display, display_rect, game, FONTS, SONGS, state, player
 
     heart = pygame.image.load(config.HEART_ICON)
-    ecu = pygame.image.load(config.ECU_ICON)
-    ecu.set_colorkey((255, 255, 255))
+    shield = pygame.image.load(config.SHIELD_ICON)
+    shield.set_colorkey((255, 255, 255))
     damage = pygame.Surface((config.DISP_WID, config.DISP_HEI))
     damage.fill((20, 0, 0, 30))
     time_started = None
@@ -393,7 +405,7 @@ async def level_loop():
         game.blit(lifes, lifes_rect.topleft)
         game.blit(heart, (lifes_rect.right, lifes_rect.center[1] - 14))
         game.blit(shield, (lifes_rect.left, lifes_rect.top + 30))
-        game.blit(ecu, (lifes_rect.right, lifes_rect.center[1] + 16))
+        game.blit(shield, (lifes_rect.right, lifes_rect.center[1] + 16))
         score = FONTS["small"].render(
             str(int(player.score)), False, colors.neon["orange"]
         )
@@ -430,8 +442,12 @@ async def level_loop():
         # Show
         pygame.display.update()
         await asyncio.sleep(0)
+
+    # SAVING SCORE WHEN EXITING
     else:
         player.save()
+
+    # ASYNC LOOP SLEEP
     await asyncio.sleep(0)
 
 
@@ -454,6 +470,7 @@ async def main():
         if state == "start":
             await menu_start_loop()
 
+        # HELP MENU
         if state == "help":
             await menu_help_loop()
 
@@ -464,6 +481,8 @@ async def main():
         # LEVEL ITSELF
         if state == "level":
             await level_loop()
+
+        # ASYNC LOOP SLEEP
         await asyncio.sleep(0)
 
     pygame.quit()

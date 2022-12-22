@@ -27,7 +27,7 @@ HELP_IMAGE = "assets/images/help.png"
 #   position in pixels
 #   velocity in pixels per second
 HEART_ICON = "assets/images/heart.png"
-ECU_ICON = "assets/images/ecu.png"
+SHIELD_ICON = "assets/images/shield.png"
 WIN_MESSAGE = "YOU WIN"
 DEATH_MESSAGE = "YOU LOSE"
 PLAYER_ICONS = {

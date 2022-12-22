@@ -1,7 +1,9 @@
-import pygame
 import os
-from level import Level
 import random
+
+import pygame
+
+from level import Level
 import config
 
 
