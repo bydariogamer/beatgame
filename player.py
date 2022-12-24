@@ -1,5 +1,6 @@
 import os
 import random
+import hashlib
 
 import pygame
 
@@ -220,7 +221,7 @@ class Player:
             self.ended = True
 
     def save(self):
-        song = str(hash(self.level.song_name))
+        song = str(hashlib.md5(self.level.song.get_raw()).hexdigest())
         separator = " "
         highs = []
         first_time = True
