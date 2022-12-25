@@ -61,7 +61,7 @@ def pager(length, cut):
     return [slice(i, min(i + cut, length)) for i in range(0, length, cut)]
 
 
-SONGS = []  # [song_title, song_path]
+SONGS = []  # [[song_title, song_path], ...]
 add_songs_in_folder(os.path.join(PATH, "assets", "songs"), SONGS)
 
 # GAME LOOP
@@ -226,7 +226,6 @@ async def menu_choose_loop():
                     image=title,
                 ),
                 song[1],
-                song[0].upper(),
             ]
         )
     background = pygame.image.load(config.MENU_BACKGROUND).convert()
@@ -258,7 +257,7 @@ async def menu_choose_loop():
             if level[0].mouseclick():
                 try:
                     if mouse_rel:
-                        player = Player(Level(pygame.mixer.Sound(level[1]), level[2]))
+                        player = Player(Level(pygame.mixer.Sound(level[1])))
                         state = "level"
                         print("-level-")
                         return
