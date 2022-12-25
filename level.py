@@ -14,8 +14,9 @@ pygame.mixer.init()
 
 
 class Level:
-    def __init__(self, song: pygame.mixer.Sound):
-        self.song = song
+    def __init__(self, song):
+        self.song = pygame.mixer.Sound(song)
+        pygame.mixer.music.load(song)
         self.duration = self.song.get_length()
         self.array = pygame.sndarray.array(self.song)
         self.blocks = []
@@ -57,6 +58,7 @@ class Level:
         maximum = np.quantile(self.blocks, config.MAP_UPPER_QUANTILE)
         self.blocks *= config.HEIGHT_LEVELS / maximum
         self.blocks = self.blocks.clip(min=0, max=config.HEIGHT_LEVELS)
+
         # Clear space at the beginning of the song
         start_blocks = int(config.DISP_HEI / config.VELOCITY_X * blocks_per_sec)
         for i in range(start_blocks - start_blocks * 2 // 3):
@@ -64,7 +66,8 @@ class Level:
         for i in range(
             start_blocks - start_blocks * 2 // 3, start_blocks
         ):  # ramping up to normal map
-            self.blocks[i] *= float(i) / start_blocks * 3 / 2 - 0.5
+            self.blocks[i] *= i / start_blocks * 3 / 2 - 0.5
+
         # Quantize blocks
         self.blocks = np.round(self.blocks)
 
@@ -85,7 +88,6 @@ class Level:
         floor_pos = config.DISP_HEI - config.FLOOR_HEIGHT
         block_hei = floor_pos / config.HEIGHT_LEVELS * config.RELATIVE_BLOCK_HEIGHT
         block_wid = config.VELOCITY_X / blocks_per_sec
-
         for index, block in enumerate(self.blocks):
             if block:
                 self.obstacles.append(
@@ -107,10 +109,6 @@ class Level:
                         pygame.Color(self.color)
                         - pygame.Color(rect_color, rect_color, rect_color)
                     )
-
-        for rect_color in self.colors:
-            if rect_color.a < 255:
-                rect_color.a = 255
 
         # Set gravity to the beat
         seconds_per_jump = config.JUMP_LENGTH / blocks_per_sec

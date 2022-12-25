@@ -116,7 +116,7 @@ class Player:
         if self.life < 0:
             self.life = 0
         if self.life == 0:
-            self.level.song.stop()
+            pygame.mixer.music.unload()
 
         for index, obstacle in enumerate(self.level.obstacles):
             if obstacle.x < -100:
@@ -202,7 +202,7 @@ class Player:
     def start(self):
         self.run = True
         self.vel_x = config.VELOCITY_X
-        self.level.song.play()
+        pygame.mixer.music.play()
 
     def spacebar(self):
         if self.jump < 2:

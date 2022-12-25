@@ -257,7 +257,7 @@ async def menu_choose_loop():
             if level[0].mouseclick():
                 try:
                     if mouse_rel:
-                        player = Player(Level(pygame.mixer.Sound(level[1])))
+                        player = Player(Level(level[1]))
                         state = "level"
                         print("-level-")
                         return
@@ -369,7 +369,7 @@ async def level_loop():
                 )
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 state = "start"
-                player.level.song.stop()
+                pygame.mixer.music.unload()
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 if not player.run:
                     player.start()
@@ -426,12 +426,12 @@ async def level_loop():
 
         # FLIP
         render()
+        pygame.display.update()
 
         # TIME
         clock.tick(config.BASE_FPS)
 
-        # Show
-        pygame.display.update()
+        # ASYNC LOOP SLEEP
         await asyncio.sleep(0)
 
     # SAVING SCORE WHEN EXITING
