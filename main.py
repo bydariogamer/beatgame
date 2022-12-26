@@ -438,6 +438,7 @@ async def level_loop():
             end_rect.center = (config.DISP_WID // 2, config.DISP_HEI // 2)
             game.blit(end, end_rect.topleft)
             if not lose_played:
+                pygame.mixer.stop()
                 lose.play()
                 lose_played = True
 
