@@ -214,7 +214,9 @@ async def menu_choose_loop():
                 Button(
                     colors.neon[
                         list(colors.neon)[
-                            int(hashlib.md5(song[0].encode()).hexdigest(), 16)  # random but determined by song name
+                            int(
+                                hashlib.md5(song[0].encode()).hexdigest(), 16
+                            )  # random but determined by song name
                             % len(colors.neon)
                         ]
                     ],
@@ -227,7 +229,7 @@ async def menu_choose_loop():
                 song[1],
             ]
         )
-    
+
     mouse_rel = False
 
     # ACTUAL MENU LOOP
@@ -323,17 +325,23 @@ async def loading_loop():
 
         game.fill((0, 0, 0))
         game.blit(menu_background, (0, 0))
-        game.blit(FONTS["big"].render("LOADING...", False, colors.neon["red"]), (30, 30))
-        song_title = unidecode.unidecode(os.path.basename(player).split(".")[0].replace("_", " ")).upper()
+        game.blit(
+            FONTS["big"].render("LOADING...", False, colors.neon["red"]), (30, 30)
+        )
+        song_title = unidecode.unidecode(
+            os.path.basename(str(player)).split(".")[0].replace("_", " ")
+        ).upper()
         if len(song_title) > 23:
             song_title = song_title[:10] + "[\u2026]" + song_title[-9:]
-        game.blit(FONTS["small"].render(song_title, False, colors.neon["red"]), (50, 100))
+        game.blit(
+            FONTS["small"].render(song_title, False, colors.neon["red"]), (50, 100)
+        )
         render()
         pygame.display.update()
         try:
             player = Player(Level(player))
             state = "level"
-            
+
         except pygame.error:
             # BLIT ERROR MESSAGE
             game.blit(
@@ -381,10 +389,7 @@ async def loading_loop():
                             display_rect.w / config.DISP_WID,
                             display_rect.h / config.DISP_HEI,
                         )
-                    if (
-                            event.type == pygame.KEYDOWN
-                            and event.key == pygame.K_ESCAPE
-                    ):
+                    if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                         state = "start"
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         state = "choose"
