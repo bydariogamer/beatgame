@@ -65,11 +65,12 @@ add_songs_in_folder(os.path.join(PATH, "assets", "songs"), SONGS)
 
 # GAME LOOP
 state = "start"
+menu_background = pygame.image.load(config.MENU_BACKGROUND).convert()
 player = ...
 
 
 async def menu_start_loop():
-    global clock, display, display_rect, game, FONTS, SONGS, state, player
+    global clock, display, display_rect, game, FONTS, SONGS, state, player, menu_background
     title = FONTS["big"].render(config.GAME_TITLE, False, colors.neon["blue"])
     author = FONTS["small"].render(config.GAME_AUTHOR, False, colors.neon["red"])
     author2 = FONTS["small"].render(config.GAME_AUTHOR2, False, colors.neon["red"])
@@ -97,7 +98,6 @@ async def menu_start_loop():
         70,
         image=FONTS["normal"].render("EXIT", False, (0, 0, 0)),
     )
-    background = pygame.image.load(config.MENU_BACKGROUND).convert()
 
     # LOOP
     while state == "start":
@@ -127,7 +127,7 @@ async def menu_start_loop():
 
         # RENDER
         game.fill((0, 0, 0))
-        game.blit(background, (0, 0))
+        game.blit(menu_background, (0, 0))
         game.blit(title, (90, 20))
         game.blit(author, (100, 100))
         game.blit(author2, (100, 140))
@@ -144,7 +144,7 @@ async def menu_start_loop():
 
 
 async def menu_help_loop():
-    global clock, display, display_rect, game, FONTS, SONGS, state, player
+    global clock, display, display_rect, game, FONTS, SONGS, state, player, menu_background
 
     help_page = pygame.image.load(config.HELP_IMAGE)
     help_page.set_colorkey((255, 255, 255))
@@ -184,7 +184,7 @@ async def menu_help_loop():
 
 async def menu_choose_loop():
     # LOAD GLOBALS
-    global clock, display, display_rect, game, FONTS, SONGS, state, player
+    global clock, display, display_rect, game, FONTS, SONGS, state, player, menu_background
 
     # PREVIOUS STEPS
     levels = []
@@ -227,7 +227,7 @@ async def menu_choose_loop():
                 song[1],
             ]
         )
-    background = pygame.image.load(config.MENU_BACKGROUND).convert()
+    
     mouse_rel = False
 
     # ACTUAL MENU LOOP
@@ -253,47 +253,9 @@ async def menu_choose_loop():
 
         # LOGIC
         for level in levels[pages[page]]:
-            if level[0].mouseclick():
-                try:
-                    if mouse_rel:
-                        player = level[1]
-                        state = "loading"
-                except pygame.error:
-                    clic = False
-                    while not clic:
-                        for event in pygame.event.get():
-                            if event.type == pygame.QUIT:
-                                clic = True
-                                state = "close"
-                            if event.type == pygame.VIDEORESIZE:
-                                display_rect = display.get_rect()
-                                config.resize = (
-                                    display_rect.w / config.DISP_WID,
-                                    display_rect.h / config.DISP_HEI,
-                                )
-                            if (
-                                event.type == pygame.KEYDOWN
-                                and event.key == pygame.K_ESCAPE
-                            ):
-                                clic = True
-                            if event.type == pygame.MOUSEBUTTONDOWN:
-                                clic = True
-
-                        clock.tick(config.BASE_FPS)
-                        pygame.draw.rect(
-                            game, (255, 255, 255), (20, 100, config.DISP_WID - 40, 70)
-                        )
-                        game.blit(
-                            FONTS["small"].render(
-                                "ERROR LOADING SONG, CHECK FILE FORMAT",
-                                False,
-                                (255, 0, 0),
-                            ),
-                            (30, 100),
-                        )
-                        render()
-                        pygame.display.update()
-                        await asyncio.sleep(0)
+            if level[0].mouseclick() and mouse_rel:
+                player = level[1]
+                state = "loading"
 
         if page_back.mouseclick() and mouse_rel:
             page -= 1
@@ -329,7 +291,7 @@ async def menu_choose_loop():
 
         # RENDER
         game.fill((0, 0, 0))
-        game.blit(background, (0, 0))
+        game.blit(menu_background, (0, 0))
         page_back.draw(game)
         page_forward.draw(game)
         for level in levels[pages[page]]:
@@ -344,7 +306,7 @@ async def menu_choose_loop():
 
 
 async def loading_loop():
-    global clock, display, display_rect, game, FONTS, SONGS, state, player
+    global clock, display, display_rect, game, FONTS, SONGS, state, player, menu_background
     while state == "loading":
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -356,15 +318,83 @@ async def loading_loop():
                     display_rect.h / config.DISP_HEI,
                 )
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                state = "start"
+                state = "choose"
                 pygame.mixer.music.unload()
 
-        player = Player(Level(player))
-        state = "level"
+        game.fill((0, 0, 0))
+        game.blit(menu_background, (0, 0))
+        game.blit(FONTS["big"].render("LOADING...", False, colors.neon["red"]), (30, 30))
+        song_title = unidecode.unidecode(os.path.basename(player).split(".")[0].replace("_", " ")).upper()
+        if len(song_title) > 23:
+            song_title = song_title[:10] + "[\u2026]" + song_title[-9:]
+        game.blit(FONTS["small"].render(song_title, False, colors.neon["red"]), (50, 100))
+        render()
+        pygame.display.update()
+        try:
+            player = Player(Level(player))
+            state = "level"
+            
+        except pygame.error:
+            # BLIT ERROR MESSAGE
+            game.blit(
+                FONTS["small"].render(
+                    "> ERROR LOADING SONG...",
+                    False,
+                    (255, 0, 0),
+                ),
+                (40, 200),
+            )
+            game.blit(
+                FONTS["small"].render(
+                    "> CHECK FILE FORMAT...",
+                    False,
+                    (255, 0, 0),
+                ),
+                (40, 250),
+            )
+            game.blit(
+                FONTS["small"].render(
+                    "> CLICK ANYWHERE...",
+                    False,
+                    (255, 0, 0),
+                ),
+                (40, 300),
+            )
+            game.blit(
+                FONTS["small"].render(
+                    "> TO GO TO MAIN MENU...",
+                    False,
+                    (255, 0, 0),
+                ),
+                (40, 350),
+            )
+            render()
+            pygame.display.update()
+            # EVENT LOOP
+            while state == "loading":
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        state = "close"
+                    if event.type == pygame.VIDEORESIZE:
+                        display_rect = display.get_rect()
+                        config.resize = (
+                            display_rect.w / config.DISP_WID,
+                            display_rect.h / config.DISP_HEI,
+                        )
+                    if (
+                            event.type == pygame.KEYDOWN
+                            and event.key == pygame.K_ESCAPE
+                    ):
+                        state = "start"
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        state = "choose"
+                # CLOCK
+                clock.tick(config.BASE_FPS)
+                await asyncio.sleep(0)
 
 
 async def level_loop():
-    global clock, display, display_rect, game, FONTS, SONGS, state, player
+    global clock, display, display_rect, game, FONTS, SONGS, state, player, menu_background
 
     heart = pygame.image.load(config.HEART_ICON)
     shield_icon = pygame.image.load(config.SHIELD_ICON)
@@ -461,7 +491,7 @@ async def level_loop():
 
 
 async def main():
-    global clock, display, display_rect, game, FONTS, SONGS, state, player
+    global clock, display, display_rect, game, FONTS, SONGS, state, player, menu_background
     while state != "close":
 
         # EMERGENCY EXIT
