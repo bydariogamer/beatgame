@@ -70,7 +70,6 @@ class Player:
         self.particles = []
 
     def update(self, dt):
-        print(dt)
         if self.life:
             self.collide = False
             offset = round(-pygame.mixer.music.get_pos() / 1000 * self.vel_x)
