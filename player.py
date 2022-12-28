@@ -84,8 +84,8 @@ class Player:
                     if self.vel_y < config.VELOCITY_Y_DURING_DAMAGE:
                         self.vel_y = float(config.VELOCITY_Y_DURING_DAMAGE)
             if not self.collide:
-                self.vel_y -= self.level.gravity / config.BASE_FPS
-            self.rect.y -= self.vel_y / config.BASE_FPS
+                self.vel_y -= self.level.gravity * dt / 1000
+            self.rect.y -= self.vel_y * dt / 1000
             if self.rect.y >= self.floor:
                 self.rect.y = self.floor
                 self.vel_y = 0
@@ -128,7 +128,7 @@ class Player:
         # move stars and delete the ones out of screen
         if self.run and self.level.obstacles:
             for index, star in enumerate(self.stars):
-                star[0] -= 1
+                star[0] -= dt / 10
                 if star[0] < -5:
                     del self.stars[index]
             # every time half of the stars are deleted, new ones are added

@@ -409,8 +409,10 @@ async def level_loop():
     damage.fill((20, 0, 0, 30))
     time_started = None
     won = False
+    dt = 1/config.BASE_FPS
     lose_played = False
     lose = pygame.mixer.Sound("assets/sounds/lose.ogg")
+
     while state == "level":
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -436,7 +438,7 @@ async def level_loop():
 
         # LOGIC
         if player.run:
-            player.update((pygame.time.get_ticks() - time_started) / 1000)
+            player.update(dt)
 
         # RENDER
         player.draw(game)
