@@ -15,6 +15,7 @@ import config
 
 # INITIALIZE PYGAME
 pygame.init()
+pygame.mixer.music.set_endevent(config.SONG_ENDEVENT)
 
 # WINDOW CONSTANTS
 PATH = os.path.abspath(os.path.dirname(sys.argv[0]))
@@ -407,6 +408,7 @@ async def level_loop():
     damage = pygame.Surface((config.DISP_WID, config.DISP_HEI))
     damage.fill((20, 0, 0, 30))
     time_started = None
+    won = False
     lose_played = False
     lose = pygame.mixer.Sound("assets/sounds/lose.ogg")
     while state == "level":
@@ -427,6 +429,8 @@ async def level_loop():
                     player.start()
                     time_started = pygame.time.get_ticks()
                 player.spacebar()
+            if event.type == config.SONG_ENDEVENT:
+                won = True
         if player.ended:
             state = "start"
 
@@ -460,7 +464,7 @@ async def level_loop():
         score_rect.y = 20
         game.blit(score, score_rect.topleft)
         game.blit(combo, score_rect.topright)
-        if not player.level.obstacles:
+        if won:
             end = FONTS["big"].render(config.WIN_MESSAGE, False, colors.metal["gold"])
             end_rect = end.get_rect()
             end_rect.center = (config.DISP_WID // 2, config.DISP_HEI // 2)
@@ -482,7 +486,7 @@ async def level_loop():
         pygame.display.update()
 
         # TIME
-        clock.tick(config.BASE_FPS)
+        dt = clock.tick(config.BASE_FPS)
 
         # ASYNC LOOP SLEEP
         await asyncio.sleep(0)

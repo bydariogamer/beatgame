@@ -70,9 +70,10 @@ class Player:
         self.particles = []
 
     def update(self, dt):
+        print(dt)
         if self.life:
             self.collide = False
-            offset = int(-dt * self.vel_x)
+            offset = round(-pygame.mixer.music.get_pos() / 1000 * self.vel_x)
             for obstacle in self.level.obstacles:
                 obstacle.update_offset(offset)
                 if self.rect.colliderect(obstacle):

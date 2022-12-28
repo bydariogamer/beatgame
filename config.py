@@ -1,4 +1,6 @@
 # Display configuration
+from pygame import USEREVENT
+
 DISP_TIT = "BEATGAME"
 DISP_ICO = "assets/images/stand.png"
 DISP_WID = 800
@@ -58,6 +60,7 @@ HIGHSCORE_FILENAME = ".score"
 SCORE_POINTS_PER_SECOND = 60
 SHIELD_MAXIMUM = 4
 HEALTH_POINTS_PER_OBSTACLE = 0.09
+SONG_ENDEVENT = USEREVENT + 1
 
 # Level generation
 BPM_FINDER_SUBSAMPLING = 500
