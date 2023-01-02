@@ -407,7 +407,6 @@ async def level_loop():
     shield_icon.set_colorkey((255, 255, 255))
     damage = pygame.Surface((config.DISP_WID, config.DISP_HEI))
     damage.fill((20, 0, 0, 30))
-    time_started = None
     won = False
     dt = 1/config.BASE_FPS
     lose_played = False
@@ -429,7 +428,6 @@ async def level_loop():
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 if not player.run:
                     player.start()
-                    time_started = pygame.time.get_ticks()
                 player.spacebar()
             if event.type == config.SONG_ENDEVENT:
                 won = True
