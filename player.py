@@ -180,10 +180,11 @@ class Player:
 
         # draw obstacles
         for index in range(len(self.level.obstacles)):
-            if self.level.obstacles[index].x < config.DISP_WID + 1:
-                pygame.draw.rect(
-                    game, self.level.colors[index], self.level.obstacles[index]
-                )
+            if self.level.obstacles[index].x > config.DISP_WID:
+                break
+            pygame.draw.rect(
+                game, self.level.colors[index], self.level.obstacles[index]
+            )
 
         # draw character
         if not self.life:
