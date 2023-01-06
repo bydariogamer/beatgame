@@ -94,7 +94,7 @@ class Level:
                     Obstacle(
                         int(config.PLAYER_POS_X + index * block_wid),
                         floor_pos - block_hei * block,
-                        int(block_wid),
+                        int((index + 1) * block_wid) - int(index * block_wid),
                         block_hei * block,
                     )
                 )
